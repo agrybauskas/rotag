@@ -246,6 +246,14 @@ sub force_field
                                {$residue_name}
                                {$necessity}
                                {$atom_name} = 1;
+
+        # Restructuring parameters of hybridizations.
+        my $hybridization = $chem_comp_atom->{'[local]_hybridization'};
+
+        if( $hybridization ne '.' && $hybridization ne '?'  ) {
+            $force_field_parameters{'_[local]_clear_hybridization'}{$residue_name}
+                                   {$atom_name} = $hybridization;
+        }
     }
 
     # Preparing atom names for torsion potential.
@@ -300,19 +308,6 @@ sub force_field
             $sigma;
         $force_field_parameters{'_[local]_h_bond'}{$type_symbol}{'epsilon'} =
             $epsilon;
-    }
-
-    # Restructuring parameters of clear hybridizations.
-    my $clear_hybridization_loop =
-        pdbx_loop_to_array( $force_field_data, '_[local]_clear_hybridization' );
-
-    for my $clear_hybridization ( @{ $clear_hybridization_loop } ) {
-        my $residue_name = $clear_hybridization->{'label_comp_id'};
-        my $atom_name = $clear_hybridization->{'label_atom_id'};
-        my $hybridization = $clear_hybridization->{'type'};
-
-        $force_field_parameters{'_[local]_clear_hybridization'}{$residue_name}
-                               {$atom_name} = $hybridization;
     }
 
     # Restructuring parameters of connectivity.

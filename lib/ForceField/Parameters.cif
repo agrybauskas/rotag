@@ -985,187 +985,6 @@ O 1.90 5.00 'Huey et al., 2007'
 S 2.50 1.00 'Huey et al., 2007'
 #
 loop_
-_[local]_clear_hybridization.label_comp_id
-_[local]_clear_hybridization.label_atom_id
-_[local]_clear_hybridization.type
-ALA C    sp2
-ALA CA   sp3
-ALA CB   sp3
-ALA O    sp2
-ALA OXT  sp2
-ARG C    sp2
-ARG CA   sp3
-ARG CB   sp3
-ARG CD   sp3
-ARG CG   sp3
-ARG CZ   sp2
-ARG NE   sp2
-ARG NH1  sp2
-ARG NH2  sp2
-ARG O    sp2
-ARG OXT  sp2
-ASN C    sp2
-ASN CA   sp3
-ASN CB   sp3
-ASN CG   sp2
-ASN ND2  sp2
-ASN O    sp2
-ASN OD1  sp2
-ASN OXT  sp2
-ASP C    sp2
-ASP CA   sp3
-ASP CB   sp3
-ASP CG   sp2
-ASP O    sp2
-ASP OD1  sp2
-ASP OD2  sp2
-ASP OXT  sp2
-CYS C    sp2
-CYS CA   sp3
-CYS CB   sp3
-CYS O    sp2
-CYS OXT  sp2
-CYS SG   sp3
-GLN C    sp2
-GLN CA   sp3
-GLN CB   sp3
-GLN CD   sp2
-GLN CG   sp3
-GLN NE2  sp2
-GLN O    sp2
-GLN OE1  sp2
-GLN OXT  sp2
-GLU C    sp2
-GLU CA   sp3
-GLU CB   sp3
-GLU CD   sp2
-GLU CG   sp3
-GLU O    sp2
-GLU OE1  sp2
-GLU OE2  sp2
-GLU OXT  sp2
-GLY C    sp2
-GLY CA   sp3
-GLY O    sp2
-GLY OXT  sp2
-HIS C    sp2
-HIS CA   sp3
-HIS CB   sp3
-HIS CD2  sp2
-HIS CE1  sp2
-HIS CG   sp2
-HIS ND1  sp2
-HIS NE2  sp2
-HIS O    sp2
-HIS OXT  sp2
-ILE C    sp2
-ILE CA   sp3
-ILE CB   sp3
-ILE CD1  sp3
-ILE CG1  sp3
-ILE CG2  sp3
-ILE O    sp2
-ILE OXT  sp2
-LEU C    sp2
-LEU CA   sp3
-LEU CB   sp3
-LEU CD1  sp3
-LEU CD2  sp3
-LEU CG   sp3
-LEU O    sp2
-LEU OXT  sp2
-LYS C    sp2
-LYS CA   sp3
-LYS CB   sp3
-LYS CD   sp3
-LYS CE   sp3
-LYS CG   sp3
-LYS NZ   sp3
-LYS O    sp2
-LYS OXT  sp2
-MET C    sp2
-MET CA   sp3
-MET CB   sp3
-MET CE   sp3
-MET CG   sp3
-MET O    sp2
-MET OXT  sp2
-MET SD   sp3
-PHE C    sp2
-PHE CA   sp3
-PHE CB   sp3
-PHE CD1  sp2
-PHE CD2  sp2
-PHE CE1  sp2
-PHE CE2  sp2
-PHE CG   sp2
-PHE CZ   sp2
-PHE O    sp2
-PHE OXT  sp2
-PRO C    sp2
-PRO CA   sp3
-PRO CB   sp3
-PRO CD   sp3
-PRO CG   sp3
-PRO O    sp2
-PRO OXT  sp2
-SER C    sp2
-SER CA   sp3
-SER CB   sp3
-SER O    sp2
-SER OG   sp3
-SER OXT  sp2
-THR C    sp2
-THR CA   sp3
-THR CB   sp3
-THR CG2  sp3
-THR O    sp2
-THR OG1  sp3
-THR OXT  sp2
-TRP C    sp2
-TRP CA   sp3
-TRP CB   sp3
-TRP CD1  sp2
-TRP CD2  sp2
-TRP CE2  sp2
-TRP CE3  sp2
-TRP CG   sp2
-TRP CH2  sp2
-TRP CZ2  sp2
-TRP CZ3  sp2
-TRP NE1  sp2
-TRP O    sp2
-TRP OXT  sp2
-TYR C    sp2
-TYR CA   sp3
-TYR CB   sp3
-TYR CD1  sp2
-TYR CD2  sp2
-TYR CE1  sp2
-TYR CE2  sp2
-TYR CG   sp2
-TYR CZ   sp2
-TYR O    sp2
-TYR OH   sp3
-TYR OXT  sp3
-VAL C    sp2
-VAL CA   sp3
-VAL CB   sp3
-VAL CG1  sp3
-VAL CG2  sp3
-VAL O    sp2
-VAL OXT  sp2
-HOH O    sp3
-HOH H1   sp3
-HOH H2   sp3
-XAA CA   sp3
-XAA CB   sp3
-XAA CG   sp3
-XAA OG   sp3
-XAA XA   sp3
-XAA XA2  sp3
-#
-loop_
 _[local]_hydrogen_names.label_comp_id
 _[local]_hydrogen_names.label_atom_id
 _[local]_hydrogen_names.label_hydrogen_atom_id
@@ -1514,7 +1333,7 @@ _chem_comp_atom.pdbx_component_comp_id
 _chem_comp_atom.pdbx_ordinal
 _chem_comp_atom.[local]_partial_charge_description
 *   *   *     *  0 0.000  .   Y . . . . . . . 0.000  0.000  0.000  0.000  0.000  0.000    *    *   1  'Partial charge between two dummy points.'
-ALA N   N     N  0 -0.405 sp2 Y 1 N N N Y Y N 2.281  26.213 12.804 -0.966 0.493  1.500    N    ALA 1  'Duan et al., 2003'
+ALA N   N     N  0 -0.405 .   Y 1 N N N Y Y N 2.281  26.213 12.804 -0.966 0.493  1.500    N    ALA 1  'Duan et al., 2003'
 ALA CA  CA    C  0 -0.028 sp3 Y 1 N N S Y N N 1.169  26.942 13.411 0.257  0.418  0.692    CA   ALA 2  'Duan et al., 2003'
 ALA C   C     C  0  0.57  sp2 Y 1 N N N Y N Y 1.539  28.344 13.874 -0.094 0.017  -0.716   C    ALA 3  'Duan et al., 2003'
 ALA O   O     O  0 -0.555 sp2 Y 1 N N N Y N Y 2.709  28.647 14.114 -1.056 -0.682 -0.923   O    ALA 4  'Duan et al., 2003'
@@ -1527,7 +1346,7 @@ ALA HB1 1HB   H  0  0.077 .   N 1 N N N N N N -0.247 26.699 15.037 1.459  -0.330
 ALA HB2 2HB   H  0  0.077 .   N 1 N N N N N N 0.308  25.110 14.270 0.715  -1.594 1.307    HB2  ALA 11 'Duan et al., 2003'
 ALA HB3 3HB   H  0  0.077 .   N 1 N N N N N N 1.384  25.876 15.321 2.113  -0.676 0.697    HB3  ALA 12 'Duan et al., 2003'
 ALA HXT HXT   H  0  ?     .   N 1 N Y N Y N Y 0.753  30.069 14.286 0.435  0.182 -2.647    HXT  ALA 13 'Duan et al., 2003'
-ARG N    N    N  0 -0.301 sp2 Y 1 N N N Y Y N 69.812 14.685 89.810 -0.469 1.110 -0.993    N    ARG 1  'Duan et al., 2003'
+ARG N    N    N  0 -0.301 . Y 1 N N N Y Y N 69.812 14.685 89.810 -0.469 1.110 -0.993    N    ARG 1  'Duan et al., 2003'
 ARG CA   CA   C  0 -0.131 sp3 Y 1 N N S Y N N 70.052 14.573 91.280 0.004  2.294 -1.708    CA   ARG 2  'Duan et al., 2003'
 ARG C    C    C  0  0.73  sp2 Y 1 N N N Y N Y 71.542 14.389 91.604 -0.907 2.521 -2.901    C    ARG 3  'Duan et al., 2003'
 ARG O    O    O  0 -0.578 sp2 Y 1 N N N Y N Y 72.354 14.342 90.659 -1.827 1.789 -3.242    O    ARG 4  'Duan et al., 2003'
@@ -1554,7 +1373,7 @@ ARG HH12 2HH1 H  0  0.391 .   N 0 N N N N N N 65.339 10.234 92.397 5.858  0.307 
 ARG HH21 1HH2 H  0  0.391 .   N 0 N N N N N N 67.926 9.257  89.752 5.530  0.906 -4.614    HH21 ARG 25 'Duan et al., 2003'
 ARG HH22 2HH2 H  0  0.391 .   N 0 N N N N N N 67.056 8.048  90.709 7.088  0.675 -3.874    HH22 ARG 26 'Duan et al., 2003'
 ARG HXT  HXT  H  0  ?     .   N 1 N Y N Y N Y 72.822 14.206 92.998 -1.149 3.855 -4.355    HXT  ARG 27 'Duan et al., 2003'
-ASN N    N    N  0 -0.43  sp2 Y 1 N N N Y Y N 15.295 16.641 19.776 -0.293 1.686  0.094    N    ASN 1  'Duan et al., 2003'
+ASN N    N    N  0 -0.43  .   Y 1 N N N Y Y N 15.295 16.641 19.776 -0.293 1.686  0.094    N    ASN 1  'Duan et al., 2003'
 ASN CA   CA   C  0  0.045 sp3 Y 1 N N S Y N N 15.702 17.913 20.397 -0.448 0.292  -0.340   CA   ASN 2  'Duan et al., 2003'
 ASN C    C    C  0  0.617 sp2 Y 1 N N N Y N Y 14.630 18.500 21.234 -1.846 -0.179 -0.031   C    ASN 3  'Duan et al., 2003'
 ASN O    O    O  0 -0.524 sp2 Y 1 N N N Y N Y 14.949 19.152 22.234 -2.510 0.402  0.794    O    ASN 4  'Duan et al., 2003'
@@ -1571,7 +1390,7 @@ ASN HB3  2HB  H  0 0.043  .   N 1 N N N N N N 16.323 19.842 19.779 0.389  -1.633
 ASN HD21 1HD2 H  0 0.355  .   N 0 N N N N N N 18.021 19.008 16.631 2.881  -1.556 1.168    HD21 ASN 15 'Duan et al., 2003'
 ASN HD22 2HD2 H  0 0.355  .   N 0 N N N N N N 16.555 19.824 17.065 3.919  -0.590 0.268    HD22 ASN 16 'Duan et al., 2003'
 ASN HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 12.819 18.813 21.473 -3.254 -1.508 -0.441   HXT  ASN 17 'Duan et al., 2003'
-ASP N    N    N  0 -0.558 sp2 Y 1 N N N Y Y N 33.487 17.736 39.094 -0.317 1.688  0.066    N    ASP 1  'Duan et al., 2003'
+ASP N    N    N  0 -0.558 .   Y 1 N N N Y Y N 33.487 17.736 39.094 -0.317 1.688  0.066    N    ASP 1  'Duan et al., 2003'
 ASP CA   CA   C  0 0.007  sp3 Y 1 N N S Y N N 34.909 17.506 38.709 -0.470 0.286  -0.344   CA   ASP 2  'Duan et al., 2003'
 ASP C    C    C  0 0.443  sp2 Y 1 N N N Y N Y 34.993 16.527 37.537 -1.868 -0.180 -0.029   C    ASP 3  'Duan et al., 2003'
 ASP O    O    O  0 -0.501 sp2 Y 1 N N N Y N Y 36.106 16.031 37.261 -2.534 0.415  0.786    O    ASP 4  'Duan et al., 2003'
@@ -1587,7 +1406,7 @@ ASP HB2  HB1  H  0 -0.015 .   N 1 N N N N N N 36.751 16.919 39.657 0.419  -0.425
 ASP HB3  HB2  H  0 -0.015 .   N 1 N N N N N N 35.515 17.623 40.772 0.367  -1.630 0.176    HB3  ASP 14 'Duan et al., 2003'
 ASP HD2  HD2  H  0 ?      .   N 1 N N N N N N 34.155 14.130 39.974 3.869  -0.545 0.250    HD2  ASP 15 'Duan et al., 2003'
 ASP HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 34.122 15.645 36.218 -3.275 -1.517 -0.416   HXT  ASP 16 'Duan et al., 2003'
-CYS N    N    N  0 -0.396 sp2 Y 1 N N N Y Y N 22.585 13.716 37.715 1.585  0.483  -0.081   N    CYS 1  'Duan et al., 2003'
+CYS N    N    N  0 -0.396 .   Y 1 N N N Y Y N 22.585 13.716 37.715 1.585  0.483  -0.081   N    CYS 1  'Duan et al., 2003'
 CYS CA   CA   C  0 -0.074 sp3 Y 1 N N R Y N N 22.372 13.468 39.168 0.141  0.450  0.186    CA   CYS 2  'Duan et al., 2003'
 CYS C    C    C  0 0.643  sp2 Y 1 N N N Y N Y 21.806 14.686 39.893 -0.095 0.006  1.606    C    CYS 3  'Duan et al., 2003'
 CYS O    O    O  0 -0.585 sp2 Y 1 N N N Y N Y 22.614 15.553 40.277 0.685  -0.742 2.143    O    CYS 4  'Duan et al., 2003'
@@ -1601,7 +1420,7 @@ CYS HB2  1HB  H  0 0.147  .   N 1 N N N N N N 23.739 13.412 40.869 -0.114 -1.526
 CYS HB3  2HB  H  0 0.147  .   N 1 N N N N N N 23.651 11.923 40.031 -1.604 -0.554 -0.575   HB3  CYS 12 'Duan et al., 2003'
 CYS HG   HG   H  0 0.189  .   N 1 N N N N N N 26.013 13.162 39.329 -0.904 -0.965 -3.145   HG   CYS 13 'Duan et al., 2003'
 CYS HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 20.212 15.505 40.527 -1.326 0.158  3.186    HXT  CYS 14 'Duan et al., 2003'
-GLN N    N    N  0 -0.387 sp2 Y 1 N N N Y Y N -12.869 34.883 120.983 1.858  -0.148 1.125  N    GLN 1  'Duan et al., 2003'
+GLN N    N    N  0 -0.387 .   Y 1 N N N Y Y N -12.869 34.883 120.983 1.858  -0.148 1.125  N    GLN 1  'Duan et al., 2003'
 GLN CA   CA   C  0 0.037  sp3 Y 1 N N S Y N N -12.048 35.305 119.985 0.517  0.451  1.112  CA   GLN 2  'Duan et al., 2003'
 GLN C    C    C  0 0.419  sp2 Y 1 N N N Y N Y -10.724 35.797 120.549 -0.236 0.022  2.344  C    GLN 3  'Duan et al., 2003'
 GLN O    O    O  0 -0.565 sp2 Y 1 N N N Y N Y -9.691  35.852 119.806 -0.005 -1.049 2.851  O    GLN 4  'Duan et al., 2003'
@@ -1621,7 +1440,7 @@ GLN HG3  2HG  H  0 0.031  .   N 1 N N N N N N -12.266 37.994 120.717 1.524  -0.0
 GLN HE21 1HE2 H  0 0.408  .   N 0 N N N N N N -12.221 40.119 119.999 -0.200 -0.058 -4.630 HE21 GLN 18 'Duan et al., 2003'
 GLN HE22 2HE2 H  0 0.408  .   N 0 N N N N N N -13.467 40.789 118.939 1.109  0.727  -3.930 HE22 GLN 19 'Duan et al., 2003'
 GLN HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y -9.838  36.476 122.105 -1.649 0.556  3.669  HXT  GLN 20 'Duan et al., 2003'
-GLU N    N    N  0 -0.423 sp2 Y 1 N N N Y Y N 88.261 -7.660 -9.990  1.199  1.867  -0.117  N    GLU 1  'Duan et al., 2003'
+GLU N    N    N  0 -0.423 .   Y 1 N N N Y Y N 88.261 -7.660 -9.990  1.199  1.867  -0.117  N    GLU 1  'Duan et al., 2003'
 GLU CA   CA   C  0 0.032  sp3 Y 1 N N S Y N N 87.744 -7.276 -11.334 1.138  0.515  0.453   CA   GLU 2  'Duan et al., 2003'
 GLU C    C    C  0 0.47   sp2 Y 1 N N N Y N Y 88.474 -6.030 -11.811 2.364  -0.260 0.041   C    GLU 3  'Duan et al., 2003'
 GLU O    O    O  0 -0.593 sp2 Y 1 N N N Y N Y 88.969 -5.292 -10.943 3.010  0.096  -0.916  O    GLU 4  'Duan et al., 2003'
@@ -1640,7 +1459,7 @@ GLU HG2  HG1  H  0 -0.004 .   N 1 N N N N N N 85.624 -9.052 -11.408 -1.357 0.504
 GLU HG3  HG2  H  0 -0.004 .   N 1 N N N N N N 85.775 -8.411 -9.722  -1.360 1.548  0.109   HG3  GLU 17 'Duan et al., 2003'
 GLU HE2  HE2  H  0 ?      .   N 1 N N N N N N 82.345 -8.328 -9.951  -4.571 -0.215 -0.062  HE2  GLU 18 'Duan et al., 2003'
 GLU HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 89.022 -4.994 -13.178 3.530  -1.809 0.435   HXT  GLU 19 'Duan et al., 2003'
-GLY N    N    N  0 -0.374 sp2 Y 1 N N N Y Y N 25.463 35.609 47.047 1.931  0.090  -0.034   N    GLY 1  'Duan et al., 2003'
+GLY N    N    N  0 -0.374 .   Y 1 N N N Y Y N 25.463 35.609 47.047 1.931  0.090  -0.034   N    GLY 1  'Duan et al., 2003'
 GLY CA   CA   C  0 -0.129 sp3 Y 1 N N N Y N N 25.329 37.024 46.850 0.761  -0.799 -0.008   CA   GLY 2  'Duan et al., 2003'
 GLY C    C    C  0 0.581  sp2 Y 1 N N N Y N Y 26.081 37.335 45.572 -0.498 0.029  -0.005   C    GLY 3  'Duan et al., 2003'
 GLY O    O    O  0 -0.509 sp2 Y 1 N N N Y N Y 27.024 36.627 45.222 -0.429 1.235  -0.023   O    GLY 4  'Duan et al., 2003'
@@ -1650,7 +1469,7 @@ GLY H2   HN2  H  0 0.345  .   N 1 N Y N Y Y N 26.307 35.421 47.549 2.788  -0.442
 GLY HA2  HA1  H  0 0.089  .   N 1 N N N Y N N 24.270 37.305 46.757 0.772  -1.440 -0.889   HA2  GLY 8  'Duan et al., 2003'
 GLY HA3  HA2  H  0 0.089  .   N 1 N N N Y N N 25.731 37.590 47.703 0.793  -1.415 0.891    HA3  GLY 9  'Duan et al., 2003'
 GLY HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 26.236 38.300 44.090 -2.477 -0.002 0.019    HXT  GLY 10 'Duan et al., 2003'
-HIS N    N    N  0 -0.528 sp2 Y 1 N N N Y Y N 33.472 42.685 -4.610 -0.040 -1.210 0.053    N    HIS 1  'Duan et al., 2003'
+HIS N    N    N  0 -0.528 .   Y 1 N N N Y Y N 33.472 42.685 -4.610 -0.040 -1.210 0.053    N    HIS 1  'Duan et al., 2003'
 HIS CA   CA   C  0 0.031  sp3 Y 1 N N S Y N N 33.414 41.686 -5.673 1.172  -1.709 0.652    CA   HIS 2  'Duan et al., 2003'
 HIS C    C    C  0 0.662  sp2 Y 1 N N N Y N Y 33.773 42.279 -7.040 1.083  -3.207 0.905    C    HIS 3  'Duan et al., 2003'
 HIS O    O    O  0 -0.529 sp2 Y 1 N N N Y N Y 33.497 43.444 -7.337 0.040  -3.770 1.222    O    HIS 4  'Duan et al., 2003'
@@ -1671,7 +1490,7 @@ HIS HD2  HD2  H  0 0.16   .   N 1 N N N N N N 30.577 40.470 -8.292 4.108  0.647 
 HIS HE1  HE1  H  0 0.127  .   N 1 N N N N N N 32.618 36.844 -7.461 5.340  -2.550 3.892    HE1  HIS 19 'Duan et al., 2003'
 HIS HE2  HE2  H  0 0.267  .   N 1 N N N N N N 31.061 38.039 -9.065 6.002  -0.428 2.627    HE2  HIS 20 'Duan et al., 2003'
 HIS HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 34.553 41.905 -8.698 2.188  -4.848 0.901    HXT  HIS 21 'Duan et al., 2003'
-ILE N    N    N  0 -0.451 sp2 Y 1 N N N Y Y N 52.625 76.235 68.049 -1.944 0.335  -0.343   N    ILE 1  'Duan et al., 2003'
+ILE N    N    N  0 -0.451 .   Y 1 N N N Y Y N 52.625 76.235 68.049 -1.944 0.335  -0.343   N    ILE 1  'Duan et al., 2003'
 ILE CA   CA   C  0 -0.102 sp3 Y 1 N N S Y N N 52.964 77.620 67.705 -0.487 0.519  -0.369   CA   ILE 2  'Duan et al., 2003'
 ILE C    C    C  0 0.569  sp2 Y 1 N N N Y N Y 51.910 78.234 66.791 0.066  -0.032 -1.657   C    ILE 3  'Duan et al., 2003'
 ILE O    O    O  0 -0.62  sp2 Y 1 N N N Y N Y 51.409 77.508 65.911 -0.484 -0.958 -2.203   O    ILE 4  'Duan et al., 2003'
@@ -1693,7 +1512,7 @@ ILE HD11 1HD1 H  0 0.024  .   N 0 N N N N N N 56.492 80.434 66.185 -0.193 0.001 
 ILE HD12 2HD1 H  0 0.024  .   N 0 N N N N N N 56.926 78.677 66.496 -0.026 -1.460 3.235    HD12 ILE 20 'Duan et al., 2003'
 ILE HD13 3HD1 H  0 0.024  .   N 0 N N N N N N 55.984 79.026 65.122 1.287  -0.261 3.286    HD13 ILE 21 'Duan et al., 2003'
 ILE HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 50.974 79.826 66.388 1.527  0.150  -3.024   HXT  ILE 22 'Duan et al., 2003'
-LEU N    N    N  0 -0.355 sp2 Y 1 N N N Y Y N 16.293 15.907 52.123 -1.661 0.627  -0.406   N    LEU 1  'Duan et al., 2003'
+LEU N    N    N  0 -0.355 .   Y 1 N N N Y Y N 16.293 15.907 52.123 -1.661 0.627  -0.406   N    LEU 1  'Duan et al., 2003'
 LEU CA   CA   C  0 -0.101 sp3 Y 1 N N S Y N N 15.121 16.772 51.804 -0.205 0.441  -0.467   CA   LEU 2  'Duan et al., 2003'
 LEU C    C    C  0 0.573  sp2 Y 1 N N N Y N Y 13.865 15.975 51.517 0.180  -0.055 -1.836   C    LEU 3  'Duan et al., 2003'
 LEU O    O    O  0 -0.558 sp2 Y 1 N N N Y N Y 12.808 16.576 51.643 -0.591 -0.731 -2.474   O    LEU 4  'Duan et al., 2003'
@@ -1715,7 +1534,7 @@ LEU HD21 1HD2 H  0 0.022  .   N 0 N N N N N N 18.531 19.080 50.251 1.606  1.115 
 LEU HD22 2HD2 H  0 0.022  .   N 0 N N N N N N 18.105 17.366 50.817 0.222  1.984  1.500    HD22 LEU 20 'Duan et al., 2003'
 LEU HD23 3HD2 H  0 0.022  .   N 0 N N N N N N 17.768 17.745 49.214 0.247  1.613  3.241    HD23 LEU 21 'Duan et al., 2003'
 LEU HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 13.089 14.286 51.031 1.630  -0.064 -3.226   HXT  LEU 22 'Duan et al., 2003'
-LYS N    N    N  0 -0.436 sp2 Y 1 N N N Y Y N 37.577 40.385 -3.968 1.422  1.796  0.198    N    LYS 1  'Duan et al., 2003'
+LYS N    N    N  0 -0.436 .   Y 1 N N N Y Y N 37.577 40.385 -3.968 1.422  1.796  0.198    N    LYS 1  'Duan et al., 2003'
 LYS CA   CA   C  0 -0.039 sp3 Y 1 N N S Y N N 38.631 39.459 -4.356 1.394  0.355  0.484    CA   LYS 2  'Duan et al., 2003'
 LYS C    C    C  0 0.725  sp2 Y 1 N N N Y N Y 38.094 38.304 -5.212 2.657  -0.284 -0.032   C    LYS 3  'Duan et al., 2003'
 LYS O    O    O  0 -0.563 sp2 Y 1 N N N Y N Y 36.873 38.235 -5.490 3.316  0.275  -0.876   O    LYS 4  'Duan et al., 2003'
@@ -1740,7 +1559,7 @@ LYS HZ1  1HZ  H  0 0.295  .   N 1 N N N N N N 36.474 35.891 -0.193 -4.736 -0.185
 LYS HZ2  2HZ  H  0 0.295  .   N 1 N N N N N N 37.644 37.064 0.203  -4.735 -1.400 -0.205   HZ2  LYS 23 'Duan et al., 2003'
 LYS HZ3  3HZ  H  0 0.295  .   N 1 N N N N N N 36.774 37.350 -1.021 -5.609 -0.031 0.071    HZ3  LYS 24 'Duan et al., 2003'
 LYS HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 38.628 36.963 -6.415 3.861  -1.886 0.115    HXT  LYS 25 'Duan et al., 2003'
-MET N    N    N  0 -0.395 sp2 Y 1 N N N Y Y N 16.161 15.756 51.903 -1.816 0.142  -1.166   N    MET 1  'Duan et al., 2003'
+MET N    N    N  0 -0.395 .   Y 1 N N N Y Y N 16.161 15.756 51.903 -1.816 0.142  -1.166   N    MET 1  'Duan et al., 2003'
 MET CA   CA   C  0 -0.088 sp3 Y 1 N N S Y N N 15.084 16.739 51.596 -0.392 0.499  -1.214   CA   MET 2  'Duan et al., 2003'
 MET C    C    C  0 0.6    sp2 Y 1 N N N Y N Y 13.846 15.930 51.367 0.206  0.002  -2.504   C    MET 3  'Duan et al., 2003'
 MET O    O    O  0 -0.566 sp2 Y 1 N N N Y N Y 12.795 16.510 51.424 -0.236 -0.989 -3.033   O    MET 4  'Duan et al., 2003'
@@ -1760,7 +1579,7 @@ MET HE1  1HE  H  0 0.128  .   N 1 N N N N N N 19.664 17.692 49.909 0.090  -0.010
 MET HE2  2HE  H  0 0.128  .   N 1 N N N N N N 18.107 16.882 49.211 -0.207 1.436  4.008    HE2  MET 18 'Duan et al., 2003'
 MET HE3  3HE  H  0 0.128  .   N 1 N N N N N N 18.487 18.349 48.586 -1.369 0.088  3.988    HE3  MET 19 'Duan et al., 2003'
 MET HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 13.079 14.207 51.008 1.616  0.342  -3.894   HXT  MET 20 'Duan et al., 2003'
-PHE N    N    N  0 -0.371 sp2 Y 1 N N N Y Y N 3.260 22.302 6.000 1.317  0.962  1.014      N    PHE 1  'Duan et al., 2003'
+PHE N    N    N  0 -0.371 .   Y 1 N N N Y Y N 3.260 22.302 6.000 1.317  0.962  1.014      N    PHE 1  'Duan et al., 2003'
 PHE CA   CA   C  0 -0.03  sp3 Y 1 N N S Y N N 4.252 21.272 5.710 -0.020 0.426  1.300      CA   PHE 2  'Duan et al., 2003'
 PHE C    C    C  0 0.548  sp2 Y 1 N N N Y N Y 5.559 21.899 5.229 -0.109 0.047  2.756      C    PHE 3  'Duan et al., 2003'
 PHE O    O    O  0 -0.507 sp2 Y 1 N N N Y N Y 5.836 21.838 4.012 0.879  -0.317 3.346      O    PHE 4  'Duan et al., 2003'
@@ -1783,7 +1602,7 @@ PHE HE1  HE1  H  0 0.124  .   N 1 N N N N N N 6.250 16.619 6.083 2.060  -0.203 -
 PHE HE2  HE2  H  0 0.124  .   N 1 N N N N N N 5.968 17.335 1.830 -2.116 0.659  -3.560     HE2  PHE 21 'Duan et al., 2003'
 PHE HZ   HZ   H  0 0.115  .   N 1 N N N N N N 6.822 15.974 3.741 0.045  0.538  -4.734     HZ   PHE 22 'Duan et al., 2003'
 PHE HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 7.096 22.850 5.779 -1.343 -0.130 4.330      HXT  PHE 23 'Duan et al., 2003'
-PRO N    N    N  0 -0.088 sp2 Y 1 N N N Y Y N 39.165 37.768 82.966 -0.816 1.108  0.254    N    PRO 1  'Duan et al., 2003'
+PRO N    N    N  0 -0.088 .   Y 1 N N N Y Y N 39.165 37.768 82.966 -0.816 1.108  0.254    N    PRO 1  'Duan et al., 2003'
 PRO CA   CA   C  0 -0.035 sp3 Y 1 N N S Y N N 38.579 38.700 82.008 0.001  -0.107 0.509    CA   PRO 2  'Duan et al., 2003'
 PRO C    C    C  0 0.334  sp2 Y 1 N N N Y N Y 37.217 39.126 82.515 1.408  0.091  0.005    C    PRO 3  'Duan et al., 2003'
 PRO O    O    O  0 -0.435 sp2 Y 1 N N N Y N Y 36.256 38.332 82.370 1.650  0.980  -0.777   O    PRO 4  'Duan et al., 2003'
@@ -1800,7 +1619,7 @@ PRO HG3  2HG  H  0 0.02   .   N 1 N N N N N N 38.703 35.687 80.482 -2.843 -1.458
 PRO HD2  1HD  H  0 0.044  .   N 1 N N N N N N 38.378 35.759 83.320 -2.872 1.300  -0.263   HD2  PRO 15 'Duan et al., 2003'
 PRO HD3  2HD  H  0 0.044  .   N 1 N N N N N N 39.880 35.732 82.614 -2.559 0.492  1.304    HD3  PRO 16 'Duan et al., 2003'
 PRO HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 36.276 40.530 83.365 3.293  -0.594 0.101    HXT  PRO 17 'Duan et al., 2003'
-SER N    N    N  0 -0.541 sp2 Y 1 N N N Y Y N 88.198 -7.658 -9.979  1.525  0.493  -0.608  N    SER 1  'Duan et al., 2003'
+SER N    N    N  0 -0.541 .   Y 1 N N N Y Y N 88.198 -7.658 -9.979  1.525  0.493  -0.608  N    SER 1  'Duan et al., 2003'
 SER CA   CA   C  0 0.118  sp3 Y 1 N N S Y N N 87.782 -7.276 -11.358 0.100  0.469  -0.252  CA   SER 2  'Duan et al., 2003'
 SER C    C    C  0 0.483  sp2 Y 1 N N N Y N Y 88.571 -6.062 -11.818 -0.053 0.004  1.173   C    SER 3  'Duan et al., 2003'
 SER O    O    O  0 -0.581 sp2 Y 1 N N N Y N Y 89.008 -5.296 -10.944 0.751  -0.760 1.649   O    SER 4  'Duan et al., 2003'
@@ -1814,7 +1633,7 @@ SER HB2  1HB  H  0 0.04   .   N 1 N N N N N N 86.034 -6.065 -10.783 -0.225 -1.49
 SER HB3  2HB  H  0 0.04   .   N 1 N N N N N N 85.961 -6.588 -12.388 -1.699 -0.507 -0.920  HB3  SER 12 'Duan et al., 2003'
 SER HG   HG   H  0 0.446  .   N 1 N N N N N N 84.613 -7.903 -11.009 -0.978 -0.679 -3.088  HG   SER 13 'Duan et al., 2003'
 SER HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 89.230 -5.124 -13.322 -1.183 0.142  2.828   HXT  SER 14 'Duan et al., 2003'
-THR N    N    N  0 -0.245 sp2 Y 1 N N N Y Y N 36.241 32.034 31.861 1.543  -0.702 0.430    N    THR 1  'Duan et al., 2003'
+THR N    N    N  0 -0.245 .   Y 1 N N N Y Y N 36.241 32.034 31.861 1.543  -0.702 0.430    N    THR 1  'Duan et al., 2003'
 THR CA   CA   C  0 -0.271 sp3 Y 1 N N S Y N N 35.010 31.223 31.876 0.122  -0.706 0.056    CA   THR 2  'Duan et al., 2003'
 THR C    C    C  0 0.56   sp2 Y 1 N N N Y N Y 35.213 30.209 30.769 -0.038 -0.090 -1.309   C    THR 3  'Duan et al., 2003'
 THR O    O    O  0 -0.552 sp2 Y 1 N N N Y N Y 35.564 30.621 29.635 0.732  0.761  -1.683   O    THR 4  'Duan et al., 2003'
@@ -1831,7 +1650,7 @@ THR HG21 1HG2 H  0 0.06   .   N 0 N N N N N N 31.577 31.874 31.642 -1.080 0.056 
 THR HG22 2HG2 H  0 0.06   .   N 0 N N N N N N 32.471 30.290 31.315 -0.879 -1.547 2.448    HG22 THR 15 'Duan et al., 2003'
 THR HG23 3HG2 H  0 0.06   .   N 0 N N N N N N 32.471 30.863 32.904 0.542  -0.518 2.743    HG23 THR 16 'Duan et al., 2003'
 THR HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 35.169 28.378 30.362 -1.143 -0.092 -2.986   HXT  THR 17 'Duan et al., 2003'
-TRP N    N    N  0 -0.428 sp2 Y 1 N N N Y Y N 74.708 60.512 32.843 1.278  1.121  2.059    N    TRP 1  'Duan et al., 2003'
+TRP N    N    N  0 -0.428 .   Y 1 N N N Y Y N 74.708 60.512 32.843 1.278  1.121  2.059    N    TRP 1  'Duan et al., 2003'
 TRP CA   CA   C  0 -0.02  sp3 Y 1 N N S Y N N 74.400 61.735 32.114 -0.008 0.417  1.970    CA   TRP 2  'Duan et al., 2003'
 TRP C    C    C  0 0.584  sp2 Y 1 N N N Y N Y 73.588 61.411 30.840 -0.490 0.076  3.357    C    TRP 3  'Duan et al., 2003'
 TRP O    O    O  0 -0.495 sp2 Y 1 N N N Y N Y 72.939 62.292 30.277 0.308  -0.130 4.240    O    TRP 4  'Duan et al., 2003'
@@ -1858,7 +1677,7 @@ TRP HZ2  HZ2  H  0 0.126  .   N 1 N N N N N N 78.871 64.351 36.386 0.860  0.521 
 TRP HZ3  HZ3  H  0 0.119  .   N 1 N N N N N N 75.400 66.641 35.193 -3.110 0.116  -3.029   HZ3  TRP 25 'Duan et al., 2003'
 TRP HH2  HH2  H  0 0.119  .   N 1 N N N N N N 77.376 66.257 36.716 -1.567 0.582  -4.885   HH2  TRP 26 'Duan et al., 2003'
 TRP HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 72.995 60.270 29.654 -2.115 -0.217 4.500    HXT  TRP 27 'Duan et al., 2003'
-TYR N    N    N  0 -0.488 sp2 Y 1 N N N Y Y N 5.005 5.256 15.563 1.320  0.952  1.428      N    TYR 1  'Duan et al., 2003'
+TYR N    N    N  0 -0.488 .   Y 1 N N N Y Y N 5.005 5.256 15.563 1.320  0.952  1.428      N    TYR 1  'Duan et al., 2003'
 TYR CA   CA   C  0 0.01   sp3 Y 1 N N S Y N N 5.326 6.328 16.507 -0.018 0.429  1.734      CA   TYR 2  'Duan et al., 2003'
 TYR C    C    C  0 0.622  sp2 Y 1 N N N Y N Y 4.742 7.680 16.116 -0.103 0.094  3.201      C    TYR 3  'Duan et al., 2003'
 TYR O    O    O  0 -0.527 sp2 Y 1 N N N Y N Y 4.185 8.411 16.947 0.886  -0.254 3.799      O    TYR 4  'Duan et al., 2003'
@@ -1882,7 +1701,7 @@ TYR HE1  HE1  H  0 0.137  .   N 1 N N N N N N 6.886 4.493 20.888 2.049  -0.354 -
 TYR HE2  HE2  H  0 0.137  .   N 1 N N N N N N 9.788 3.310 18.373 -2.132 0.523  -3.121     HE2  TYR 22 'Duan et al., 2003'
 TYR HH   HH   H  0 0.33   .   N 1 N N N N N N 8.500 3.001 21.460 -0.123 -0.399 -5.059     HH   TYR 23 'Duan et al., 2003'
 TYR HXT  HXT  H  0 ?      .   N 1 N Y N Y N Y 4.475 8.893 14.585 -1.333 -0.030 4.784      HXT  TYR 24 'Duan et al., 2003'
-VAL N    N    N  0 -0.45  sp2 Y 1 N N N Y Y N 11.009 2.661 48.464 1.564  -0.642 0.454     N    VAL 1  'Duan et al., 2003'
+VAL N    N    N  0 -0.45  .   Y 1 N N N Y Y N 11.009 2.661 48.464 1.564  -0.642 0.454     N    VAL 1  'Duan et al., 2003'
 VAL CA   CA   C  0 -0.052 sp3 Y 1 N N S Y N N 10.415 3.985 48.550 0.145  -0.698 0.079     CA   VAL 2  'Duan et al., 2003'
 VAL C    C    C  0 0.447  sp2 Y 1 N N N Y N Y 10.002 4.429 49.975 -0.037 -0.093 -1.288    C    VAL 3  'Duan et al., 2003'
 VAL O    O    O  0 -0.405 sp2 Y 1 N N N Y N Y 9.312  3.707 50.680 0.703  0.784  -1.664    O    VAL 4  'Duan et al., 2003'

@@ -782,8 +782,6 @@ $VAR1 = bless( {
       'OXT' => 'sp2'
     },
     'HOH' => {
-      'H1' => 'sp3',
-      'H2' => 'sp3',
       'O' => 'sp3'
     },
     'ILE' => {
@@ -894,7 +892,7 @@ $VAR1 = bless( {
       'CZ' => 'sp2',
       'O' => 'sp2',
       'OH' => 'sp3',
-      'OXT' => 'sp3'
+      'OXT' => 'sp2'
     },
     'VAL' => {
       'C' => 'sp2',
