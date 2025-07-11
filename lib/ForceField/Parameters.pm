@@ -236,6 +236,16 @@ sub force_field
 
         $force_field_parameters{'_[local]_partial_charge'}{$residue_name}
                                {$atom_name} = $partial_charge;
+
+        # Restructuring parameters of atom necessity.
+        my $necessity =
+            $chem_comp_atom->{'[local]_mandatory_flag'} eq 'Y' ?
+            'mandatory' : 'optional';
+
+        $force_field_parameters{'_[local]_residue_atom_necessity'}
+                               {$residue_name}
+                               {$necessity}
+                               {$atom_name} = 1;
     }
 
     # Preparing atom names for torsion potential.
@@ -290,21 +300,6 @@ sub force_field
             $sigma;
         $force_field_parameters{'_[local]_h_bond'}{$type_symbol}{'epsilon'} =
             $epsilon;
-    }
-
-    # Restructuring parameters of atom necessity.
-    my $residue_atoms_loop =
-        pdbx_loop_to_array($force_field_data, '_[local]_residue_atom_necessity');
-
-    for my $residue_atoms ( @{ $residue_atoms_loop } ) {
-        my $residue_name = $residue_atoms->{'label_comp_id'};
-        my $atom_name = $residue_atoms->{'label_atom_id'};
-        my $necessity_value = $residue_atoms->{'value'};
-
-        $force_field_parameters{'_[local]_residue_atom_necessity'}
-                               {$residue_name}
-                               {$necessity_value}
-                               {$atom_name} = 1;
     }
 
     # Restructuring parameters of clear hybridizations.

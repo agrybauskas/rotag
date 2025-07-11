@@ -10022,6 +10022,21 @@ $VAR1 = bless( {
     }
   },
   '_[local]_residue_atom_necessity' => {
+    '*' => {
+      'mandatory' => {
+        '*' => 1
+      }
+    },
+    '3CO' => {
+      'mandatory' => {
+        'CO' => 1
+      }
+    },
+    '3NI' => {
+      'mandatory' => {
+        'NI' => 1
+      }
+    },
     'ALA' => {
       'mandatory' => {
         'C' => 1,
@@ -10129,6 +10144,26 @@ $VAR1 = bless( {
         'CD' => 1
       }
     },
+    'CO' => {
+      'mandatory' => {
+        'CO' => 1
+      }
+    },
+    'CU' => {
+      'mandatory' => {
+        'CU' => 1
+      }
+    },
+    'CU1' => {
+      'mandatory' => {
+        'CU' => 1
+      }
+    },
+    'CU3' => {
+      'mandatory' => {
+        'CU' => 1
+      }
+    },
     'CYS' => {
       'mandatory' => {
         'C' => 1,
@@ -10147,6 +10182,16 @@ $VAR1 = bless( {
         'HG' => 1,
         'HXT' => 1,
         'OXT' => 1
+      }
+    },
+    'FE' => {
+      'mandatory' => {
+        'FE' => 1
+      }
+    },
+    'FE2' => {
+      'mandatory' => {
+        'FE' => 1
       }
     },
     'GLN' => {
@@ -10235,6 +10280,7 @@ $VAR1 = bless( {
         'HA' => 1,
         'HB2' => 1,
         'HB3' => 1,
+        'HD1' => 1,
         'HD2' => 1,
         'HE1' => 1,
         'HE2' => 1,
@@ -10339,6 +10385,7 @@ $VAR1 = bless( {
         'HXT' => 1,
         'HZ1' => 1,
         'HZ2' => 1,
+        'HZ3' => 1,
         'OXT' => 1
       }
     },
@@ -10373,9 +10420,24 @@ $VAR1 = bless( {
         'MG' => 1
       }
     },
+    'MN' => {
+      'mandatory' => {
+        'MN' => 1
+      }
+    },
+    'MN3' => {
+      'mandatory' => {
+        'MN' => 1
+      }
+    },
     'NA' => {
       'mandatory' => {
         'NA' => 1
+      }
+    },
+    'NI' => {
+      'mandatory' => {
+        'NI' => 1
       }
     },
     'PHE' => {
