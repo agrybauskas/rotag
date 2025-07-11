@@ -124,9 +124,9 @@ sub is_connected
             ( $target_residue_key eq $neighbour_residue_key ) &&
             ( exists $connectivity->{$target_residue_name}
                                     {$target_atom_name} &&
-              any { $neighbour_atom_name eq $_  }
-                 @{ $connectivity->{$target_residue_name}
-                                   {$target_atom_name} } ) ) {
+              exists $connectivity->{$target_residue_name}
+                                    {$target_atom_name}
+                                    {$neighbour_atom_name} ) ) {
             return 1;
         }
     }

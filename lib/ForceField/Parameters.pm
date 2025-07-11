@@ -329,8 +329,10 @@ sub force_field
         my $atom_name_1 = $connectivity->{'label_atom_1_id'};
         my $atom_name_2 = $connectivity->{'label_atom_2_id'};
 
-        push @{ $force_field_parameters{'_[local]_connectivity'}{$residue_name}
-                                       {$atom_name_1} }, $atom_name_2;
+        $force_field_parameters{'_[local]_connectivity'}{$residue_name}
+                               {$atom_name_1}{$atom_name_2} = 1;
+        $force_field_parameters{'_[local]_connectivity'}{$residue_name}
+                               {$atom_name_2}{$atom_name_1} = 1;
     }
 
     # Restructuring parameters of hydrogen names.

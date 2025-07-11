@@ -116,7 +116,7 @@ sub add_hydrogens
         my @mandatory_connections = ();
         for my $mandatory_atom ( @mandatory_residue_atoms ) {
             if( any { $mandatory_atom eq $_ }
-                   @{ $connectivity->{$residue_name}{$atom_name} } ) {
+                   keys %{ $connectivity->{$residue_name}{$atom_name} } ) {
                 push @mandatory_connections, $mandatory_atom;
             }
         }
