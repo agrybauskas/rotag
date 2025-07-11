@@ -225,7 +225,19 @@ sub force_field
         }
     }
 
-    # Restructuring parameters of partial charge.
+    my $chem_comp_atoms =
+        pdbx_loop_to_array( $force_field_data, '_chem_comp_atom' );
+
+    # for my $chem_comp_atom ( @{ $chem_comp_atoms } ) {
+    #     # Restructuring parameters of partial charge.
+    #     my $residue_name = $chem_comp_atom->{'comp_id'};
+    #     my $atom_name = $chem_comp_atom->{'atom_id'};
+    #     my $partial_charge = $chem_comp_atom->{'partial_charge'};
+
+    #     $force_field_parameters{'_[local]_partial_charge'}{$residue_name}
+    #                            {$atom_name} = $partial_charge;
+    # }
+
     my $partial_charge_loop =
         pdbx_loop_to_array( $force_field_data, '_[local]_partial_charge' );
 
