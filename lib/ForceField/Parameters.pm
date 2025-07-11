@@ -321,13 +321,13 @@ sub force_field
     }
 
     # Restructuring parameters of connectivity.
-    my $connectivity_loop =
-        pdbx_loop_to_array( $force_field_data, '_[local]_connectivity' );
+    my $chem_comp_bonds =
+        pdbx_loop_to_array( $force_field_data, '_chem_comp_bond' );
 
-    for my $connectivity ( @{ $connectivity_loop } ) {
-        my $residue_name = $connectivity->{'label_comp_id'};
-        my $atom_name_1 = $connectivity->{'label_atom_1_id'};
-        my $atom_name_2 = $connectivity->{'label_atom_2_id'};
+    for my $chem_comp_bond ( @{ $chem_comp_bonds } ) {
+        my $residue_name = $chem_comp_bond->{'comp_id'};
+        my $atom_name_1 = $chem_comp_bond->{'atom_id_1'};
+        my $atom_name_2 = $chem_comp_bond->{'atom_id_2'};
 
         $force_field_parameters{'_[local]_connectivity'}{$residue_name}
                                {$atom_name_1}{$atom_name_2} = 1;
