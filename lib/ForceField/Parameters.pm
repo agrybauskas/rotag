@@ -238,18 +238,6 @@ sub force_field
                                {$atom_name} = $partial_charge;
     }
 
-    # my $partial_charge_loop =
-    #     pdbx_loop_to_array( $force_field_data, '_[local]_partial_charge' );
-
-    # for my $partial_charge ( @{ $partial_charge_loop } ) {
-    #     my $residue_name = $partial_charge->{'label_comp_id'};
-    #     my $atom_name = $partial_charge->{'label_atom_id'};
-    #     my $partial_charge_value = $partial_charge->{'value'};
-
-    #     $force_field_parameters{'_[local]_partial_charge'}{$residue_name}
-    #                            {$atom_name} = $partial_charge_value;
-    # }
-
     # Preparing atom names for torsion potential.
     my $torsional_atom_names_loop =
         pdbx_loop_to_array( $force_field_data, '_[local]_torsional_atom_names' );
