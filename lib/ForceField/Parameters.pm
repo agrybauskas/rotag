@@ -225,6 +225,21 @@ sub force_field
         }
     }
 
+    # Restructuring parameters of connectivity.
+    my $chem_comp_bonds =
+        pdbx_loop_to_array( $force_field_data, '_chem_comp_bond' );
+
+    for my $chem_comp_bond ( @{ $chem_comp_bonds } ) {
+        my $residue_name = $chem_comp_bond->{'comp_id'};
+        my $atom_name_1 = $chem_comp_bond->{'atom_id_1'};
+        my $atom_name_2 = $chem_comp_bond->{'atom_id_2'};
+
+        $force_field_parameters{'_[local]_connectivity'}{$residue_name}
+                               {$atom_name_1}{$atom_name_2} = 1;
+        $force_field_parameters{'_[local]_connectivity'}{$residue_name}
+                               {$atom_name_2}{$atom_name_1} = 1;
+    }
+
     my $chem_comp_atoms =
         pdbx_loop_to_array( $force_field_data, '_chem_comp_atom' );
 
@@ -232,6 +247,7 @@ sub force_field
         # Restructuring parameters of partial charge.
         my $residue_name = $chem_comp_atom->{'comp_id'};
         my $atom_name = $chem_comp_atom->{'atom_id'};
+        my $atom_type = $chem_comp_atom->{'type_symbol'};
         my $partial_charge = $chem_comp_atom->{'partial_charge'};
 
         $force_field_parameters{'_[local]_partial_charge'}{$residue_name}
@@ -254,6 +270,19 @@ sub force_field
             $force_field_parameters{'_[local]_clear_hybridization'}{$residue_name}
                                    {$atom_name} = $hybridization;
         }
+
+        # # Restructuring parameters of hydrogen names.
+        # if( $atom_type eq 'H' ) {
+        #     for my $connected_atom_name (
+        #         keys %{ $force_field_parameters{'_[local]_connectivity'}
+        #                                        {$residue_name}
+        #                                        {$atom_name} } ) {
+        #         push @{ $force_field_parameters{'_[local]_hydrogen_names'}
+        #                                        {$residue_name}
+        #                                        {$connected_atom_name} },
+        #             $atom_name;
+        #     }
+        # }
     }
 
     # Preparing atom names for torsion potential.
@@ -308,21 +337,6 @@ sub force_field
             $sigma;
         $force_field_parameters{'_[local]_h_bond'}{$type_symbol}{'epsilon'} =
             $epsilon;
-    }
-
-    # Restructuring parameters of connectivity.
-    my $chem_comp_bonds =
-        pdbx_loop_to_array( $force_field_data, '_chem_comp_bond' );
-
-    for my $chem_comp_bond ( @{ $chem_comp_bonds } ) {
-        my $residue_name = $chem_comp_bond->{'comp_id'};
-        my $atom_name_1 = $chem_comp_bond->{'atom_id_1'};
-        my $atom_name_2 = $chem_comp_bond->{'atom_id_2'};
-
-        $force_field_parameters{'_[local]_connectivity'}{$residue_name}
-                               {$atom_name_1}{$atom_name_2} = 1;
-        $force_field_parameters{'_[local]_connectivity'}{$residue_name}
-                               {$atom_name_2}{$atom_name_1} = 1;
     }
 
     # Restructuring parameters of hydrogen names.
