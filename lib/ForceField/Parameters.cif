@@ -955,7 +955,7 @@ ALA HB1 1HB   H  0  0.077 .   N 1 N N N N N N -0.247 26.699 15.037 1.459  -0.330
 ALA HB2 2HB   H  0  0.077 .   N 1 N N N N N N 0.308  25.110 14.270 0.715  -1.594 1.307    HB2  ALA 11 'Duan et al., 2003'
 ALA HB3 3HB   H  0  0.077 .   N 1 N N N N N N 1.384  25.876 15.321 2.113  -0.676 0.697    HB3  ALA 12 'Duan et al., 2003'
 ALA HXT HXT   H  0  ?     .   N 1 N Y N Y N Y 0.753  30.069 14.286 0.435  0.182 -2.647    HXT  ALA 13 'Duan et al., 2003'
-ARG N    N    N  0 -0.301 . Y 1 N N N Y Y N 69.812 14.685 89.810 -0.469 1.110 -0.993    N    ARG 1  'Duan et al., 2003'
+ARG N    N    N  0 -0.301 .   Y 1 N N N Y Y N 69.812 14.685 89.810 -0.469 1.110 -0.993    N    ARG 1  'Duan et al., 2003'
 ARG CA   CA   C  0 -0.131 sp3 Y 1 N N S Y N N 70.052 14.573 91.280 0.004  2.294 -1.708    CA   ARG 2  'Duan et al., 2003'
 ARG C    C    C  0  0.73  sp2 Y 1 N N N Y N Y 71.542 14.389 91.604 -0.907 2.521 -2.901    C    ARG 3  'Duan et al., 2003'
 ARG O    O    O  0 -0.578 sp2 Y 1 N N N Y N Y 72.354 14.342 90.659 -1.827 1.789 -3.242    O    ARG 4  'Duan et al., 2003'
