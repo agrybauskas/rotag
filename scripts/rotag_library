@@ -247,7 +247,9 @@ for my $pdbx_file ( @ARGV ) {
                   'auth_seq_id' => $rotamer_data[6],
                   'auth_asym_id' => $rotamer_data[7],
                   'label_alt_id' => $rotamer_data[8],
-                  'frequency' => $frequencies{$rotamer_id},
+                  'frequency' => ( exists $frequencies{$rotamer_id} ?
+                                   $frequencies{$rotamer_id} :
+                                   $rotamer_data[9] ),
                   'type' => $rotamer_data[10],
                   'value' => $rotamer_data[11],
                   'units' => $rotamer_data[12] };
