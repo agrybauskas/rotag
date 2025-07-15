@@ -142,9 +142,8 @@ for my $pdbx_file ( @ARGV ) {
     my @attributes =
         ( 'id', 'rotamer_id', 'label_seq_id', 'label_comp_id', 'label_asym_id',
           'pdbx_PDB_model_num', 'auth_seq_id', 'auth_asym_id', 'label_alt_id',
-          # 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id',  'site_1_id',
-          # 'site_2_id', 'site_3_id', 'site_4_id',
-          'frequency', 'type', 'value',
+          'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id',  'site_1_id',
+          'site_2_id', 'site_3_id', 'site_4_id', 'frequency', 'type', 'value',
           'units' );
 
     my @rotamers;
@@ -249,6 +248,14 @@ for my $pdbx_file ( @ARGV ) {
                   'auth_seq_id' => $rotamer_data{'auth_seq_id'},
                   'auth_asym_id' => $rotamer_data{'auth_asym_id'},
                   'label_alt_id' => $rotamer_data{'label_alt_id'},
+                  'atom_1_id' => $rotamer_data{'atom_1_id'},
+                  'atom_2_id' => $rotamer_data{'atom_2_id'},
+                  'atom_3_id' => $rotamer_data{'atom_3_id'},
+                  'atom_4_id' => $rotamer_data{'atom_4_id'},
+                  'site_1_id' => $rotamer_data{'site_1_id'},
+                  'site_2_id' => $rotamer_data{'site_2_id'},
+                  'site_3_id' => $rotamer_data{'site_3_id'},
+                  'site_4_id' => $rotamer_data{'site_4_id'},
                   'frequency' => ( exists $frequencies{$rotamer_id} ?
                                    $frequencies{$rotamer_id} :
                                    $rotamer_data{'frequency'} ),
