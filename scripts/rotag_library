@@ -229,33 +229,32 @@ for my $pdbx_file ( @ARGV ) {
     for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
         my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
         if( any { $rotamer_id eq $_ } @rotamers ) {
-            # TODO: refactoring is needed, because there is a repeating code
-            # snippet.
-            my @rotamer_data = ();
+            my %rotamer_data = ();
             for my $attribute ( @attributes ) {
                 if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
-                    push @rotamer_data, $rotamer_angles->{$angle_id}{$attribute};
+                    $rotamer_data{$attribute} =
+                        $rotamer_angles->{$angle_id}{$attribute};
                 } else {
-                    push @rotamer_data, '?';
+                    $rotamer_data{$attribute} = '?';
                 }
             }
 
             push @{ $pdbx_data{'_[local]_rotamer_bond_parameter'}{'data'} },
-                { 'id' => $rotamer_data[0],
-                  'rotamer_id' => $rotamer_data[1],
-                  'label_seq_id' => $rotamer_data[2],
-                  'label_comp_id' => $rotamer_data[3],
-                  'label_asym_id' => $rotamer_data[4],
-                  'pdbx_PDB_model_num' => $rotamer_data[5],
-                  'auth_seq_id' => $rotamer_data[6],
-                  'auth_asym_id' => $rotamer_data[7],
-                  'label_alt_id' => $rotamer_data[8],
+                { 'id' => $rotamer_data{'id'},
+                  'rotamer_id' => $rotamer_data{'rotamer_id'},
+                  'label_seq_id' => $rotamer_data{'label_seq_id'},
+                  'label_comp_id' => $rotamer_data{'label_comp_id'},
+                  'label_asym_id' => $rotamer_data{'label_asym_id'},
+                  'pdbx_PDB_model_num' => $rotamer_data{'pdbx_PDB_model_num'},
+                  'auth_seq_id' => $rotamer_data{'auth_seq_id'},
+                  'auth_asym_id' => $rotamer_data{'auth_asym_id'},
+                  'label_alt_id' => $rotamer_data{'label_alt_id'},
                   'frequency' => ( exists $frequencies{$rotamer_id} ?
                                    $frequencies{$rotamer_id} :
-                                   $rotamer_data[9] ),
-                  'type' => $rotamer_data[10],
-                  'value' => $rotamer_data[11],
-                  'units' => $rotamer_data[12] };
+                                   $rotamer_data{'frequency'} ),
+                  'type' => $rotamer_data{'type'},
+                  'value' => $rotamer_data{'value'},
+                  'units' => $rotamer_data{'units'} };
         }
     }
 
