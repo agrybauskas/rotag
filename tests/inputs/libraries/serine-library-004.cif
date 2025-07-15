@@ -30,16 +30,27 @@ _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
 _[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
-1 1 18 SER A 1 . 0.142857 chi1 -3.141593
-2 2 18 SER A 1 . 0.142857 chi1 -2.513274
-3 3 18 SER A 1 . 0.142857 chi1 -1.884956
-4 4 18 SER A 1 . 0.142857 chi1 -1.256637
-5 5 18 SER A 1 . 0.142857 chi1 -0.628319
-6 6 18 SER A 1 . 0.142857 chi1 0.628319
-7 7 18 SER A 1 . 0.142857 chi1 1.256637
+_[local]_rotamer_bond_parameter.units
+1 1 18 SER A 1 . 18 A 147 148 151 152 . . . . 0.142857 chi1 -3.141593 radians
+2 2 18 SER A 1 . 18 A 147 148 151 152 . . . . 0.142857 chi1 -2.513274 radians
+3 3 18 SER A 1 . 18 A 147 148 151 152 . . . . 0.142857 chi1 -1.884956 radians
+4 4 18 SER A 1 . 18 A 147 148 151 152 . . . . 0.142857 chi1 -1.256637 radians
+5 5 18 SER A 1 . 18 A 147 148 151 152 . . . . 0.142857 chi1 -0.628319 radians
+6 6 18 SER A 1 . 18 A 147 148 151 152 . . . . 0.142857 chi1 0.628319 radians
+7 7 18 SER A 1 . 18 A 147 148 151 152 . . . . 0.142857 chi1 1.256637 radians
 #
 loop_
 _[local]_rotamer_energy.id
