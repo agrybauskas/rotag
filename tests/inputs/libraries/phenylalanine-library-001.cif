@@ -35,76 +35,86 @@ _[local]_rotamer_bond_parameter.label_comp_id
 _[local]_rotamer_bond_parameter.label_asym_id
 _[local]_rotamer_bond_parameter.pdbx_PDB_model_num
 _[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
 _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 246 PHE A 1 . 0.030303 chi1 -108.000000 degrees
-2 1 246 PHE A 1 . 0.030303 chi2 -72.000000 degrees
-3 2 246 PHE A 1 . 0.030303 chi1 -108.000000 degrees
-4 2 246 PHE A 1 . 0.030303 chi2 -36.000000 degrees
-5 3 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-6 3 246 PHE A 1 . 0.030303 chi2 -180.000000 degrees
-7 4 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-8 4 246 PHE A 1 . 0.030303 chi2 -144.000000 degrees
-9 5 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-10 5 246 PHE A 1 . 0.030303 chi2 -108.000000 degrees
-11 6 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-12 6 246 PHE A 1 . 0.030303 chi2 -72.000000 degrees
-13 7 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-14 7 246 PHE A 1 . 0.030303 chi2 -36.000000 degrees
-15 8 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-16 8 246 PHE A 1 . 0.030303 chi2 0.000000 degrees
-17 9 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-18 9 246 PHE A 1 . 0.030303 chi2 36.000000 degrees
-19 10 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-20 10 246 PHE A 1 . 0.030303 chi2 108.000000 degrees
-21 11 246 PHE A 1 . 0.030303 chi1 -72.000000 degrees
-22 11 246 PHE A 1 . 0.030303 chi2 144.000000 degrees
-23 12 246 PHE A 1 . 0.030303 chi1 -36.000000 degrees
-24 12 246 PHE A 1 . 0.030303 chi2 -108.000000 degrees
-25 13 246 PHE A 1 . 0.030303 chi1 -36.000000 degrees
-26 13 246 PHE A 1 . 0.030303 chi2 -72.000000 degrees
-27 14 246 PHE A 1 . 0.030303 chi1 -36.000000 degrees
-28 14 246 PHE A 1 . 0.030303 chi2 -36.000000 degrees
-29 15 246 PHE A 1 . 0.030303 chi1 -36.000000 degrees
-30 15 246 PHE A 1 . 0.030303 chi2 72.000000 degrees
-31 16 246 PHE A 1 . 0.030303 chi1 -36.000000 degrees
-32 16 246 PHE A 1 . 0.030303 chi2 108.000000 degrees
-33 17 246 PHE A 1 . 0.030303 chi1 -36.000000 degrees
-34 17 246 PHE A 1 . 0.030303 chi2 144.000000 degrees
-35 18 246 PHE A 1 . 0.030303 chi1 0.000000 degrees
-36 18 246 PHE A 1 . 0.030303 chi2 -108.000000 degrees
-37 19 246 PHE A 1 . 0.030303 chi1 0.000000 degrees
-38 19 246 PHE A 1 . 0.030303 chi2 -72.000000 degrees
-39 20 246 PHE A 1 . 0.030303 chi1 0.000000 degrees
-40 20 246 PHE A 1 . 0.030303 chi2 72.000000 degrees
-41 21 246 PHE A 1 . 0.030303 chi1 0.000000 degrees
-42 21 246 PHE A 1 . 0.030303 chi2 108.000000 degrees
-43 22 246 PHE A 1 . 0.030303 chi1 36.000000 degrees
-44 22 246 PHE A 1 . 0.030303 chi2 -144.000000 degrees
-45 23 246 PHE A 1 . 0.030303 chi1 36.000000 degrees
-46 23 246 PHE A 1 . 0.030303 chi2 -108.000000 degrees
-47 24 246 PHE A 1 . 0.030303 chi1 36.000000 degrees
-48 24 246 PHE A 1 . 0.030303 chi2 -72.000000 degrees
-49 25 246 PHE A 1 . 0.030303 chi1 36.000000 degrees
-50 25 246 PHE A 1 . 0.030303 chi2 36.000000 degrees
-51 26 246 PHE A 1 . 0.030303 chi1 36.000000 degrees
-52 26 246 PHE A 1 . 0.030303 chi2 72.000000 degrees
-53 27 246 PHE A 1 . 0.030303 chi1 36.000000 degrees
-54 27 246 PHE A 1 . 0.030303 chi2 108.000000 degrees
-55 28 246 PHE A 1 . 0.030303 chi1 72.000000 degrees
-56 28 246 PHE A 1 . 0.030303 chi2 -108.000000 degrees
-57 29 246 PHE A 1 . 0.030303 chi1 72.000000 degrees
-58 29 246 PHE A 1 . 0.030303 chi2 -72.000000 degrees
-59 30 246 PHE A 1 . 0.030303 chi1 72.000000 degrees
-60 30 246 PHE A 1 . 0.030303 chi2 -36.000000 degrees
-61 31 246 PHE A 1 . 0.030303 chi1 72.000000 degrees
-62 31 246 PHE A 1 . 0.030303 chi2 72.000000 degrees
-63 32 246 PHE A 1 . 0.030303 chi1 72.000000 degrees
-64 32 246 PHE A 1 . 0.030303 chi2 108.000000 degrees
-65 33 246 PHE A 1 . 0.030303 chi1 72.000000 degrees
-66 33 246 PHE A 1 . 0.030303 chi2 144.000000 degrees
+1 1 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -108.000000 degrees
+2 1 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -72.000000 degrees
+3 2 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -108.000000 degrees
+4 2 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -36.000000 degrees
+5 3 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+6 3 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -180.000000 degrees
+7 4 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+8 4 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -144.000000 degrees
+9 5 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+10 5 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -108.000000 degrees
+11 6 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+12 6 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -72.000000 degrees
+13 7 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+14 7 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -36.000000 degrees
+15 8 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+16 8 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 0.000000 degrees
+17 9 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+18 9 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 36.000000 degrees
+19 10 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+20 10 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 108.000000 degrees
+21 11 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -72.000000 degrees
+22 11 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 144.000000 degrees
+23 12 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -36.000000 degrees
+24 12 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -108.000000 degrees
+25 13 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -36.000000 degrees
+26 13 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -72.000000 degrees
+27 14 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -36.000000 degrees
+28 14 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -36.000000 degrees
+29 15 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -36.000000 degrees
+30 15 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 72.000000 degrees
+31 16 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -36.000000 degrees
+32 16 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 108.000000 degrees
+33 17 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 -36.000000 degrees
+34 17 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 144.000000 degrees
+35 18 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 0.000000 degrees
+36 18 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -108.000000 degrees
+37 19 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 0.000000 degrees
+38 19 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -72.000000 degrees
+39 20 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 0.000000 degrees
+40 20 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 72.000000 degrees
+41 21 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 0.000000 degrees
+42 21 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 108.000000 degrees
+43 22 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 36.000000 degrees
+44 22 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -144.000000 degrees
+45 23 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 36.000000 degrees
+46 23 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -108.000000 degrees
+47 24 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 36.000000 degrees
+48 24 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -72.000000 degrees
+49 25 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 36.000000 degrees
+50 25 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 36.000000 degrees
+51 26 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 36.000000 degrees
+52 26 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 72.000000 degrees
+53 27 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 36.000000 degrees
+54 27 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 108.000000 degrees
+55 28 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 72.000000 degrees
+56 28 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -108.000000 degrees
+57 29 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 72.000000 degrees
+58 29 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -72.000000 degrees
+59 30 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 72.000000 degrees
+60 30 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 -36.000000 degrees
+61 31 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 72.000000 degrees
+62 31 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 72.000000 degrees
+63 32 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 72.000000 degrees
+64 32 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 108.000000 degrees
+65 33 246 PHE A 1 . 246 A 1607 1608 1611 1612 . . . . 0.030303 chi1 72.000000 degrees
+66 33 246 PHE A 1 . 246 A 1608 1611 1612 1613 . . . . 0.030303 chi2 144.000000 degrees
 #
 loop_
 _[local]_rotamer_energy.id
