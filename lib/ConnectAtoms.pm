@@ -336,8 +336,8 @@ sub connect_atoms_explicitly
 sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
-    my ( $sidechains_only, $heteroatom_depth_limit, $exclude_hetatom_connections, $ref_atom_site,
-         $filter_unique_keys, $keep_original ) =
+    my ( $sidechains_only, $heteroatom_depth_limit, $exclude_hetatom_connections,
+         $ref_atom_site, $filter_unique_keys, $keep_original ) =
         ( $options->{'sidechains_only'},
           $options->{'heteroatom_depth'},
           $options->{'exclude_hetatom_connections'},
