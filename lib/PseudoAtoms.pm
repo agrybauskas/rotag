@@ -952,6 +952,20 @@ sub calc_favourable_angles
                          $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
 
+            # NOTE: Keeping commented code for coverage tests as
+            # multi-threading cannot be processed.
+            # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
+            #     @{ calc_favourable_angle(
+            #            { 'parameters' => $parameters,
+            #              'atom_site' => $atom_site,
+            #              'atom_id' => $atom_id,
+            #              'bond_parameters' => \%bond_parameters,
+            #              'interaction_site' => $interaction_site,
+            #              'non_bonded_potential' => $non_bonded_potential,
+            #              'bonded_potential' => $bonded_potential },
+            #            [ $bond_combinations{$parameter_key_sorted},
+            #              $energy_combinations{$parameter_key_sorted} ] ) };
+
             if( defined $min_max_ratio &&
                 @{ $next_allowed_bond_parameters } &&
                 ! exists $existing_bond_parameters->{$unique_residue_key}
@@ -982,20 +996,6 @@ sub calc_favourable_angles
                 $next_allowed_energies =
                     \@updated_next_allowed_energies;
             }
-
-            # NOTE: Keeping commented code for coverage tests as
-            # multi-threading cannot be processed.
-            # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
-            #     @{ calc_favourable_angle(
-            #            { 'parameters' => $parameters,
-            #              'atom_site' => $atom_site,
-            #              'atom_id' => $atom_id,
-            #              'bond_parameters' => \%bond_parameters,
-            #              'interaction_site' => $interaction_site,
-            #              'non_bonded_potential' => $non_bonded_potential,
-            #              'bonded_potential' => $bonded_potential },
-            #            [ $bond_combinations{$parameter_key_sorted},
-            #              $energy_combinations{$parameter_key_sorted} ] ) };
 
             if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
                 $bond_combinations{$parameter_key_sorted} =
