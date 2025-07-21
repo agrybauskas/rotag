@@ -644,13 +644,16 @@ sub generate_library
                            [ \@allowed_angles ],
                            $threads ) };
 
-                # NOTE: Keeping commented code for coverage tests as
-                # multi-threading cannot be processed.
+                # # NOTE: Keeping commented code for coverage tests as
+                # # multi-threading cannot be processed.
                 # my ( $allowed_angles, $energy_sums, $rmsds ) =
                 #     @{ calc_full_atom_energy(
                 #            { 'parameters' => $parameters,
                 #              'atom_site' => $current_atom_site,
-                #              'residue_unique_key' => $residue_unique_key,
+                #              'residue_unique_keys' => [
+                #                  $residue_unique_key,
+                #                  @assigned_unique_keys
+                #               ],
                 #              'bond_parameter_names' => \@bond_parameter_names,
                 #              'interaction_site' => \%interaction_site,
                 #              'non_bonded_potential' =>
@@ -952,8 +955,8 @@ sub calc_favourable_angles
                          $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
 
-            # NOTE: Keeping commented code for coverage tests as
-            # multi-threading cannot be processed.
+            # # NOTE: Keeping commented code for coverage tests as
+            # # multi-threading cannot be processed.
             # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
             #     @{ calc_favourable_angle(
             #            { 'parameters' => $parameters,
