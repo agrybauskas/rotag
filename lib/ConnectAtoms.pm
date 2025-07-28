@@ -337,12 +337,13 @@ sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
     my ( $sidechains_only, $heteroatom_depth_limit, $exclude_hetatom_connections,
-         $ref_atom_site, $filter_unique_keys, $keep_original ) =
+         $ref_atom_site, $filter_unique_keys, $last_atom_id, $keep_original ) =
         ( $options->{'sidechains_only'},
           $options->{'heteroatom_depth'},
           $options->{'exclude_hetatom_connections'},
           $options->{'ref_atom_site'},
           $options->{'filter_unique_keys'},
+          $options->{'last_atom_id'},
           $options->{'keep_original'} );
 
     $struct_conn //= create_hetatom_struct_conn( $parameters, $atom_site );
@@ -351,6 +352,7 @@ sub assign_hetatoms
     $exclude_hetatom_connections //= {};
     $ref_atom_site //= $atom_site;
     $filter_unique_keys //= [];
+    $last_atom_id //= max( keys %{ $ref_atom_site } ) + 1;
     # HACK: the default should be 0 as it is more intuitive.
     $keep_original //= 1;
 
@@ -385,7 +387,6 @@ sub assign_hetatoms
 
     # TODO: has to be refactored.
     my @assigned_atom_ids = ();
-    my $last_atom_id = max( keys %{ $ref_atom_site } ) + 1;
 
     my %tracked_atom_ids = ();
     my %seed_atom_ids = ();
