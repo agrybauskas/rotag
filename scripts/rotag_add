@@ -302,6 +302,7 @@ for my $pdbx_file ( @ARGV ) {
 
         my %rotamer_angles;
         my %related_unique_residue_keys = ();
+        my $last_atom_id = max( keys %{ $atom_site } );
         for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
             my $current_target_atom_site =
                 filter( { 'atom_site' => $atom_site,
@@ -489,7 +490,6 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         my %rotamer_atom_site;
-        my $last_atom_id = max( keys %{ $atom_site } );
         for my $atom_id ( sort { $target_atom_site_only->{$a}{'id'} <=>
                                  $target_atom_site_only->{$b}{'id'} }
                           keys %{ $target_atom_site_only } ) {
