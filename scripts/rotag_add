@@ -349,9 +349,6 @@ for my $pdbx_file ( @ARGV ) {
                 }
             }
 
-            # Updates last atom id if necessary.
-            # $last_atom_id = max( keys %{ %{ $atom_site }, %{ $residue_site } } );
-
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
             # HACK: the copying should be done by function and not depend on
