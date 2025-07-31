@@ -320,26 +320,32 @@ for my $pdbx_file ( @ARGV ) {
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
 
-            # TODO: needs to be refactored.
             my $struct_conn_atom_ids =
                 struct_conn_atom_ids( $residue_site, $struct_conn );
+
             if( @{ $struct_conn_atom_ids } ) {
-                my @assigned_residue_unique_keys =
-                    uniq
-                    map { change_unique_residue_key( $_, { 'label_alt_id' => '.' } ) }
-                    map { unique_residue_key( $residue_site->{$_} ) }
-                       @{ assign_hetatoms( $parameters,
-                                           $residue_site,
-                                           $struct_conn,
-                                           { 'sidechains_only' => 1,
-                                             'ref_atom_site' => $atom_site,
-                                             'keep_original' => $keep_original,
-                                             'last_atom_id' => $last_atom_id
-                                           } ) };
-                foreach( @assigned_residue_unique_keys ) {
-                    next if $_ eq $residue_unique_key;
-                    $related_unique_residue_keys{$residue_unique_key}{$_} = 1;
-                    $related_unique_residue_keys{$_}{$residue_unique_key} = 1;
+                my $assigned_hetatom_ids =
+                    assign_hetatoms( $parameters,
+                                     $residue_site,
+                                     $struct_conn,
+                                     { 'sidechains_only' => 1,
+                                       'ref_atom_site' => $atom_site,
+                                       'keep_original' => $keep_original,
+                                       'last_atom_id' => $last_atom_id
+                                     } );
+                for my $assigned_hetatom_id ( @{ $assigned_hetatom_ids } ) {
+                    my $assigned_residue_key =
+                        unique_residue_key( $residue_site->{$assigned_hetatom_id} );
+                    $assigned_residue_key =
+                        change_unique_residue_key( $assigned_residue_key,
+                                                   { 'label_alt_id' => '.' } );
+
+                    next if $assigned_residue_key eq $residue_unique_key;
+
+                    $related_unique_residue_keys{$residue_unique_key}
+                                                {$assigned_residue_key} = 1;
+                    $related_unique_residue_keys{$assigned_residue_key}
+                                                {$residue_unique_key} = 1;
                 }
             }
 
