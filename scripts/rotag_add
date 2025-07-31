@@ -346,6 +346,10 @@ for my $pdbx_file ( @ARGV ) {
                                                 {$assigned_residue_key} = 1;
                     $related_unique_residue_keys{$assigned_residue_key}
                                                 {$residue_unique_key} = 1;
+
+                    if( $assigned_hetatom_id > $last_atom_id ) {
+                        $last_atom_id = $assigned_hetatom_id;
+                    }
                 }
             }
 
@@ -498,6 +502,7 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         my %rotamer_atom_site;
+        $last_atom_id = max( keys %{ $atom_site } ); # Resets id for printing.
         for my $atom_id ( sort { $target_atom_site_only->{$a}{'id'} <=>
                                  $target_atom_site_only->{$b}{'id'} }
                           keys %{ $target_atom_site_only } ) {
