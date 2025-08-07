@@ -20,7 +20,8 @@ use BondParameters qw( bendable_angles
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
-                     struct_conn_atom_ids );
+                     struct_conn_atom_ids
+                     struct_conn_residue_keys );
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
@@ -345,11 +346,16 @@ for my $pdbx_file ( @ARGV ) {
                     $related_unique_residue_keys{$assigned_residue_key}
                                                 {$residue_unique_key} = 1;
 
-                    if( $assigned_hetatom_id > $last_atom_id ) {
-                        $last_atom_id = $assigned_hetatom_id;
-                    }
+                    next if $last_atom_id > $assigned_hetatom_id;
+
+                    $last_atom_id = $assigned_hetatom_id;
                 }
             }
+
+            # $related_unique_residue_keys{$residue_unique_key} =
+            #     struct_conn_residue_keys( $parameters,
+            #                               $residue_site,
+            #                               $struct_conn );
 
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
@@ -537,6 +543,7 @@ for my $pdbx_file ( @ARGV ) {
                 # Adds missing rotamer angles.
                 for my $related_unique_residue_key ( keys %related_residue_unique_keys ) {
                     next if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
+                    # next if ! $related_unique_residue_keys{$related_unique_residue_key}{'related'};
 
                     $rotamer_angles = {
                         %{ $rotamer_angles },
