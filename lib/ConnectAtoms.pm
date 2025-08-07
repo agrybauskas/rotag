@@ -30,7 +30,8 @@ use Grid qw( identify_neighbour_cells
              grid_box );
 use Measure qw( around_distance
                 distance_squared );
-use PDBxParser qw( filter
+use PDBxParser qw( change_unique_residue_key
+                   filter
                    filter_by_unique_residue_key
                    filter_new
                    follow_hetatoms
@@ -806,7 +807,9 @@ sub struct_conn_atom_ids
 
 sub struct_conn_residue_keys
 {
-    my ( $parameters, $atom_site, $struct_conn ) = @_;
+    my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
+    my ( $change_unique_residue_key ) = ( $options->{'change_unique_residue_key'} );
+    $change_unique_residue_key //= {};
 
     my %mainchain_atom_names =
         map { $_ => 1 } @{ $parameters->{'_[local]_mainchain_atom_names'} };
@@ -864,18 +867,33 @@ sub struct_conn_residue_keys
                 my $is_connection_in_mainchain =
                     ( $is_atom_mainchain || $is_related_atom_mainchain ) ? 1 : 0;
 
-                $related_unique_residue_keys{$unique_residue_key}
-                                            {$related_unique_residue_key}
+                # Dealing with possible renaming of unique residue keys.
+                my $renamed_unique_residue_key =
+                    $unique_residue_key;
+                my $renamed_related_unique_residue_key =
+                    $related_unique_residue_key;
+
+                if( %{ $change_unique_residue_key } ) {
+                    $renamed_unique_residue_key =
+                        change_unique_residue_key( $unique_residue_key,
+                                                   $change_unique_residue_key );
+                    $renamed_related_unique_residue_key =
+                        change_unique_residue_key( $related_unique_residue_key,
+                                                   $change_unique_residue_key );
+                }
+
+                $related_unique_residue_keys{$renamed_unique_residue_key}
+                                            {$renamed_related_unique_residue_key}
                                             {'related'} = 1;
-                $related_unique_residue_keys{$related_unique_residue_key}
-                                            {$unique_residue_key}
+                $related_unique_residue_keys{$renamed_related_unique_residue_key}
+                                            {$renamed_unique_residue_key}
                                             {'related'} = 1;
-                $related_unique_residue_keys{$unique_residue_key}
-                                            {$related_unique_residue_key}
+                $related_unique_residue_keys{$renamed_unique_residue_key}
+                                            {$renamed_related_unique_residue_key}
                                             {'mainchain'} =
                     $is_connection_in_mainchain;
-                $related_unique_residue_keys{$related_unique_residue_key}
-                                            {$unique_residue_key}
+                $related_unique_residue_keys{$renamed_related_unique_residue_key}
+                                            {$renamed_unique_residue_key}
                                             {'mainchain'} =
                     $is_connection_in_mainchain;
 
