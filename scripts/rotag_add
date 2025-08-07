@@ -355,7 +355,9 @@ for my $pdbx_file ( @ARGV ) {
             # $related_unique_residue_keys{$residue_unique_key} =
             #     struct_conn_residue_keys( $parameters,
             #                               $residue_site,
-            #                               $struct_conn );
+            #                               $struct_conn,
+            #                               { 'change_unique_residue_key' =>
+            #                                 { 'label_alt_id' => '.' } } );
 
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
