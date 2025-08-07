@@ -340,8 +340,6 @@ for my $pdbx_file ( @ARGV ) {
                         change_unique_residue_key( $assigned_residue_key,
                                                    { 'label_alt_id' => '.' } );
 
-                    next if $assigned_residue_key eq $residue_unique_key;
-
                     $related_unique_residue_keys{$residue_unique_key}
                                                 {$assigned_residue_key} = 1;
                     $related_unique_residue_keys{$assigned_residue_key}
