@@ -527,6 +527,7 @@ for my $pdbx_file ( @ARGV ) {
                     $related_residue_unique_keys{$related_unique_residue_key} = 1;
 
                     next if ! exists $related_unique_residue_keys{$related_unique_residue_key};
+                    # next if ! $related_unique_residue_keys{$related_unique_residue_key}{'related'};
 
                     for my $reverse_unique_residue_key (
                         keys %{ $related_unique_residue_keys{$related_unique_residue_key} } ) {
@@ -543,7 +544,6 @@ for my $pdbx_file ( @ARGV ) {
                 # Adds missing rotamer angles.
                 for my $related_unique_residue_key ( keys %related_residue_unique_keys ) {
                     next if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
-                    # next if ! $related_unique_residue_keys{$related_unique_residue_key}{'related'};
 
                     $rotamer_angles = {
                         %{ $rotamer_angles },
