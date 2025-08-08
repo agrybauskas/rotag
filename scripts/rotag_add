@@ -335,29 +335,19 @@ for my $pdbx_file ( @ARGV ) {
                                        'last_atom_id' => $last_atom_id
                                      } );
                 for my $assigned_hetatom_id ( @{ $assigned_hetatom_ids } ) {
-                    my $assigned_residue_key =
-                        unique_residue_key( $residue_site->{$assigned_hetatom_id} );
-                    $assigned_residue_key =
-                        change_unique_residue_key( $assigned_residue_key,
-                                                   { 'label_alt_id' => '.' } );
-
-                    $related_unique_residue_keys{$residue_unique_key}
-                                                {$assigned_residue_key} = 1;
-                    $related_unique_residue_keys{$assigned_residue_key}
-                                                {$residue_unique_key} = 1;
-
                     next if $last_atom_id > $assigned_hetatom_id;
 
                     $last_atom_id = $assigned_hetatom_id;
                 }
             }
 
-            # $related_unique_residue_keys{$residue_unique_key} =
-            #     struct_conn_residue_keys( $parameters,
-            #                               $residue_site,
-            #                               $struct_conn,
-            #                               { 'change_unique_residue_key' =>
-            #                                 { 'label_alt_id' => '.' } } );
+            %related_unique_residue_keys =
+                ( %related_unique_residue_keys,
+                  %{ struct_conn_residue_keys( $parameters,
+                                               $residue_site,
+                                               $struct_conn,
+                                               { 'change_unique_residue_key' =>
+                                                 { 'label_alt_id' => '.' } } ) } );
 
             # Updating the target's atom site as there more duplicated pseudo
             # atoms.
@@ -529,7 +519,6 @@ for my $pdbx_file ( @ARGV ) {
                     $related_residue_unique_keys{$related_unique_residue_key} = 1;
 
                     next if ! exists $related_unique_residue_keys{$related_unique_residue_key};
-                    # next if ! $related_unique_residue_keys{$related_unique_residue_key}{'related'};
 
                     for my $reverse_unique_residue_key (
                         keys %{ $related_unique_residue_keys{$related_unique_residue_key} } ) {
