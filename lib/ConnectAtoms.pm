@@ -355,6 +355,7 @@ sub assign_hetatoms
     $exclude_hetatom_connections //= {};
     $ref_atom_site //= $atom_site;
     $filter_unique_keys //= [];
+    $track_alt_ids //= {};
     $last_atom_id //= max( keys %{ $ref_atom_site } );
     $last_atom_id++;
     # HACK: the default should be 0 as it is more intuitive.
