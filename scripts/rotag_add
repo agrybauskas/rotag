@@ -344,21 +344,21 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             # Tracking the relatedness of the residues.
-            my $current_unique_residue_keys =
+            my $unique_residue_keys =
                 struct_conn_residue_keys( $parameters,
                                           $residue_site,
                                           $struct_conn,
                                           { 'change_unique_residue_key' =>
                                             { 'label_alt_id' => '.' } } );
-            for my $current_unique_residue_key (
-                keys %{ $current_unique_residue_keys } ) {
-                for my $current_related_unique_residue_key (
-                    keys %{ $current_unique_residue_keys->{$current_unique_residue_key} } ) {
-                        $related_unique_residue_keys{$current_unique_residue_key}
-                                                    {$current_related_unique_residue_key} = 1;
-                        $related_unique_residue_keys{$current_related_unique_residue_key}
-                                                    {$current_unique_residue_key} = 1;
-                    }
+            for my $unique_residue_key (
+                keys %{ $unique_residue_keys } ) {
+                for my $related_unique_residue_key (
+                    keys %{ $unique_residue_keys->{$unique_residue_key} } ) {
+                    $related_unique_residue_keys{$unique_residue_key}
+                                                {$related_unique_residue_key} = 1;
+                    $related_unique_residue_keys{$related_unique_residue_key}
+                                                {$unique_residue_key} = 1;
+                }
             }
 
             # Updating the target's atom site as there more duplicated pseudo
