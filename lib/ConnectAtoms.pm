@@ -338,12 +338,14 @@ sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
     my ( $sidechains_only, $heteroatom_depth_limit, $exclude_hetatom_connections,
-         $ref_atom_site, $filter_unique_keys, $last_atom_id, $keep_original ) =
+         $ref_atom_site, $filter_unique_keys, $track_alt_ids, $last_atom_id,
+         $keep_original ) =
         ( $options->{'sidechains_only'},
           $options->{'heteroatom_depth'},
           $options->{'exclude_hetatom_connections'},
           $options->{'ref_atom_site'},
           $options->{'filter_unique_keys'},
+          $options->{'track_alt_ids'},
           $options->{'last_atom_id'},
           $options->{'keep_original'} );
 
