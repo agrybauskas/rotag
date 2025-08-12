@@ -55,7 +55,7 @@ _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
 46 10 . NA C 1 402 A . 1941 1942 1944 2857 . . . 1 1.000000 CB-CG-OD2.NA 54.000 degrees
-47 10 . NA C 1 402 A . 1942 1944 2857 . . 1 .  1.000000 CG-OD2.NA 155.200 degrees
+47 10 . NA C 1 402 A . 1942 1944 2857 . . 1 . . 1.000000 CG-OD2.NA 155.200 degrees
 48 10 . NA C 1 402 A . 1944 2857 . . . 1 . . 1.000000 OD2.NA 1.900000 angstrom
 #
 loop_
