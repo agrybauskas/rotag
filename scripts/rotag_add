@@ -347,9 +347,7 @@ for my $pdbx_file ( @ARGV ) {
             my $unique_residue_keys =
                 struct_conn_residue_keys( $parameters,
                                           $residue_site,
-                                          $struct_conn,
-                                          { 'change_unique_residue_key' =>
-                                            { 'label_alt_id' => '.' } } );
+                                          $struct_conn );
             for my $unique_residue_key (
                 keys %{ $unique_residue_keys } ) {
                 for my $related_unique_residue_key (
@@ -516,11 +514,14 @@ for my $pdbx_file ( @ARGV ) {
                           keys %{ $target_atom_site_only } ) {
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
+            my ( $residue_label_seq_id ) =
+                split /,/, $residue_unique_key;
 
-            if( $include_hetatoms &&
-                $target_atom_site_only->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
-                $residue_unique_key =
-                    change_unique_residue_key( $residue_unique_key,
+            # TODO: has to be refactored.
+            my $changed_residue_unique_key = $residue_unique_key;
+            if( $include_hetatoms && $residue_label_seq_id eq '.' ) {
+                $changed_residue_unique_key =
+                    change_unique_residue_key( $changed_residue_unique_key,
                                                { 'label_alt_id' => '.' } );
             }
 
@@ -528,21 +529,43 @@ for my $pdbx_file ( @ARGV ) {
             if( exists $related_unique_residue_keys{$residue_unique_key} ) {
                 for my $related_unique_residue_key (
                     keys %{ $related_unique_residue_keys{$residue_unique_key} } ) {
-                    $related_residue_unique_keys{$related_unique_residue_key} = 1;
+                    my ( $related_label_seq_id ) =
+                        split /,/, $related_unique_residue_key;
+
+                    my $changed_related_unique_residue_key =
+                        $related_unique_residue_key;
+                    if( $include_hetatoms && $related_label_seq_id eq '.' ) {
+                        $changed_related_unique_residue_key =
+                            change_unique_residue_key( $changed_related_unique_residue_key,
+                                                       { 'label_alt_id' => '.' } );
+                    }
+
+                    $related_residue_unique_keys{$changed_related_unique_residue_key} = 1;
 
                     next if ! exists $related_unique_residue_keys{$related_unique_residue_key};
 
                     for my $reverse_unique_residue_key (
                         keys %{ $related_unique_residue_keys{$related_unique_residue_key} } ) {
-                        $related_residue_unique_keys{$reverse_unique_residue_key} = 1;
+                        my ( $reverse_label_seq_id ) =
+                            split /,/, $reverse_unique_residue_key;
+
+                        my $changed_reverse_unique_residue_key =
+                            $reverse_unique_residue_key;
+                        if( $include_hetatoms && $reverse_label_seq_id eq '.' ) {
+                            $changed_reverse_unique_residue_key =
+                                change_unique_residue_key( $changed_reverse_unique_residue_key,
+                                                           { 'label_alt_id' => '.' } );
+                        }
+
+                        $related_residue_unique_keys{$changed_reverse_unique_residue_key} = 1;
                     }
                 }
             }
 
             for my $rotamer_id ( sort { $a <=> $b }
-                                 keys %{ $rotamer_angles{$residue_unique_key} } ) {
+                                 keys %{ $rotamer_angles{$changed_residue_unique_key} } ) {
                 my $rotamer_angles =
-                    $rotamer_angles{$residue_unique_key}{$rotamer_id};
+                    $rotamer_angles{$changed_residue_unique_key}{$rotamer_id};
 
                 # Adds missing rotamer angles.
                 for my $related_unique_residue_key ( keys %related_residue_unique_keys ) {
