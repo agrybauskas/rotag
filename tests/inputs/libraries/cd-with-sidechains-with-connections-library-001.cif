@@ -26,8 +26,8 @@ ATOM 1941 C CB . ASP A 1 245 14.173 7.583 37.590 A 260 1 T 1
 ATOM 1942 C CG . ASP A 1 245 13.996 6.251 38.307 A 260 1 T 1
 ATOM 1943 O OD1 . ASP A 1 245 14.684 5.260 37.970 A 260 1 T 1
 ATOM 1944 O OD2 . ASP A 1 245 13.122 6.167 39.200 A 260 1 T 1
-HETATM 2337 K K . K C 1 . 12.943 3.826 39.329 A 402 1 T 1
-HETATM 2338 K K . K D 1 . 14.943 5.826 40.329 A 403 1 T 1
+HETATM 2337 CD CD . CD C 1 . 12.943 3.826 39.329 A 402 1 T 1
+HETATM 2338 CD CD . CD D 1 . 14.943 5.826 40.329 A 403 1 T 1
 ATOM 2852 H H . ASP A 1 245 14.938 9.296 35.684 A 260 1 T 1
 ATOM 2853 H HA . ASP A 1 245 16.293 7.518 37.536 A 260 1 T 1
 ATOM 2854 H HB2 . ASP A 1 245 14.140 8.370 38.314 A 260 1 T 1
@@ -55,9 +55,10 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-46 10 . K C 1 402 A . 1941 1942 1944 2857 . . . 1 1.000000 CB-CG-OD2.K 54.000 degrees
-47 10 . K C 1 402 A . 1942 1944 2857 . . 1 . . 1.000000 CG-OD2.K 155.200 degrees
-48 10 . K C 1 402 A . 1944 2857 . . . 1 . . 1.000000 OD2.K 1.900000 angstrom
+46 10 . CD C 1 402 A . 1941 1942 1944 2857 . . . 1 1.000000 CB-CG-OD1.CD 54.000 degrees
+46 10 . CD C 1 402 A . 1941 1942 1944 2857 . . . 2 1.000000 CB-CG-OD2.CD 90.000 degrees
+47 10 . CD C 1 402 A . 1942 1944 2857 . . 1 . . 1.000000 CG-OD1.CD 155.200 degrees
+48 10 . CD C 1 402 A . 1944 2857 . . . 1 . . 1.000000 OD1.CD 1.900000 angstrom
 #
 loop_
 _struct_conn.id
@@ -95,5 +96,5 @@ _struct_conn.details
 _struct_conn.pdbx_dist_value
 _struct_conn.pdbx_value_order
 _struct_conn.pdbx_role
-metalc1 metalc ? ? A ASP 245 OD1 ? ? ? 1_555 C K . K ? ? A ASP 260 A K 402 1_555 ? ? ? ? ? ? ? 2.633 ? ?
-metalc2 metalc ? ? A ASP 245 OD1 ? ? ? 1_555 D K . K ? ? A ASP 260 A K 403 1_555 ? ? ? ? ? ? ? 2.351 ? ?
+metalc1 metalc ? ? A ASP 245 OD1 ? ? ? 1_555 C CD . CD ? ? A ASP 260 A CD 402 1_555 ? ? ? ? ? ? ? 2.633 ? ?
+metalc2 metalc ? ? A ASP 245 OD1 ? ? ? 1_555 D CD . CD ? ? A ASP 260 A CD 403 1_555 ? ? ? ? ? ? ? 2.351 ? ?
