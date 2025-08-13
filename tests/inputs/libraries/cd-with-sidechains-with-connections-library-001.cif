@@ -56,7 +56,7 @@ _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
 46 10 . CD C 1 402 A . 1941 1942 1944 2857 . . . 1 1.000000 CB-CG-OD1.CD 54.000 degrees
-47 10 . CD C 1 402 A . 1941 1942 1944 2857 . . . 2 1.000000 CB-CG-OD2.CD 90.000 degrees
+47 10 . CD C 1 402 A . 1941 1942 1944 2858 . . . 2 1.000000 CB-CG-OD1.CD 90.000 degrees
 48 10 . CD C 1 402 A . 1942 1944 2857 . . 1 . . 1.000000 CG-OD1.CD 155.200 degrees
 49 10 . CD C 1 402 A . 1944 2857 . . . 1 . . 1.000000 OD1.CD 1.900000 angstrom
 #
