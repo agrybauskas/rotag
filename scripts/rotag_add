@@ -13,7 +13,6 @@ use List::Util qw( any
 use Try::Tiny;
 
 use BondParameters qw( bendable_angles
-                       collect_bond_parameters
                        collect_dihedral_angles
                        detect_bond_parameter_type
                        stretchable_bonds
@@ -563,16 +562,12 @@ for my $pdbx_file ( @ARGV ) {
                 }
             }
 
-            my $residue_bond_parameters = collect_bond_parameters(
-                { $atom_id => $selected_atom_site->{$atom_id} }
-            )->{$residue_unique_key};
             for my $rotamer_id ( sort { $a <=> $b }
                                  keys %{ $rotamer_angles{$changed_residue_unique_key} } ) {
                 my $rotamer_angles =
                     $rotamer_angles{$changed_residue_unique_key}{$rotamer_id};
 
                 # Adds missing rotamer angles.
-                my $rotamer_bond_parameters = clone $residue_bond_parameters;
                 for my $related_unique_residue_key ( keys %related_residue_unique_keys ) {
                     next if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
 
@@ -581,13 +576,6 @@ for my $pdbx_file ( @ARGV ) {
                         %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
                     };
                 }
-
-                # HACK: should be thoroughly investigated if any strange
-                # interactions might occur.
-                next if $include_hetatoms &&
-                        $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' &&
-                        any { ! exists $rotamer_bond_parameters->{$_} }
-                        keys %{ $rotamer_angles };
 
                 %rotamer_atom_site =
                     ( %rotamer_atom_site,
