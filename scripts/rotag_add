@@ -568,14 +568,20 @@ for my $pdbx_file ( @ARGV ) {
                     $rotamer_angles{$changed_residue_unique_key}{$rotamer_id};
 
                 # Adds missing rotamer angles.
-                for my $related_unique_residue_key ( keys %related_residue_unique_keys ) {
-                    next if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
+                my $skip_rotamer = 0;
+                for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
+                    if( ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ) {
+                        $skip_rotamer = 1;
+                        last;
+                    }
 
                     $rotamer_angles = {
                         %{ $rotamer_angles },
                         %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
                     };
                 }
+
+                next if $skip_rotamer;
 
                 %rotamer_atom_site =
                     ( %rotamer_atom_site,
