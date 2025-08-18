@@ -302,7 +302,6 @@ for my $pdbx_file ( @ARGV ) {
                         'append_dot' => 1 } );
 
         my %rotamer_angles;
-        my %rotamer_angle_residue_keys = ();
         my %related_unique_residue_keys = ();
         my %tracked_alt_ids = ();
         my $last_atom_id = max( keys %{ $atom_site } );
@@ -505,8 +504,6 @@ for my $pdbx_file ( @ARGV ) {
 
                 $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name} =
                     [ $angle_value ];
-                $rotamer_angle_residue_keys{$rotamer_id}{$residue_unique_key}
-                                           {$angle_name} = 1;
             }
         }
 
