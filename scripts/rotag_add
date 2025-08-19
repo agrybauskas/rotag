@@ -570,6 +570,13 @@ for my $pdbx_file ( @ARGV ) {
                 # Adds missing rotamer angles.
                 my $skip_rotamer = 0;
                 for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
+                    my ( $related_label_seq_id ) =
+                        split /,/, $related_unique_residue_key;
+                    if( $include_hetatoms && $related_label_seq_id eq '.' ) {
+                        $related_unique_residue_key =
+                            change_unique_residue_key( $related_unique_residue_key,
+                                                       { 'label_alt_id' => '.' } );
+                    }
                     if( ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ) {
                         $skip_rotamer = 1;
                         last;
