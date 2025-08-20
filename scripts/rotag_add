@@ -526,7 +526,7 @@ for my $pdbx_file ( @ARGV ) {
             my ( $residue_label_seq_id ) =
                 split /,/, $residue_unique_key;
 
-            my $bond_paramters = collect_bond_parameters(
+            my $bond_parameters = collect_bond_parameters(
                 { $atom_id => $selected_atom_site->{$atom_id} }
             )->{$residue_unique_key};
 
