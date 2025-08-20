@@ -302,6 +302,7 @@ for my $pdbx_file ( @ARGV ) {
                         'append_dot' => 1 } );
 
         my %rotamer_angles;
+        my %rotamer_angles_atom_tbl = ();
         my %related_unique_residue_keys = ();
         my %tracked_alt_ids = ();
         my $last_atom_id = max( keys %{ $atom_site } );
@@ -494,6 +495,11 @@ for my $pdbx_file ( @ARGV ) {
                                                          {'atom_ids'} } ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
                 my $angle_name = $rotamer_angle->{$id}{'type'};
+                my $atom_ids_key =
+                    join ',',
+                    map { defined $_ ? $_ : '?' }
+                    map { $rotamer_angle->{$id}{$_} }
+                    ( 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id' );
                 my $angle_value;
                 if( defined $rotamer_angle->{$id}{'units'} &&
                     $rotamer_angle->{$id}{'units'} eq 'degrees' ) {
@@ -504,6 +510,8 @@ for my $pdbx_file ( @ARGV ) {
 
                 $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name} =
                     [ $angle_value ];
+                $rotamer_angles_atom_tbl{$residue_unique_key}{"$rotamer_id"}
+                                        {$angle_name}{$atom_ids_key} = 1;
             }
         }
 
