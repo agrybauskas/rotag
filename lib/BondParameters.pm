@@ -239,6 +239,8 @@ sub rotatable_bonds
                 'order' => $bond_order{$bond_atom_ids->[1]}{$bond_atom_ids->[2]},
                 'rank' => 1,
                 'atom_ids' => $bond_atom_ids,
+                'atom_ids_key' => join( ',', map { defined $_ ? $_ : '.'  }
+                                             map { $bond_atom_ids->[$_] } 0..3 ),
                 'value' => $dihedral_angles_cache{$dihedral_angle_key},
                 'alt_name' => $alt_rotatable_bond_name
             };
@@ -378,6 +380,8 @@ sub stretchable_bonds
                 'order' => $bond_order{$bond_atom_ids->[0]}{$bond_atom_ids->[1]},
                 'rank' => 3,
                 'atom_ids' => $bond_atom_ids,
+                'atom_ids_key' => join( ',', map { defined $_ ? $_ : '.'  }
+                                             map { $bond_atom_ids->[$_] } 0..3 ),
                 'value' => $bond_lengths_cache{$bond_length_key},
                 'alt_name' => $alt_stretchable_bond_name
             };
@@ -525,6 +529,8 @@ sub bendable_angles
                                       {$bond_atom_ids->[2]},
                 'rank' => 2,
                 'atom_ids' => $bond_atom_ids,
+                'atom_ids_key' => join( ',', map { defined $_ ? $_ : '.'  }
+                                             map { $bond_atom_ids->[$_] } 0..3 ),
                 'value' => $bond_angles_cache{$bond_angle_key},
                 'alt_name' => $alt_bendable_angle_name
             };
