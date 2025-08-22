@@ -614,7 +614,8 @@ for my $pdbx_file ( @ARGV ) {
                         next if $atom_ids_key eq '?,?,?,?';
 
                         if( exists $bond_parameters->{$bond_parameter_name} &&
-                            $atom_ids_key ne $bond_parameters->{$bond_parameter_name} ) {
+                            $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
+                                                               {'atom_ids_key'} ) {
                             $skip_rotamer = 1;
                             last;
                         }
