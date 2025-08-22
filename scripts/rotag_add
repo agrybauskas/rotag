@@ -511,8 +511,9 @@ for my $pdbx_file ( @ARGV ) {
 
                 $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name} =
                     [ $angle_value ];
-                $rotamer_angles_atom_ids_tbl{$residue_unique_key}{"$rotamer_id"}
-                                            {$angle_name}{$atom_ids_key} = 1;
+                $rotamer_angles_atom_ids_tbl{$residue_unique_key}
+                                            {"$rotamer_id"}
+                                            {$angle_name} = $atom_ids_key;
             }
         }
 
@@ -597,6 +598,26 @@ for my $pdbx_file ( @ARGV ) {
                     if( ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ) {
                         $skip_rotamer = 1;
                         last;
+                    }
+
+                    # TODO: refactoring is needed as the naming convention is
+                    # very similar to other variables.
+                    my $bond_parameter_atom_ids_tbl =
+                        $rotamer_angles_atom_ids_tbl{$related_unique_residue_key}
+                                                    {$rotamer_id};
+
+                    for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
+                        my $atom_ids_key =
+                            $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
+
+                        # TODO: adjust if there will be partial unknown atom ids.
+                        next if $atom_ids_key eq '?,?,?,?';
+
+                        if( exists $bond_parameters->{$bond_parameter_name} &&
+                            $atom_ids_key ne $bond_parameters->{$bond_parameter_name} ) {
+                            $skip_rotamer = 1;
+                            last;
+                        }
                     }
 
                     $rotamer_angles = {
