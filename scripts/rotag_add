@@ -642,10 +642,12 @@ for my $pdbx_file ( @ARGV ) {
                                 # $rotamer_id as 'label_alt_id'.
                                'alt_group_id' => $rotamer_id,
                                'selection_state' => 'T' } ) } );
+
                 $last_atom_id++;
             }
 
-            if( ! $keep_original ) {
+            if( ! $keep_original ||
+                $target_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
                 delete $target_atom_site->{$atom_id};
             }
         }
