@@ -634,7 +634,9 @@ for my $pdbx_file ( @ARGV ) {
                     };
                 }
 
-                next if $skip_rotamer;
+                # TODO: also needs to be refactored. Too many conditionals.
+                next if $skip_rotamer &&
+                    $target_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
 
                 %rotamer_atom_site =
                     ( %rotamer_atom_site,
