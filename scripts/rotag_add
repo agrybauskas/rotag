@@ -628,6 +628,8 @@ for my $pdbx_file ( @ARGV ) {
                         }
                     }
 
+                    # next if $skip_rotamer;
+
                     $rotamer_angles = {
                         %{ $rotamer_angles },
                         %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
