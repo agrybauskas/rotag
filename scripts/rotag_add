@@ -622,6 +622,14 @@ for my $pdbx_file ( @ARGV ) {
                         if( ! exists $bond_parameters->{$bond_parameter_name} ||
                             $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
                                                                {'atom_ids_key'} ) {
+                            # use Data::Dumper;
+                            # print STDERR Dumper $atom_id;
+                            # print STDERR Dumper $rotamer_id;
+                            # print STDERR Dumper $changed_residue_unique_key;
+                            # print STDERR Dumper $related_unique_residue_key;
+                            # print STDERR Dumper $atom_ids_key;
+                            # print STDERR Dumper $bond_parameters->{$bond_parameter_name}{'atom_ids_key'};
+                            # print STDERR Dumper "------------";
                             $skip_rotamer = 1;
                             last;
                         }
