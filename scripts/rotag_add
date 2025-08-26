@@ -628,7 +628,7 @@ for my $pdbx_file ( @ARGV ) {
                         }
                     }
 
-                    # next if $skip_rotamer;
+                    next if $skip_rotamer;
 
                     $rotamer_angles = {
                         %{ $rotamer_angles },
