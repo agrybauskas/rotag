@@ -612,6 +612,8 @@ for my $pdbx_file ( @ARGV ) {
                         $rotamer_angles_atom_ids_tbl{$related_unique_residue_key}
                                                     {$rotamer_id};
 
+                    next if ! defined $bond_parameter_atom_ids_tbl;
+
                     for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
                         my $atom_ids_key =
                             $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
