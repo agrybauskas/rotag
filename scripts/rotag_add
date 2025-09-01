@@ -592,8 +592,6 @@ for my $pdbx_file ( @ARGV ) {
                 # Adds missing rotamer angles.
                 my %skip_rotamers = ();
                 for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
-                    next if ! exists $rotamer_angles{$related_unique_residue_key};
-
                     my ( $related_label_seq_id ) =
                         split /,/, $related_unique_residue_key;
                     if( $include_hetatoms && $related_label_seq_id eq '.' ) {
@@ -601,8 +599,6 @@ for my $pdbx_file ( @ARGV ) {
                             change_unique_residue_key( $related_unique_residue_key,
                                                        { 'label_alt_id' => '.' } );
                     }
-
-                    next if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
 
                     # TODO: refactoring is needed as the naming convention is
                     # very similar to other variables.
