@@ -590,7 +590,7 @@ for my $pdbx_file ( @ARGV ) {
                     $rotamer_angles{$changed_residue_unique_key}{$rotamer_id};
 
                 # Adds missing rotamer angles.
-                my $skip_rotamer = 0;
+                my %skip_rotamers = ();
                 for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
                     next if ! exists $rotamer_angles{$related_unique_residue_key};
 
@@ -601,10 +601,8 @@ for my $pdbx_file ( @ARGV ) {
                             change_unique_residue_key( $related_unique_residue_key,
                                                        { 'label_alt_id' => '.' } );
                     }
-                    if( ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ) {
-                        $skip_rotamer = 1;
-                        last;
-                    }
+
+                    last if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
 
                     # TODO: refactoring is needed as the naming convention is
                     # very similar to other variables.
@@ -624,30 +622,22 @@ for my $pdbx_file ( @ARGV ) {
                         if( ! exists $bond_parameters->{$bond_parameter_name} ||
                             $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
                                                                {'atom_ids_key'} ) {
-                            # use Data::Dumper;
-                            # print STDERR Dumper $atom_id;
-                            # print STDERR Dumper $rotamer_id;
-                            # print STDERR Dumper $changed_residue_unique_key;
-                            # print STDERR Dumper $related_unique_residue_key;
-                            # print STDERR Dumper $atom_ids_key;
-                            # print STDERR Dumper $bond_parameters->{$bond_parameter_name}{'atom_ids_key'};
-                            # print STDERR Dumper "------------";
-                            $skip_rotamer = 1;
+                            $skip_rotamers{$related_unique_residue_key} = 1;
                             last;
                         }
                     }
+                }
 
-                    last if $skip_rotamer;
+                for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
+                    last if ! exists $rotamer_angles{$related_unique_residue_key} ||
+                            ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ||
+                              exists $skip_rotamers{$related_unique_residue_key};
 
                     $rotamer_angles = {
                         %{ $rotamer_angles },
                         %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
                     };
                 }
-
-                # TODO: also needs to be refactored. Too many conditionals.
-                next if $skip_rotamer &&
-                    $target_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
 
                 %rotamer_atom_site =
                     ( %rotamer_atom_site,
