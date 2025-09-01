@@ -602,7 +602,7 @@ for my $pdbx_file ( @ARGV ) {
                                                        { 'label_alt_id' => '.' } );
                     }
 
-                    last if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
+                    next if ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id};
 
                     # TODO: refactoring is needed as the naming convention is
                     # very similar to other variables.
@@ -638,6 +638,9 @@ for my $pdbx_file ( @ARGV ) {
                         %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
                     };
                 }
+
+                next if exists $skip_rotamers{$changed_residue_unique_key} &&
+                    $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
 
                 %rotamer_atom_site =
                     ( %rotamer_atom_site,
