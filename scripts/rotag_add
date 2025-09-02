@@ -612,6 +612,11 @@ for my $pdbx_file ( @ARGV ) {
                         my $atom_ids_key =
                             $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
 
+                        # if( ! exists $bond_parameters->{$bond_parameter_name} ) {
+                        #     $skip_rotamers{$related_unique_residue_key} = 1;
+                        #     last;
+                        # }
+
                         # TODO: adjust if there will be partial unknown atom ids.
                         next if $atom_ids_key eq '?,?,?,?';
 
