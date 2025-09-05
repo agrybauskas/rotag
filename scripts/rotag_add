@@ -590,7 +590,7 @@ for my $pdbx_file ( @ARGV ) {
                     $rotamer_angles{$changed_residue_unique_key}{$rotamer_id};
 
                 # Adds missing rotamer angles.
-                my %skip_rotamers = ();
+                my %include_rotamers = ();
                 for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
                     my ( $related_label_seq_id ) =
                         split /,/, $related_unique_residue_key;
@@ -608,7 +608,6 @@ for my $pdbx_file ( @ARGV ) {
 
                     next if ! defined $bond_parameter_atom_ids_tbl;
 
-                    my $bond_parameter_names_count = 0;
                     for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
                         my $atom_ids_key =
                             $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
@@ -619,18 +618,14 @@ for my $pdbx_file ( @ARGV ) {
                             $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
                                                                {'atom_ids_key'};
 
-                        $bond_parameter_names_count++;
-                    }
-
-                    if( ! $bond_parameter_names_count > 0 ) {
-                        $skip_rotamers{$related_unique_residue_key} = 1;
+                        $include_rotamers{$related_unique_residue_key} = 1;
                     }
                 }
 
                 for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
                     next if ! exists $rotamer_angles{$related_unique_residue_key} ||
                             ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ||
-                              exists $skip_rotamers{$related_unique_residue_key};
+                            ! exists $include_rotamers{$related_unique_residue_key};
 
                     $rotamer_angles = {
                         %{ $rotamer_angles },
@@ -638,7 +633,7 @@ for my $pdbx_file ( @ARGV ) {
                     };
                 }
 
-                next if exists $skip_rotamers{$changed_residue_unique_key} &&
+                next if ! exists $include_rotamers{$changed_residue_unique_key} &&
                     $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
 
                 %rotamer_atom_site =
