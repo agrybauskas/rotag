@@ -608,6 +608,8 @@ for my $pdbx_file ( @ARGV ) {
 
                     next if ! defined $bond_parameter_atom_ids_tbl;
 
+                    # TODO: think about situations where there are defined
+                    # bond parameters that do not include all the atoms.
                     for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
                         my $atom_ids_key =
                             $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
@@ -617,7 +619,6 @@ for my $pdbx_file ( @ARGV ) {
                         next if $atom_ids_key ne '?,?,?,?' &&
                             $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
                                                                {'atom_ids_key'};
-
                         $include_rotamers{$related_unique_residue_key} = 1;
                     }
                 }
