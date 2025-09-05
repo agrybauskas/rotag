@@ -628,7 +628,7 @@ for my $pdbx_file ( @ARGV ) {
                 }
 
                 for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
-                    last if ! exists $rotamer_angles{$related_unique_residue_key} ||
+                    next if ! exists $rotamer_angles{$related_unique_residue_key} ||
                             ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ||
                               exists $skip_rotamers{$related_unique_residue_key};
 
