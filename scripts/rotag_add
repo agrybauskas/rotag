@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-
+11;rgb:2b2b/2b2b/2b2b
 use strict;
 use warnings;
 
@@ -619,6 +619,7 @@ for my $pdbx_file ( @ARGV ) {
                         next if $atom_ids_key ne '?,?,?,?' &&
                             $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
                                                                {'atom_ids_key'};
+
                         $include_rotamers{$related_unique_residue_key} = 1;
                     }
                 }
