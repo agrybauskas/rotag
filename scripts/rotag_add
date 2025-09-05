@@ -608,20 +608,22 @@ for my $pdbx_file ( @ARGV ) {
 
                     next if ! defined $bond_parameter_atom_ids_tbl;
 
+                    my $bond_parameter_names_count = 0;
                     for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
                         my $atom_ids_key =
                             $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
 
                         next if ! exists $bond_parameters->{$bond_parameter_name};
 
-                        # TODO: adjust if there will be partial unknown atom ids.
-                        next if $atom_ids_key eq '?,?,?,?';
+                        next if $atom_ids_key ne '?,?,?,?' &&
+                            $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
+                                                               {'atom_ids_key'};
 
-                        if( $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
-                                                               {'atom_ids_key'} ) {
-                            $skip_rotamers{$related_unique_residue_key} = 1;
-                            last;
-                        }
+                        $bond_parameter_names_count++;
+                    }
+
+                    if( ! $bond_parameter_names_count > 0 ) {
+                        $skip_rotamers{$related_unique_residue_key} = 1;
                     }
                 }
 
