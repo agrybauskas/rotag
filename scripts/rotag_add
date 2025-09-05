@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-11;rgb:2b2b/2b2b/2b2b
 use strict;
 use warnings;
 
