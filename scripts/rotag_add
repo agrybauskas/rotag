@@ -620,7 +620,10 @@ for my $pdbx_file ( @ARGV ) {
                                                                {'atom_ids_key'};
 
                         # if( $atom_ids_key eq '?,?,?,?' ) {
-                        #     next if ! exists $bond_parameters->{$bond_parameter_name};
+                        #     if( $changed_residue_unique_key eq $related_unique_residue_key ) {
+                        #     } else {
+                        #         next if ! exists $bond_parameters->{$bond_parameter_name};
+                        #     }
                         # } else {
                         #     next if ! exists $bond_parameters->{$bond_parameter_name};
                         #     next if $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
