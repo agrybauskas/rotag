@@ -619,16 +619,15 @@ for my $pdbx_file ( @ARGV ) {
                             $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
                                                                {'atom_ids_key'};
 
-                        $include_rotamers{$related_unique_residue_key} = 1;
-
                         # if( $atom_ids_key eq '?,?,?,?' ) {
                         #     next if ! exists $bond_parameters->{$bond_parameter_name};
                         # } else {
                         #     next if ! exists $bond_parameters->{$bond_parameter_name};
-                        #     next if ! $atom_ids_key ne $bond_parameters->{$bond_parameter_name};
+                        #     next if $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
+                        #                                                {'atom_ids_key'};
                         # }
 
-                        # $include_rotamers{$related_unique_residue_key} = 1;
+                        $include_rotamers{$related_unique_residue_key} = 1;
                     }
                 }
 
