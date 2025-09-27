@@ -413,9 +413,9 @@ for my $pdbx_file ( @ARGV ) {
                 my $units =
                     ( $angle_type eq 'bond_length' ?
                       'angstrom': ( $in_radians ? 'radians' : 'degrees' ) );
-                my @atom_id_values =
-                    map { defined $rotamer->{'atom_ids'}{$angle_name}[$_] ?
-                          $rotamer->{'atom_ids'}{$angle_name}[$_] : '.' }
+                my @origin_atom_id_values =
+                    map { defined $rotamer->{'origin_atom_ids'}{$angle_name}[$_] ?
+                          $rotamer->{'origin_atom_ids'}{$angle_name}[$_] : '.' }
                         ( 0, 1, 2, 3 );
                 my @site_id_values =
                     map { defined $rotamer->{'site_ids'}{$angle_name}[$_] ?
@@ -437,10 +437,10 @@ for my $pdbx_file ( @ARGV ) {
                       'pdbx_PDB_model_num' =>
                           $rotamer->{'terminal_atom_data'}{$angle_name}{'pdbx_PDB_model_num'},
                       'label_alt_id' => $residue_alt,
-                      'atom_1_id' => $atom_id_values[0],
-                      'atom_2_id' => $atom_id_values[1],
-                      'atom_3_id' => $atom_id_values[2],
-                      'atom_4_id' => $atom_id_values[3],
+                      'atom_1_id' => $origin_atom_id_values[0],
+                      'atom_2_id' => $origin_atom_id_values[1],
+                      'atom_3_id' => $origin_atom_id_values[2],
+                      'atom_4_id' => $origin_atom_id_values[3],
                       'site_1_id' => $site_id_values[0],
                       'site_2_id' => $site_id_values[1],
                       'site_3_id' => $site_id_values[2],
