@@ -54,9 +54,9 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-66 14 . NA F 1 1343 A . 371 372 373 3165 . . . 1 1.000000 CB-CG-OD1.NA -126.000 degrees
-67 14 . NA F 1 1343 A . 372 373 3165 . . . 1 . 1.000000 CG-OD1.NA 105.800 degrees
-68 14 . NA F 1 1343 A . 373 3165 . . . 1 . . 1.000000 OD1.NA 1.900000 angstrom
+66 14 . NA F 1 1343 A . 371 372 373 2504 . . . 1 1.000000 CB-CG-OD1.NA -126.000 degrees
+67 14 . NA F 1 1343 A . 372 373 2504 . . . 1 . 1.000000 CG-OD1.NA 105.800 degrees
+68 14 . NA F 1 1343 A . 373 2504 . . . 1 . . 1.000000 OD1.NA 1.900000 angstrom
 69 14 49 ASP A 1 82 A . 367 368 371 372 . . . . 1.000000 chi1 -180.000 degrees
 70 14 49 ASP A 1 82 A . 368 371 372 373 . . . . 1.000000 chi2 60.000 degrees
 #
