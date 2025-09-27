@@ -84,13 +84,13 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG B 1 101 A . 153 154 1926 . . . 1 . 0.333333 CG-OD1.MG 100.000 degrees
+1 1 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.333333 CG-OD1.MG 100.000 degrees
 2 1 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.333333 chi1 77.904 degrees
 3 1 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.333333 chi2 -54.657 degrees
-4 2 . MG B 1 101 A . 153 154 1926 . . . 1 . 0.333333 CG-OD1.MG 136.000 degrees
+4 2 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.333333 CG-OD1.MG 136.000 degrees
 5 2 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.333333 chi1 77.904 degrees
 6 2 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.333333 chi2 -54.657 degrees
-7 3 . MG B 1 101 A . 153 154 1926 . . . 1 . 0.333333 CG-OD1.MG 172.000 degrees
+7 3 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.333333 CG-OD1.MG 172.000 degrees
 8 3 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.333333 chi1 77.904 degrees
 9 3 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.333333 chi2 -54.657 degrees
 #

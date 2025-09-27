@@ -92,22 +92,22 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . CA E 1 601 A . 518 1680 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
+1 1 . CA E 1 601 A . 518 1679 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
 2 1 65 TYR C 1 65 A . 507 508 511 512 . . . . 0.166667 chi1 -180.000 degrees
 3 1 65 TYR C 1 65 A . 508 511 512 513 . . . . 0.166667 chi2 -180.000 degrees
-4 2 . CA E 1 601 A . 518 1680 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
+4 2 . CA E 1 601 A . 518 1679 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
 5 2 65 TYR C 1 65 A . 507 508 511 512 . . . . 0.166667 chi1 -180.000 degrees
 6 2 65 TYR C 1 65 A . 508 511 512 513 . . . . 0.166667 chi2 -60.000 degrees
-7 3 . CA E 1 601 A . 518 1680 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
+7 3 . CA E 1 601 A . 518 1679 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
 8 3 65 TYR C 1 65 A . 507 508 511 512 . . . . 0.166667 chi1 -180.000 degrees
 9 3 65 TYR C 1 65 A . 508 511 512 513 . . . . 0.166667 chi2 60.000 degrees
-10 4 . CA E 1 601 A . 518 1680 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
+10 4 . CA E 1 601 A . 518 1679 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
 11 4 65 TYR C 1 65 A . 507 508 511 512 . . . . 0.166667 chi1 60.000 degrees
 12 4 65 TYR C 1 65 A . 508 511 512 513 . . . . 0.166667 chi2 -180.000 degrees
-13 5 . CA E 1 601 A . 518 1680 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
+13 5 . CA E 1 601 A . 518 1679 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
 14 5 65 TYR C 1 65 A . 507 508 511 512 . . . . 0.166667 chi1 60.000 degrees
 15 5 65 TYR C 1 65 A . 508 511 512 513 . . . . 0.166667 chi2 -60.000 degrees
-16 6 . CA E 1 601 A . 518 1680 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
+16 6 . CA E 1 601 A . 518 1679 . . . 1 . . 0.166667 OH.CA 3.000000 angstrom
 17 6 65 TYR C 1 65 A . 507 508 511 512 . . . . 0.166667 chi1 60.000 degrees
 18 6 65 TYR C 1 65 A . 508 511 512 513 . . . . 0.166667 chi2 60.000 degrees
 #
