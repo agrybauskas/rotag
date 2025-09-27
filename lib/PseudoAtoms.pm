@@ -670,6 +670,7 @@ sub generate_library
                               ( $bond_parameter_names[$_] => $allowed_angles->[$i][$_] ) }
                             ( 0..$#{ $allowed_angles->[$i] } );
                     my %atom_ids = ();
+                    my %origin_atom_ids = ();
                     my %site_ids = ();
                     my %terminal_atom_data = ();
                     for my $angle_name ( keys %angles ) {
@@ -681,9 +682,12 @@ sub generate_library
                                 $current_atom_site->{$atom_id}{'origin_atom_id'};
 
                             if( ! defined $origin_atom_id) {
+                                push @{ $origin_atom_ids{$angle_name} }, $atom_id;
                                 push @{ $site_ids{$angle_name} }, undef;
                                 next;
                             }
+
+                            push @{ $origin_atom_ids{$angle_name} }, $origin_atom_id;
 
                             if( exists $ref_atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
                                 push @{ $site_ids{$angle_name} },
@@ -711,6 +715,7 @@ sub generate_library
                         push @{ $rotamer_library{$residue_unique_key} },
                             { 'angles' => \%angles,
                               'atom_ids' => \%atom_ids,
+                              'origin_atom_ids' => \%origin_atom_ids,
                               'site_ids' => \%site_ids,
                               'terminal_atom_data' => \%terminal_atom_data,
                               'potential' => $interactions,
