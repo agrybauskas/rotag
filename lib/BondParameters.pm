@@ -240,7 +240,10 @@ sub rotatable_bonds
                 'rank' => 1,
                 'atom_ids' => $bond_atom_ids,
                 'origin_atom_ids_key' =>
-                    join( ',', map { defined $_ ? $_ : '.'  }
+                    join( ',', map { $_ ne '.' &&
+                                     defined $atom_site->{$_}{'origin_atom_id'} ?
+                                     $atom_site->{$_}{'origin_atom_id'} : $_ }
+                               map { defined $_ ? $_ : '.'  }
                                map { $bond_atom_ids->[$_] } 0..3 ),
                 'value' => $dihedral_angles_cache{$dihedral_angle_key},
                 'alt_name' => $alt_rotatable_bond_name
@@ -382,7 +385,10 @@ sub stretchable_bonds
                 'rank' => 3,
                 'atom_ids' => $bond_atom_ids,
                 'origin_atom_ids_key' =>
-                    join( ',', map { defined $_ ? $_ : '.'  }
+                    join( ',', map { $_ ne '.' &&
+                                     defined $atom_site->{$_}{'origin_atom_id'} ?
+                                     $atom_site->{$_}{'origin_atom_id'} : $_ }
+                               map { defined $_ ? $_ : '.'  }
                                map { $bond_atom_ids->[$_] } 0..3 ),
                 'value' => $bond_lengths_cache{$bond_length_key},
                 'alt_name' => $alt_stretchable_bond_name
@@ -532,7 +538,10 @@ sub bendable_angles
                 'rank' => 2,
                 'atom_ids' => $bond_atom_ids,
                 'origin_atom_ids_key' =>
-                    join( ',', map { defined $_ ? $_ : '.'  }
+                    join( ',', map { $_ ne '.' &&
+                                     defined $atom_site->{$_}{'origin_atom_id'} ?
+                                     $atom_site->{$_}{'origin_atom_id'} : $_ }
+                               map { defined $_ ? $_ : '.'  }
                                map { $bond_atom_ids->[$_] } 0..3 ),
                 'value' => $bond_angles_cache{$bond_angle_key},
                 'alt_name' => $alt_bendable_angle_name
