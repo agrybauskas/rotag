@@ -55,9 +55,9 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-46 10 . K C 1 402 A . 1941 1942 1943 2856 . . . 1 1.000000 CB-CG-OD1.K 54.000 degrees
-47 10 . K C 1 402 A . 1942 1943 2856 . . 1 . . 1.000000 CG-OD1.K 155.200 degrees
-48 10 . K C 1 402 A . 1943 2856 . . . 1 . . 1.000000 OD1.K 1.900000 angstrom
+46 10 . K C 1 402 A . 1941 1942 1943 2337 . . . 1 1.000000 CB-CG-OD1.K 54.000 degrees
+47 10 . K C 1 402 A . 1942 1943 2337 . . 1 . . 1.000000 CG-OD1.K 155.200 degrees
+48 10 . K C 1 402 A . 1943 2337 . . . 1 . . 1.000000 OD1.K 1.900000 angstrom
 #
 loop_
 _struct_conn.id
