@@ -495,7 +495,7 @@ for my $pdbx_file ( @ARGV ) {
                                                          {'atom_ids'} } ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
                 my $angle_name = $rotamer_angle->{$id}{'type'};
-                my $atom_ids_key =
+                my $origin_atom_ids_key =
                     join ',',
                     map { defined $_ ? $_ : '?' }
                     map { $rotamer_angle->{$id}{$_} }
@@ -512,7 +512,7 @@ for my $pdbx_file ( @ARGV ) {
                     [ $angle_value ];
                 $rotamer_angles_atom_ids_tbl{$residue_unique_key}
                                             {"$rotamer_id"}
-                                            {$angle_name} = $atom_ids_key;
+                                            {$angle_name} = $origin_atom_ids_key;
             }
         }
 
@@ -610,14 +610,14 @@ for my $pdbx_file ( @ARGV ) {
                     # TODO: think about situations where there are defined
                     # bond parameters that do not include all the atoms.
                     for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
-                        my $atom_ids_key =
+                        my $origin_atom_ids_key =
                             $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
 
                         next if ! exists $bond_parameters->{$bond_parameter_name};
 
-                        next if $atom_ids_key ne '?,?,?,?' &&
-                            $atom_ids_key ne $bond_parameters->{$bond_parameter_name}
-                                                               {'atom_ids_key'};
+                        next if $origin_atom_ids_key ne '?,?,?,?' &&
+                            $origin_atom_ids_key ne $bond_parameters->{$bond_parameter_name}
+                                                                      {'origin_atom_ids_key'};
 
                         $include_rotamers{$related_unique_residue_key} = 1;
                     }
