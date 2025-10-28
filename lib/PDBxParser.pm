@@ -1080,8 +1080,8 @@ sub unique_residue_keys
 #
 # Create unique residue key that consists of '_atom_site.label_seq_id',
 # '_atom_site.label_asym_id', '_atom_site.pdbx_PDB_model_num',
-# '_atom_site.label_alt_id', '_atom_site.auth_seq_id' and
-# '_atom_site.auth_asym_id'.
+# '_atom_site.label_alt_id', '_atom_site.auth_seq_id',
+# '_atom_site.auth_asym_id' and '_atom_site.pdbx_auth_alt_id'.
 # Input:
 #     $atom - atom data structure;
 # Output:
@@ -1093,7 +1093,7 @@ sub unique_residue_key
     my ( $atom ) = @_;
     my @attributes =
         ( 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
-          'label_alt_id', 'auth_seq_id', 'auth_asym_id' );
+          'label_alt_id', 'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id' );
     return join q{,},
            map { defined $atom->{$_} ? $atom->{$_} : '?' }
                @attributes;
@@ -1118,7 +1118,7 @@ sub determine_residue_keys
 
     my @attributes = (
         'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
-        'auth_seq_id', 'auth_asym_id'
+        'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id'
     );
 
     my @current_residue_unique_keys = ();
