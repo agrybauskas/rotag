@@ -1393,7 +1393,7 @@ sub split_by
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
-          'auth_seq_id', 'auth_asym_id' ];
+          'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id' ];
     $append_dot //= 0;
 
     my %split_groups;
