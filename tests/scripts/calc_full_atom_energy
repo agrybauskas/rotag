@@ -21,10 +21,12 @@ my ( $residue_id,
      $pdbx_dump_file,
      $rmsd,
      $auth_residue_id,
-     $auth_residue_chain ) = @ARGV;
+     $auth_residue_chain,
+     $pdbx_auth_alt_id ) = @ARGV;
 
 $auth_residue_id //= $residue_id;
 $auth_residue_chain //= $residue_chain;
+$pdbx_auth_alt_id //= '?';
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -58,7 +60,7 @@ my $interaction_site = filter( { 'atom_site' => $atom_site,
 
 my $residue_unique_key =
     "${residue_id},${residue_chain},${pdbx_model},${residue_alt}," .
-    "${auth_residue_id},${auth_residue_chain}";
+    "${auth_residue_id},${auth_residue_chain},${pdbx_auth_alt_id}";
 my %bond_parameters =
     %{ collect_bond_parameters( $atom_site )->{$residue_unique_key} };
 my @bond_parameter_names =
