@@ -1135,7 +1135,7 @@ sub determine_residue_keys
     my %residue_key_tree;
     for my $residue_unique_key ( @current_residue_unique_keys ) {
         my $reduced_unique_key = $residue_unique_key;
-        $reduced_unique_key =~ s/^(.+,.+,.+),.+,(.+,.+)$/$1,.,$2/g;
+        $reduced_unique_key =~ s/^(.+,.+,.+),.+,(.+,.+,.+)$/$1,.,$2/g;
         # TODO: check if there will be problems regarding the changed data
         # structure.
         if( exists $residue_key_tree{$reduced_unique_key} ) {
@@ -1153,7 +1153,7 @@ sub determine_residue_keys
         if( scalar @{ $residue_unique_keys } > 1 ) {
             for my $i ( 0..$#{ $residue_unique_keys } ) {
                 if( $exclude_dot &&
-                    $residue_unique_keys->[$i] =~ m/^(.+,.+,.+),\.,(.+,.+)$/ ) {
+                    $residue_unique_keys->[$i] =~ m/^(.+,.+,.+),\.,(.+,.+,.+)$/ ) {
                     splice @{ $residue_unique_keys }, $i, 1;
                     last;
                 }
