@@ -158,7 +158,12 @@ sub sort_by_unique_residue_key
                  ( $selected_atom_site->{$a}{'label_seq_id'} <=>
                    $selected_atom_site->{$b}{'label_seq_id'} ) ) ||
                $selected_atom_site->{$a}{'label_alt_id'} cmp
-               $selected_atom_site->{$b}{'label_alt_id'} }
+               $selected_atom_site->{$b}{'label_alt_id'} ||
+               ( ( exists $selected_atom_site->{$a}{'pdbx_auth_alt_id'} &&
+                   exists $selected_atom_site->{$b}{'pdbx_auth_alt_id'} ) ?
+                 ( $selected_atom_site->{$a}{'pdbx_auth_alt_id'} cmp
+                   $selected_atom_site->{$b}{'pdbx_auth_alt_id'} ) :
+                 ( $a <=> $b ) ) }
         keys %{ $selected_atom_site };
 
     return sort_atom_ids_by_name( $atom_ids, $selected_atom_site )
