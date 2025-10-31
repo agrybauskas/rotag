@@ -1030,7 +1030,7 @@ sub filter_by_unique_residue_key
 
     my @attributes = (
         'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
-        'auth_seq_id', 'auth_asym_id'
+        'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id'
     );
     my @attribute_values = split /,/sxm, $unique_residue_key;
 
@@ -1231,7 +1231,8 @@ sub change_unique_residue_key
         'pdbx_PDB_model_num' => 2,
         'label_alt_id' => 3,
         'auth_seq_id' => 4,
-        'auth_asym_id' => 5
+        'auth_asym_id' => 5,
+        'pdbx_auth_alt_id' => 6,
     );
     my @unique_residue_key_parts = split /,/, $unique_residue_key;
     for my $key ( keys %{ $change_rule } ) {
