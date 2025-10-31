@@ -21,10 +21,12 @@ my ( $residue_id,
      $parameters_cmd,
      $threads,
      $auth_residue_id,
-     $auth_residue_chain ) = @ARGV;
+     $auth_residue_chain,
+     $pdbx_auth_alt_id ) = @ARGV;
 
 $auth_residue_id //= $residue_id;
 $auth_residue_chain //= $residue_chain;
+$pdbx_auth_alt_id //= '?';
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -53,7 +55,8 @@ my $rotamer_library =
                         "atom_site" => $atom_site,
                         "residue_unique_keys" => [
                             "$residue_id,$residue_chain,$pdbx_model," .
-                            "$residue_alt,$auth_residue_id,$auth_residue_chain" ],
+                            "$residue_alt,$auth_residue_id,$auth_residue_chain," .
+                            "$pdbx_auth_alt_id" ],
                         "bond_parameters" => $bond_parameters,
                         "conf_model" => $conf_model,
                         "interactions"  => $potential,
