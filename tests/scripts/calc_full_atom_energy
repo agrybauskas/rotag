@@ -82,7 +82,6 @@ my ( $favourable_angles, $favourable_energies, $rmsds ) =
                               'threads' => 1 ) };
 
 my $angle_id = 1;
-
 for my $i ( 0..$#{ $favourable_angles } ) {
     my @angle_names = map { "chi${_}" } 1..$#{ $favourable_angles->[$i] }+1;
     for my $j ( 0..$#{ $favourable_angles->[$i] } ) {
