@@ -178,7 +178,7 @@ sub generate_pseudo
                   'cartn_z' => sprintf( $sig_figs_max, $transf_atom_coord->[2][0] ),
                   'auth_asym_id' => $atom_site{$atom_id}{'auth_asym_id'},
                   'auth_seq_id' => $atom_site{$atom_id}{'auth_seq_id'},
-                  'pdbx_auth_alt_id' => $atom_site{$atom_id}{'auth_seq_id'},
+                  'pdbx_auth_alt_id' => $atom_site{$atom_id}{'pdbx_auth_alt_id'},
                   'pdbx_PDB_model_num' =>
                       $atom_site{$atom_id}{'pdbx_PDB_model_num'},
                 } );
