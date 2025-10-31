@@ -99,13 +99,15 @@ sub generate_pseudo
 {
     my ( $args ) = @_;
     my ( $parameters, $atom_site, $atom_specifier, $bond_parameter_values,
-         $last_atom_id, $alt_group_id, $selection_state ) =
+         $last_atom_id, $alt_group_id, $auth_alt_group_id, $selection_state ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
           $args->{'bond_parameter_values'}, $args->{'last_atom_id'},
-          $args->{'alt_group_id'}, $args->{'selection_state'} );
+          $args->{'alt_group_id'}, $args->{'auth_alt_group_id'},
+          $args->{'selection_state'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
+    $auth_alt_group_id //= '.';
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
