@@ -705,7 +705,8 @@ sub generate_library
                                 ( 'id', 'label_comp_id', 'label_atom_id',
                                   'label_seq_id', 'label_asym_id',
                                   'label_alt_id', 'pdbx_PDB_model_num',
-                                  'auth_seq_id', 'auth_asym_id' )
+                                  'auth_seq_id', 'auth_asym_id',
+                                  'pdbx_auth_alt_id' )
                         };
                     }
 
