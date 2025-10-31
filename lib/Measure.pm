@@ -387,11 +387,13 @@ sub rmsd_sidechains
     my @data_tags = (
         '[local]_selection_group', 'id', 'label_atom_id', 'label_seq_id',
         'label_comp_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
-        'Cartn_x', 'Cartn_y', 'Cartn_z', 'auth_asym_id', 'auth_seq_id'
+        'Cartn_x', 'Cartn_y', 'Cartn_z', 'auth_asym_id', 'auth_seq_id',
+        'pdbx_auth_alt_id'
     );
     for my $first_unique_residue_key ( @first_unique_residue_keys ) {
         my ( $first_residue_id, $first_chain, $first_pdbx_model_num,
-             $first_alt_id, $first_auth_residue_id, $first_auth_chain ) =
+             $first_alt_id, $first_auth_residue_id, $first_auth_chain,
+             $first_pdbx_auth_alt_id ) =
             split /,/, $first_unique_residue_key;
         my $first_sidechain_data =
             filter( { 'atom_site' => $first_atom_site,
@@ -405,6 +407,8 @@ sub rmsd_sidechains
                               ( 'auth_asym_id' => [ $first_auth_chain ] ) : () ),
                             ( $first_auth_residue_id ne '?' ?
                               ( 'auth_seq_id' => [ $first_auth_residue_id ] ) : () ),
+                            ( $first_pdbx_auth_alt_id ne '?' ?
+                              ( 'pdbx_auth_alt_id' => [ $first_pdbx_auth_alt_id ] ) : () ),
                             ( @atom_names_include ?
                               ( 'label_atom_id' => \@atom_names_include ): () ) },
                       'exclude' =>
@@ -424,6 +428,8 @@ sub rmsd_sidechains
                                  ( 'auth_asym_id' => [ $first_auth_chain ] ) : () ),
                                ( $first_auth_residue_id ne '?' ?
                                  ( 'auth_seq_id' => [ $first_auth_residue_id ] ) : () ),
+                               ( $first_pdbx_auth_alt_id ne '?' ?
+                                 ( 'pdbx_auth_alt_id' => [ $first_pdbx_auth_alt_id ] ) : () ),
                                ( @hetatom_names_include ?
                                  ( 'label_atom_id' =>
                                        \@hetatom_names_include ): () ) },
@@ -438,7 +444,8 @@ sub rmsd_sidechains
         my $rmsd_average;
         for my $second_unique_residue_key ( @second_unique_residue_keys ) {
             my ( $second_residue_id, $second_chain, $second_pdbx_model_num,
-                 $second_alt_id, $second_auth_residue_id, $second_auth_chain ) =
+                 $second_alt_id, $second_auth_residue_id, $second_auth_chain,
+                 $second_pdbx_auth_alt_id ) =
                 split /,/, $second_unique_residue_key;
 
             next if ! ( $first_residue_id eq $second_residue_id &&
@@ -459,9 +466,11 @@ sub rmsd_sidechains
                                  ( 'auth_asym_id' => [ $second_auth_chain ] ) : () ),
                                ( $second_auth_residue_id ne '?' ?
                                  ( 'auth_seq_id' => [ $second_auth_residue_id ] ) : () ),
-                                ( @atom_names_include ?
-                                  ( 'label_atom_id' =>
-                                        \@atom_names_include ): () ) },
+                               ( $second_pdbx_auth_alt_id ne '?' ?
+                                 ( 'pdbx_auth_alt_id' => [ $second_pdbx_auth_alt_id ] ) : () ),
+                               ( @atom_names_include ?
+                                 ( 'label_atom_id' =>
+                                       \@atom_names_include ): () ) },
                           'exclude' =>
                               { ( @atom_names_exclude ?
                                   ( 'label_atom_id' =>
@@ -481,6 +490,8 @@ sub rmsd_sidechains
                                      ( 'auth_asym_id' => [ $second_auth_chain ] ) : () ),
                                    ( $second_auth_residue_id ne '?' ?
                                      ( 'auth_seq_id' => [ $second_auth_residue_id ] ) : () ),
+                                   ( $second_pdbx_auth_alt_id ne '?' ?
+                                     ( 'pdbx_auth_alt_id' => [ $second_pdbx_auth_alt_id ] ) : () ),
                                    ( @hetatom_names_include ?
                                      ( 'label_atom_id' =>
                                            \@hetatom_names_include ): () ) },
