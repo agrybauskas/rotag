@@ -648,6 +648,8 @@ for my $pdbx_file ( @ARGV ) {
                                 # TODO: check if it is a good idea to have
                                 # $rotamer_id as 'label_alt_id'.
                                'alt_group_id' => $rotamer_id,
+                               'auth_alt_group_id' =>
+                                   $selected_atom_site->{$atom_id}{'label_alt_id'},
                                'selection_state' => 'T' } ) } );
 
                 $last_atom_id++;
@@ -678,6 +680,7 @@ for my $pdbx_file ( @ARGV ) {
                    'add_attributes' =>
                        { '_atom_site' =>
                              [ ( $add_B_iso ? ( 'B_iso_or_equiv' ) : () ),
+                               'pdbx_auth_alt_id',
                                '[local]_selection_state' ] } } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
