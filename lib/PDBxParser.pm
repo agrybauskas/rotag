@@ -536,11 +536,14 @@ sub raw2indexed
 sub indexed2raw
 {
     my ( $pdbx, $options ) = @_;
-    my ( $categories, $attribute_order ) = (
-        $options->{'categories'}, $options->{'attribute_order'}
+    my ( $categories, $attribute_order, $default_empty_values ) = (
+        $options->{'categories'},
+        $options->{'attribute_order'},
+        $options->{'default_empty_values'},
     );
 
     $categories //= [ keys %{ $pdbx } ];
+    $default_empty_values //= {};
 
     for my $category ( @{ $categories } ) {
         next if ! exists $pdbx->{$category} ||
@@ -591,7 +594,9 @@ sub indexed2raw
                     if( defined $data_value ) {
                         push @{ $pdbx->{$category}{'data'} }, $data_value;
                     } else {
-                        push @{ $pdbx->{$category}{'data'} }, '?';
+                        push @{ $pdbx->{$category}{'data'} },
+                            ( defined $default_empty_values->{$attribute} ?
+                              $default_empty_values->{$attribute} : '?' );
                     }
                 }
             } elsif( ref $current_pdbx_indexed->{$id} eq 'ARRAY' ) {
@@ -603,7 +608,8 @@ sub indexed2raw
                                 $data_value;
                         } else {
                             push @{ $pdbx->{$category}{'data'} },
-                                '?';
+                            ( defined $default_empty_values->{$attribute} ?
+                              $default_empty_values->{$attribute} : '?' );
                         }
                     }
                 }
@@ -671,11 +677,14 @@ sub raw2record
 sub record2raw
 {
     my ( $pdbx, $options ) = @_;
-    my ( $categories, $attribute_order ) = (
-        $options->{'categories'}, $options->{'attribute_order'}
+    my ( $categories, $attribute_order, $default_empty_values ) = (
+        $options->{'categories'},
+        $options->{'attribute_order'},
+        $options->{'default_empty_values'},
     );
 
     $categories //= [ keys %{ $pdbx } ];
+    $default_empty_values //= {};
 
     for my $category ( @{ $categories } ) {
         next if ! exists $pdbx->{$category} ||
@@ -710,7 +719,8 @@ sub record2raw
                         $data_value;
                 } else {
                     push @{ $pdbx->{$category}{'data'} },
-                        '?';
+                        ( defined $default_empty_values->{$attribute} ?
+                          $default_empty_values->{$attribute} : '?' );
                 }
             }
         }
@@ -1590,11 +1600,13 @@ sub to_pdbx
                 if( $pdbx_data->{$category}{'metadata'}{'type'} eq 'indexed' ) {
                     indexed2raw( $pdbx_data,
                                  { 'categories' => [ $category ],
+                                   'default_empty_values' => $default_empty_values,
                                    'attribute_order' => {
                                        $category => $category_attribute_order}});
                 } elsif( $pdbx_data->{$category}{'metadata'}{'type'} eq 'record' ) {
                     record2raw( $pdbx_data,
                                 { 'categories' => [ $category ],
+                                  'default_empty_values' => $default_empty_values,
                                   'attribute_order' => {
                                       $category => $category_attribute_order}});
                 }
