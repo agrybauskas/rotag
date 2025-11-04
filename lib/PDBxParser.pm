@@ -320,7 +320,7 @@ sub create_pdbx_entry
     my $auth_seq_id = $args->{'auth_seq_id'};
     my $auth_asym_id = $args->{'auth_asym_id'};
     my $pdbx_auth_alt_id = $args->{'pdbx_auth_alt_id'};
-    $pdbx_auth_alt_id //= q{?};
+    $pdbx_auth_alt_id //= q{.};
     my $pdbx_model_num = $args->{'pdbx_PDB_model_num'};
 
     $atom_site->{$atom_id}{'group_PDB'} = $group_PDB;
