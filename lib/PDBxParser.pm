@@ -1516,13 +1516,14 @@ sub to_pdbx
 {
     my ( $pdbx_data, $options ) = @_;
     my ( $data_name, $categories, $category_order, $attribute_order, $tags,
-         $add_attributes, $fh ) = (
+         $add_attributes, $default_empty_values, $fh ) = (
         $options->{'data_name'},
         $options->{'categories'},
         $options->{'category_order'},
         $options->{'attribute_order'},
         $options->{'tags'},
         $options->{'add_attributes'},
+        $options->{'default_empty_values'},
         $options->{'fh'},
     );
 
@@ -1551,6 +1552,7 @@ sub to_pdbx
             'pdbx_PDB_model_num',
         ]
     };
+    $default_empty_values //= {};
     $fh //= \*STDOUT;
 
     my ( $current_categories ) = sort_by_list( [ sort keys %{ $pdbx_data } ],
