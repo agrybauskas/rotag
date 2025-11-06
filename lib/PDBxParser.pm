@@ -1094,18 +1094,21 @@ sub unique_residue_keys
 # '_atom_site.auth_asym_id' and '_atom_site.pdbx_auth_alt_id'.
 # Input:
 #     $atom - atom data structure;
+#     $default_value - default value if $attribute part is emptu.
 # Output:
 #     $unique_residue_key - unique residue key.
 #
 
 sub unique_residue_key
 {
-    my ( $atom ) = @_;
+    my ( $atom, $default_value ) = @_;
+    $default_value //= {};
     my @attributes =
         ( 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
           'label_alt_id', 'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id' );
     return join q{,},
-           map { defined $atom->{$_} ? $atom->{$_} : '?' }
+           map { defined $atom->{$_} ? $atom->{$_} :
+                 ( exists $default_value->{$_} ? $default_value->{$_} : '?' ) }
                @attributes;
 }
 
