@@ -1399,13 +1399,15 @@ sub extract
 sub split_by
 {
     my ( $args ) = @_;
-    my ( $atom_site, $attributes, $append_dot ) =
-        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'} );
+    my ( $atom_site, $attributes, $append_dot, $default_empty_values ) =
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'},
+          $args->{'default_empty_values'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
           'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id' ];
     $append_dot //= 0;
+    $default_empty_values //= {};
 
     my %split_groups;
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
@@ -1417,7 +1419,9 @@ sub split_by
             if( defined $atom_site->{$atom_id}{$attribute} ){
                 push @attribute_values, $atom_site->{$atom_id}{$attribute};
             } else {
-                push @attribute_values, "?";
+                push @attribute_values,
+                    ( exists $default_empty_values->{$attribute} ?
+                      $default_empty_values->{$attribute} : '?' );
             }
         }
 
