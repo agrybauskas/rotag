@@ -1078,11 +1078,12 @@ sub filter_connected
 
 sub unique_residue_keys
 {
-    my ( $atom_site ) = @_;
+    my ( $atom_site, $default_values ) = @_;
+    $default_values //= {};
     my @unique_residue_keys = ();
     for my $atom_id ( keys %{ $atom_site } ) {
         push @unique_residue_keys,
-            unique_residue_key( $atom_site->{$atom_id} );
+            unique_residue_key( $atom_site->{$atom_id}, $default_values );
     }
     return sort { $a cmp $b } uniq @unique_residue_keys;
 }
