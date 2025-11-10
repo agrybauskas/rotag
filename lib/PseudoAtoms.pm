@@ -107,7 +107,7 @@ sub generate_pseudo
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
-    $auth_alt_group_id //= '.';
+    $auth_alt_group_id //= '?';
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
