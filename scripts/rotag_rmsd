@@ -262,13 +262,15 @@ for my $comparison_group ( @comparison_groups ) {
                     'attributes' => [ 'label_seq_id', 'label_asym_id',
                                       'pdbx_PDB_model_num',
                                       ( $rmsd_sidechains && ! $do_decompose ?
-                                        ( 'label_alt_id' ) : () ) ] } );
+                                        ( 'label_alt_id',
+                                          'pdbx_auth_alt_id' ) : () ) ] } );
     my $second_atom_groups =
         split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
                     'attributes' => [ 'label_seq_id', 'label_asym_id',
                                       'pdbx_PDB_model_num',
                                       ( $rmsd_sidechains && ! $do_decompose ?
-                                        ( 'label_alt_id' ) : () ) ] } );
+                                        ( 'label_alt_id',
+                                          'pdbx_auth_alt_id' ) : () ) ] } );
 
     for my $first_group_key ( sort keys %{ $first_atom_groups } ) {
         my $first_group_atom_ids =
