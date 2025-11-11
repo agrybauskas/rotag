@@ -54,6 +54,7 @@ our $VERSION = $VERSION;
 #*                            chain     - chain name;
 #*                            authchain - author chain name;
 #*                            altid     - alt atom id;
+#*                            authaltid - author alt atom id;
 #*                            model     - pdbx model num;
 #*                            mainchain - mainchain atoms;
 #*                            sidechain - sidechain atoms;

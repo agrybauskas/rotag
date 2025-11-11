@@ -394,6 +394,13 @@ exp
                                  'group_id' => $_[0]->{USER}{GROUP_ID},
                                  'return_data' => 'id' } );
         }
+    | 'authaltid' str_ope
+        {
+            return filter_new( $_[0]->{USER}{ATOM_SITE},
+                               { 'include' => { 'pdbx_auth_alt_id' => $_[2] },
+                                 'group_id' => $_[0]->{USER}{GROUP_ID},
+                                 'return_data' => 'id' } );
+        }
     | 'model' str_ope
         {
             return filter_new( $_[0]->{USER}{ATOM_SITE},
@@ -477,6 +484,8 @@ sub lexer
             return ( 'atomtype', $1 );
         } elsif(s/^(altid)//) {
             return ( 'altid', $1 );
+        } elsif(s/^(authaltid)//) {
+            return ( 'authaltid', $1 );
         } elsif(s/^(model)//) {
             return ( 'model', $1 );
         } elsif(s/^(around)//) {
