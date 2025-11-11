@@ -1567,6 +1567,7 @@ sub to_pdbx
             'Cartn_z',
             'auth_asym_id',
             'auth_seq_id',
+            'pdbx_auth_alt_id',
             'pdbx_PDB_model_num',
         ]
     };
