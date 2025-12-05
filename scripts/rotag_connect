@@ -5,20 +5,13 @@ use warnings;
 
 use autodie;
 use Carp;
-use Clone qw( clone );
 use Getopt::Long;
-use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
 use Logging qw( error
                 warning );
-use PDBxParser qw( filter
-                   indexed2raw
-                   obtain_pdbx_data
+use PDBxParser qw( obtain_pdbx_data
                    raw2indexed
-                   record2raw
-                   related_category_data
-                   split_by
                    to_pdbx
                    to_csv );
 use Version qw( $VERSION );
@@ -56,6 +49,10 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Options ----------------------------------- #
 
+my $covalent_query = '';
+my $disulfide_query = '';
+my $hydrogen_query = '';
+my $metalc_query = '';
 my $tags = '_atom_site,_struct_conn';
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_struct_conn' );
@@ -73,6 +70,10 @@ local $SIG{__DIE__} = sub {
 };
 
 GetOptions(
+    'covale=s' => \$covalent_query,
+    'disulf=s' => \$disulfide_query,
+    'hydrog=s' => \$hydrogen_query,
+    'metalc=s' => \$metalc_query,
     'tags=s' => \$tags,
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -102,387 +103,22 @@ my @tags = split /,/, $tags;
 my %atom_site_groups = ();
 
 for my $pdbx_file ( @ARGV ) {
-    my $pdbxs =
-        obtain_pdbx_data( $pdbx_file, \@category_list, { 'read_stream' => 1 } );
+    my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );
 
-    for my $pdbx ( @{ $pdbxs } ) {
-        raw2indexed( $pdbx, { 'attributes' => { '_atom_site' => [ 'id' ] } } );
-
-        my $atom_site = $pdbx->{'_atom_site'}{'data'};
-
-#         if( $is_related && defined $pdbx->{'_[local]_rotamer_angle'} ) {
-#             # TODO: should find a better way than cloning and pushing to the
-#             # same %rotamer_angles hash.
-#             my $pdbx_cloned = clone $pdbx;
-#             indexed2raw( $pdbx_cloned,
-#                          { 'categories' => [ '_[local]_rotamer_angle' ] } );
-
-#             if( %rotamer_angles &&
-#                 defined $rotamer_angles{'_[local]_rotamer_angle'} &&
-#                      %{ $rotamer_angles{'_[local]_rotamer_angle'} } ) {
-#                 push @{ $rotamer_angles{'_[local]_rotamer_angle'}{'data'} },
-#                     @{ $pdbx_cloned->{'_[local]_rotamer_angle'}{'data'} };
-#             } else {
-#                 $rotamer_angles{'_[local]_rotamer_angle'} =
-#                     $pdbx_cloned->{'_[local]_rotamer_angle'};
-#             }
-#         } elsif( $is_related && defined $pdbx->{'_[local]_dihedral_angle'} ) {
-#             # TODO: should find a better way than cloning and pushing to the
-#             # same %rotamer_angles hash.
-#             my $pdbx_cloned = clone $pdbx;
-#             indexed2raw( $pdbx_cloned,
-#                          { 'categories' => [ '_[local]_dihedral_angle' ] } );
-
-#             if( %rotamer_angles &&
-#                 defined $rotamer_angles{'_[local]_dihedral_angle'} &&
-#                      %{ $rotamer_angles{'_[local]_dihedral_angle'} } ) {
-#                 push @{ $rotamer_angles{'_[local]_dihedral_angle'}{'data'} },
-#                     @{ $pdbx_cloned->{'_[local]_dihedral_angle'}{'data'} };
-#             } else {
-#                 $rotamer_angles{'_[local]_dihedral_angle'} =
-#                     $pdbx_cloned->{'_[local]_dihedral_angle'};
-#             }
-#         }
-
-        # Assigns filters atoms and assigns to specified groups.
-        my @group_ids =
-            uniq( @{ filter( { 'atom_site' => $atom_site,
-                               'data' => [ '[local]_selection_group' ],
-                               'is_list' => 1 } ) } );
-
-#         for my $group_id ( @group_ids ) {
-#             if( ! exists $atom_site_groups{$group_id} ) {
-#                 my $group_atom_site =
-#                     filter( { 'atom_site' => $atom_site,
-#                               'include' =>
-#                                   { '[local]_selection_state' => [ 'T' ],
-#                                     '[local]_selection_group' => [$group_id] }});
-#                 $atom_site_groups{$group_id} = $group_atom_site;
-#             } else {
-#                 error( { 'program' => $0,
-#                          'message' => 'there are multiple instances of the group ' .
-#                                       "in different files.\n" } );
-#             }
-#         }
+    if( ! defined $pdbx_data->{'_atom_site'}{'data'} ) {
+        warning( { 'program' => $0,
+                   'message' => "no atom sites were detected.\n" } );
+        next;
     }
+
+    raw2indexed( $pdbx_data,
+                 { 'attributes' =>
+                   { '_atom_site' => [ 'id' ],
+                     '_struct_conn' => [ 'id' ] } } );
+
+    my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
+    my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
 }
-
-# exit if ! %atom_site_groups;
-
-# # Calculates RMSD.
-# my %pdbx_data;
-
-# my $rmsd_counter = 1;
-
-# for my $comparison_group ( @comparison_groups ) {
-#     if( scalar @{ $comparison_group } != 2 ) {
-#         error( { 'program' => $0,
-#                  'message' => 'there has to be two groups of atoms to be compared ' .
-#                               "against.\n" } );
-#     }
-
-#     # Checks if these groups exist.
-#     for my $group ( @{ $comparison_group } ) {
-#         if( ! exists $atom_site_groups{$group} ) {
-#             error( { 'program' => $0,
-#                      'message' => "group $group is not present in pdbx.\n" } );
-#         }
-#     }
-
-#     # Generates the comparison pairs.
-#     my $first_atom_groups =
-#         split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
-#                     'attributes' => [ 'label_seq_id', 'label_asym_id',
-#                                       'pdbx_PDB_model_num',
-#                                       ( $rmsd_sidechains && ! $do_decompose ?
-#                                         ( 'label_alt_id',
-#                                           'pdbx_auth_alt_id' ) : () ) ] } );
-#     my $second_atom_groups =
-#         split_by( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
-#                     'attributes' => [ 'label_seq_id', 'label_asym_id',
-#                                       'pdbx_PDB_model_num',
-#                                       ( $rmsd_sidechains && ! $do_decompose ?
-#                                         ( 'label_alt_id',
-#                                           'pdbx_auth_alt_id' ) : () ) ] } );
-
-#     for my $first_group_key ( sort keys %{ $first_atom_groups } ) {
-#         my $first_group_atom_ids =
-#             $first_atom_groups->{$first_group_key}{'atom_ids'};
-#         my $first_group_atom_site =
-#             filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
-#                       'include' => { 'id' => $first_group_atom_ids } } );
-
-#         my @current_comparisons = ();
-#         for my $second_group_key ( sort keys %{ $second_atom_groups } ) {
-#             my $second_group_atom_ids =
-#                 $second_atom_groups->{$second_group_key}{'atom_ids'};
-#             my $second_group_atom_site =
-#                 filter( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
-#                           'include' => { 'id' => $second_group_atom_ids } } );
-
-#             if( $rmsd_sidechains ) {
-#                 my $rmsd_sidechain_comparisons =
-#                     rmsd_sidechains( $parameters,
-#                                      $first_group_atom_site,
-#                                      $second_group_atom_site,
-#                                      { 'best_case' => $rmsd_best_case,
-#                                        'strict' => $strict } );
-
-#                 # HACK: there should be a way to avoid this check.
-#                 next if ! @{ $rmsd_sidechain_comparisons };
-
-#                 # TODO: would be nice to refactor those conditionals.
-#                 if( $do_decompose ) {
-#                     my $n_count;
-#                     if( $rmsd_best_case ) {
-#                         $n_count =
-#                             keys %{
-#                                 split_by( { 'atom_site' => $second_group_atom_site,
-#                                             'attributes' => [ 'label_seq_id',
-#                                                               'label_asym_id',
-#                                                               'pdbx_PDB_model_num',
-#                                                               'label_alt_id' ]
-#                             } ) };
-#                     }
-
-#                     for my $rmsd_sidechain_comparison (@{$rmsd_sidechain_comparisons}){
-#                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-#                              { 'id' => $rmsd_counter,
-#                               %{ $rmsd_sidechain_comparison },
-#                                'n_count' => $n_count };
-#                         $rmsd_counter++;
-#                     }
-#                 } else {
-#                     my $rmsd_sum =
-#                         sum( map { $_->{'value'} } @{ $rmsd_sidechain_comparisons } );
-#                     my $rmsd_count = scalar @{ $rmsd_sidechain_comparisons };
-#                     my $rmsd_average = $rmsd_sum / $rmsd_count;
-
-#                     my $rmsd_record = {
-#                         'id' => $rmsd_counter,
-#                         %{ $rmsd_sidechain_comparisons->[0] },
-#                         'value' => sprintf $sig_figs_min, $rmsd_average
-#                     };
-
-#                     if( $rmsd_best_case ) {
-#                         push @current_comparisons, $rmsd_record;
-#                     } else {
-#                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-#                             $rmsd_record;
-#                     }
-#                 }
-#             } else {
-#                 my $first_group_data =
-#                     filter( { 'atom_site' => $atom_site_groups{$comparison_group->[0]},
-#                               'data' =>
-#                                   [ 'id', '[local]_selection_group', 'label_atom_id',
-#                                     'label_seq_id', 'label_comp_id', 'label_asym_id',
-#                                     'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
-#                                     'Cartn_y', 'Cartn_z' ],
-#                               'is_hash' => 1 } );
-#                 my $second_group_data =
-#                     filter( { 'atom_site' => $atom_site_groups{$comparison_group->[1]},
-#                               'data' =>
-#                                   [ 'id', '[local]_selection_group', 'label_atom_id',
-#                                     'label_seq_id', 'label_comp_id', 'label_asym_id',
-#                                     'pdbx_PDB_model_num', 'label_alt_id', 'Cartn_x',
-#                                     'Cartn_y', 'Cartn_z' ],
-#                               'is_hash' => 1 } );
-
-#                 # Checks the length of the atom sets.
-#                 # TODO: error message is duplicated in Measure::rmsd().
-#                 if( scalar @{ $first_group_data } ne scalar @{ $second_group_data }){
-#                     error( { 'program' => $0,
-#                              'message' => 'comparing different sizes of sets of ' .
-#                                           "the atoms is not allowed.\n" } );
-#                 }
-
-#                 # Sorts by residue name first by checking if their residue names are
-#                 # correct.
-#                 $first_group_data  =
-#                     [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
-#                           @{ $first_group_data  }];
-#                 $second_group_data =
-#                     [ sort { $a->{'label_atom_id'} cmp $b->{'label_atom_id'} }
-#                           @{ $second_group_data }];
-
-#                 my @first_group_coord;
-#                 my @second_group_coord;
-
-#                 for( my $i = 0; $i <= $#{ $first_group_data }; $i++ ) {
-#                     if( $first_group_data->[$i]{'label_atom_id'} ne
-#                         $second_group_data->[$i]{'label_atom_id'} ) {
-#                         error( { 'program' => $0,
-#                                  'message' =>
-#                                      'atom names do not match: ' .
-#                                      "$first_group_data->[$i]{'label_atom_id'} and " .
-#                                      "$second_group_data->[$i]{'label_atom_id'} " .
-#                                      "atoms do not match.\n" } );
-#                     }
-
-#                     if( $do_decompose ) {
-#                         push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-#                             { 'id' => $rmsd_counter,
-#                               'group_1_id' =>
-#                                   $first_group_data->[$i]{'[local]_selection_group'},
-#                               'atom_1_id' =>
-#                                   $first_group_data->[$i]{'id'},
-#                               'label_atom_1_id' =>
-#                                   $first_group_data->[$i]{'label_atom_id'},
-#                               'label_seq_1_id' =>
-#                                   $first_group_data->[$i]{'label_seq_id'},
-#                               'label_comp_1_id' =>
-#                                   $first_group_data->[$i]{'label_comp_id'},
-#                               'label_asym_1_id' =>
-#                                   $first_group_data->[$i]{'label_asym_id'},
-#                               'pdbx_PDB_model_num_1' =>
-#                                   $first_group_data->[$i]{'pdbx_PDB_model_num'},
-#                               'label_alt_1_id' =>
-#                                   $first_group_data->[$i]{'label_alt_id'},
-#                               'group_2_id' =>
-#                                   $second_group_data->[$i]{'[local]_selection_group'},
-#                               'atom_2_id' =>
-#                                   $second_group_data->[$i]{'id'},
-#                               'label_atom_2_id' =>
-#                                   $second_group_data->[$i]{'label_atom_id'},
-#                               'label_seq_2_id' =>
-#                                   $second_group_data->[$i]{'label_seq_id'},
-#                               'label_comp_2_id' =>
-#                                   $second_group_data->[$i]{'label_comp_id'},
-#                               'label_asym_2_id' =>
-#                                   $second_group_data->[$i]{'label_asym_id'},
-#                               'pdbx_PDB_model_num_2' =>
-#                                   $second_group_data->[$i]{'pdbx_PDB_model_num'},
-#                               'label_alt_2_id' =>
-#                                   $second_group_data->[$i]{'label_alt_id'},
-#                               'value' =>
-#                                   sprintf $sig_figs_min,
-#                                   rmsd( [ [ $first_group_data->[$i]{'Cartn_x'},
-#                                             $first_group_data->[$i]{'Cartn_y'},
-#                                             $first_group_data->[$i]{'Cartn_z'} ] ],
-#                                         [ [ $second_group_data->[$i]{'Cartn_x'},
-#                                             $second_group_data->[$i]{'Cartn_y'},
-#                                             $second_group_data->[$i]{'Cartn_z'} ] ] ) };
-#                     } else {
-#                         push @first_group_coord,
-#                             [ $first_group_data->[$i]{'Cartn_x'},
-#                               $first_group_data->[$i]{'Cartn_y'},
-#                               $first_group_data->[$i]{'Cartn_z'} ];
-#                         push @second_group_coord,
-#                             [ $second_group_data->[$i]{'Cartn_x'},
-#                               $second_group_data->[$i]{'Cartn_y'},
-#                               $second_group_data->[$i]{'Cartn_z'} ];
-#                     }
-#                 }
-
-#                 if( ! $do_decompose ) {
-#                     push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-#                         { 'id' => $rmsd_counter,
-#                           'group_1_id' => $comparison_group->[0],
-#                           'group_2_id' => $comparison_group->[1],
-#                           'value' =>
-#                               sprintf $sig_figs_min,
-#                                       rmsd( \@first_group_coord,
-#                                             \@second_group_coord ) };
-#                 }
-
-#                 $rmsd_counter++;
-#             }
-
-#             if( $rmsd_sidechains && ! $do_decompose ) {
-#                 $rmsd_counter++;
-#             }
-#         }
-
-#         if( @current_comparisons ) {
-#             my $overall_rmsd_record_count = scalar @current_comparisons;
-#             my ( $best_case_rmsd_record ) =
-#                 sort { $a->{'value'} <=> $b->{'value'} } @current_comparisons;
-#             $best_case_rmsd_record->{'n_count'} = $overall_rmsd_record_count;
-
-#             push @{ $pdbx_data{'_[local]_rmsd'}{'data'} },
-#                 $best_case_rmsd_record;
-#         }
-#     }
-# }
-
-# if( ! defined $pdbx_data{'_[local]_rmsd'}{'data'} ||
-#     ! @{ $pdbx_data{'_[local]_rmsd'}{'data'} } ) {
-#     die "no proper comparison was found. Try to use '--no-strict' in order ".
-#         "to get more possible side-chains to compare to.\n";
-# }
-
-# # Shows dihedral angles related to selected atoms used to calculate RMSD.
-# if( $is_related && $do_decompose ) {
-#     # TODO: record2raw can be optimized by moving to related_category_data().
-#     record2raw( \%pdbx_data );
-#     if( defined $rotamer_angles{'_[local]_rotamer_angle'} &&
-#              %{ $rotamer_angles{'_[local]_rotamer_angle'} } ) {
-#         $pdbx_data{'_[local]_rotamer_angle'} =
-#             $rotamer_angles{'_[local]_rotamer_angle'};
-
-#         my $related_data = related_category_data(
-#             \%pdbx_data,
-#             { '_[local]_rmsd' =>
-#                   { '_[local]_rotamer_angle' =>
-#                         [ { 'keys' =>
-#                                 [ 'label_seq_1_id', 'label_asym_1_id',
-#                                   'pdbx_PDB_model_num_1', 'label_alt_1_id' ],
-#                             'reference_keys' =>
-#                                 [ 'label_seq_id', 'label_asym_id',
-#                                   'pdbx_PDB_model_num', 'rotamer_id' ] },
-#                           { 'keys' =>
-#                                 [ 'label_seq_2_id', 'label_asym_2_id',
-#                                   'pdbx_PDB_model_num_2', 'label_alt_2_id' ],
-#                             'reference_keys' =>
-#                                 [ 'label_seq_id', 'label_asym_id',
-#                                   'pdbx_PDB_model_num', 'rotamer_id' ] } ] } } );
-
-#         for my $category ( keys %{ $related_data } ) {
-#             my $related_category_data = $related_data->{$category};
-#             my $related_category =
-#                 $related_category_data->{'reference_category'};
-#             $pdbx_data{$related_category}{'data'} =
-#                 $related_category_data->{'data'};
-#             $pdbx_data{$related_category}{'metadata'}{'type'} = 'indexed';
-#             indexed2raw( \%pdbx_data,
-#                          { 'categories' => [ '_[local]_rotamer_angle' ] } );
-#         }
-#     } elsif( defined $rotamer_angles{'_[local]_dihedral_angle'} &&
-#                   %{ $rotamer_angles{'_[local]_dihedral_angle'} } ) {
-#         $pdbx_data{'_[local]_dihedral_angle'} =
-#             $rotamer_angles{'_[local]_dihedral_angle'};
-
-#         # HACK: might be problems of duplication.
-#         my $related_data = related_category_data(
-#             \%pdbx_data,
-#             { '_[local]_rmsd' =>
-#                   { '_[local]_dihedral_angle' =>
-#                         [ # { 'keys' =>
-#                           #       [ 'label_seq_1_id', 'label_asym_1_id',
-#                           #         'pdbx_PDB_model_num_1', 'label_alt_1_id' ],
-#                           #   'reference_keys' =>
-#                           #       [ 'label_seq_id', 'label_asym_id',
-#                           #         'pdbx_PDB_model_num', 'label_alt_id' ] },
-#                           { 'keys' =>
-#                                 [ 'label_seq_2_id', 'label_asym_2_id',
-#                                   'pdbx_PDB_model_num_2', 'label_alt_2_id' ],
-#                             'reference_keys' =>
-#                                 [ 'label_seq_id', 'label_asym_id',
-#                                   'pdbx_PDB_model_num', 'label_alt_id' ] } ] } } );
-
-#         for my $category ( keys %{ $related_data } ) {
-#             my $related_category_data = $related_data->{$category};
-#             my $related_category =
-#                 $related_category_data->{'reference_category'};
-#             $pdbx_data{$related_category}{'data'} =
-#                 $related_category_data->{'data'};
-#             $pdbx_data{$related_category}{'metadata'}{'type'} = 'indexed';
-#             indexed2raw( \%pdbx_data,
-#                          { 'categories' => [ '_[local]_dihedral_angle' ] } );
-#         }
-#     }
-# }
 
 # # Prints out cif or csv
 # # TODO: decide what to do when group data is empty.
