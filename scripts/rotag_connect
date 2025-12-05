@@ -16,6 +16,7 @@ use PDBxParser qw( filter
                    raw2indexed
                    to_pdbx
                    to_csv );
+use StructConn qw( create_pdbx_entry );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -108,6 +109,7 @@ $hydrogen_queries =~ s/ //g;;
 $metalc_queries =~ s/ //g;;
 
 my %atom_site_groups = ();
+my %struct_conn = ();
 
 for my $pdbx_file ( @ARGV ) {
     my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );
@@ -125,6 +127,11 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
+
+    # HACK: look at the situation where ids clash.
+    if( defined $struct_conn && %{ $struct_conn } ) {
+        %struct_conn = ( %struct_conn, %{ $struct_conn } );
+    }
 
     # Assigns filters atoms and assigns to specified groups.
     my @group_ids =
@@ -191,6 +198,8 @@ for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
 
         $visited_connections{$group_id1}{$group_id2} = 1;
         $visited_connections{$group_id2}{$group_id1} = 1;
+
+
     }
 }
 
