@@ -198,8 +198,6 @@ for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
 
         $visited_connections{$group_id1}{$group_id2} = 1;
         $visited_connections{$group_id2}{$group_id1} = 1;
-
-
     }
 }
 
