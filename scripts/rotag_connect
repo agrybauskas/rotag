@@ -6,11 +6,13 @@ use warnings;
 use autodie;
 use Carp;
 use Getopt::Long;
+use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
 use Logging qw( error
                 warning );
-use PDBxParser qw( obtain_pdbx_data
+use PDBxParser qw( filter
+                   obtain_pdbx_data
                    raw2indexed
                    to_pdbx
                    to_csv );
@@ -118,6 +120,13 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
+
+    # Assigns filters atoms and assigns to specified groups.
+    my @group_ids =
+        uniq( @{ filter( { 'atom_site' => $atom_site,
+                           'data' => [ '[local]_selection_group' ],
+                           'is_list' => 1 } ) } );
+
 }
 
 # # Prints out cif or csv
