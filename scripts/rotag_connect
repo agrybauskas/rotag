@@ -16,7 +16,7 @@ use PDBxParser qw( filter
                    raw2indexed
                    to_pdbx
                    to_csv );
-use StructConn qw( create_pdbx_entry );
+use StructConn qw( create_struct_conn );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -190,11 +190,14 @@ for my $metalc_query ( split /;/, $metalc_queries) {
     }
 }
 
+my $connection_count = 1;
 my %visited_connections = ();
 for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
     my $atom_site_1 = $atom_site_groups{$group_id1};
 
     next if ! defined $atom_site_1;
+
+    my ( $atom_id1 ) = keys %{ $atom_site_1 };
 
     for my $group_id2 ( sort { $a <=> $b } keys %{ $connections{$group_id1} } ) {
         next if $visited_connections{$group_id1}{$group_id2} ||
@@ -206,6 +209,14 @@ for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
         my $atom_site_2 = $atom_site_groups{$group_id2};
 
         next if ! defined $atom_site_2;
+
+        for my $atom_id2 ( sort { $a <=> $b } keys %{ $atom_site_2 } ) {
+            create_struct_conn( $atom_site_1->{$atom_id1},
+                                $atom_site_2->{$atom_id2},
+                                $connections{$group_id1}{$group_id2},
+                                $connection_count );
+            $connection_count++;
+        }
     }
 }
 
