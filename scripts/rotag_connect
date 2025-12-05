@@ -30,7 +30,7 @@ our $VERSION = $VERSION;
 #*Usage:
 #*    rotag_connect --metalc '1,2' input.cif > output.cif
 #*    rotag_connect --covale '1,2;3,4' input.cif > output.cif
-#*    rotag_connect --metalc '1,2' --hydrog '4,5' input.cif > output.cif
+#*    rotag_connect --metalc '1,2,3,4' --hydrog '4,5' input.cif > output.cif
 #*
 #*Options:
 #*    --covale <group>,<group>[;<group>,<group>;...]
@@ -148,26 +148,39 @@ for my $pdbx_file ( @ARGV ) {
     }
 }
 
+# TODO: think what to do if the groups clash. Should queries overwrite?
 my %connections = ();
 for my $covalent_query ( split /;/, $covalent_queries) {
-    my ( $group_id1, $group_id2 ) = ( split /,/, $covalent_query );
-    $connections{$group_id1}{$group_id2} = 'covale';
-    $connections{$group_id2}{$group_id1} = 'covale';
+    my @group_ids = split /,/, $covalent_query;
+    my $group_id1 = $group_ids[0];
+    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+        $connections{$group_id1}{$group_id2} = 'covale';
+        $connections{$group_id2}{$group_id1} = 'covale';
+    }
 }
 for my $disulfide_query ( split /;/, $disulfide_queries) {
-    my ( $group_id1, $group_id2 ) = ( split /,/, $disulfide_query );
-    $connections{$group_id1}{$group_id2} = 'disulf';
-    $connections{$group_id2}{$group_id1} = 'disulf';
+    my @group_ids = split /,/, $disulfide_query;
+    my $group_id1 = $group_ids[0];
+    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+        $connections{$group_id1}{$group_id2} = 'disulf';
+        $connections{$group_id2}{$group_id1} = 'disulf';
+    }
 }
 for my $hydrogen_query ( split /;/, $hydrogen_queries) {
-    my ( $group_id1, $group_id2 ) = ( split /,/, $hydrogen_query );
-    $connections{$group_id1}{$group_id2} = 'hydrog';
-    $connections{$group_id2}{$group_id1} = 'hydrog';
+    my @group_ids = split /,/, $hydrogen_query;
+    my $group_id1 = $group_ids[0];
+    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+        $connections{$group_id1}{$group_id2} = 'hydrog';
+        $connections{$group_id2}{$group_id1} = 'hydrog';
+    }
 }
 for my $metalc_query ( split /;/, $metalc_queries) {
-    my ( $group_id1, $group_id2 ) = ( split /,/, $metalc_query );
-    $connections{$group_id1}{$group_id2} = 'metalc';
-    $connections{$group_id2}{$group_id1} = 'metalc';
+    my @group_ids = split /,/, $metalc_query;
+    my $group_id1 = $group_ids[0];
+    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+        $connections{$group_id1}{$group_id2} = 'metalc';
+        $connections{$group_id2}{$group_id1} = 'metalc';
+    }
 }
 
 my %visited_connections = ();
