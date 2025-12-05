@@ -192,12 +192,20 @@ for my $metalc_query ( split /;/, $metalc_queries) {
 
 my %visited_connections = ();
 for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
+    my $atom_site_1 = $atom_site_groups{$group_id1};
+
+    next if ! defined $atom_site_1;
+
     for my $group_id2 ( sort { $a <=> $b } keys %{ $connections{$group_id1} } ) {
         next if $visited_connections{$group_id1}{$group_id2} ||
             $visited_connections{$group_id2}{$group_id1};
 
         $visited_connections{$group_id1}{$group_id2} = 1;
         $visited_connections{$group_id2}{$group_id1} = 1;
+
+        my $atom_site_2 = $atom_site_groups{$group_id2};
+
+        next if ! defined $atom_site_2;
     }
 }
 

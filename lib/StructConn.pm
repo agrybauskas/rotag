@@ -17,3 +17,5 @@ our $VERSION = $VERSION;
 sub create_struct_conn
 {
 }
+
+1;
