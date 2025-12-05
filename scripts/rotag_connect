@@ -51,10 +51,10 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Options ----------------------------------- #
 
-my $covalent_query = '';
-my $disulfide_query = '';
-my $hydrogen_query = '';
-my $metalc_query = '';
+my $covalent_queries = '';
+my $disulfide_queries = '';
+my $hydrogen_queries = '';
+my $metalc_queries = '';
 my $tags = '_atom_site,_struct_conn';
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_struct_conn' );
@@ -72,10 +72,10 @@ local $SIG{__DIE__} = sub {
 };
 
 GetOptions(
-    'covale=s' => \$covalent_query,
-    'disulf=s' => \$disulfide_query,
-    'hydrog=s' => \$hydrogen_query,
-    'metalc=s' => \$metalc_query,
+    'covale=s' => \$covalent_queries,
+    'disulf=s' => \$disulfide_queries,
+    'hydrog=s' => \$hydrogen_queries,
+    'metalc=s' => \$metalc_queries,
     'tags=s' => \$tags,
     'format|F=s' => \$output_format,
     'help|h' => sub {
@@ -102,6 +102,11 @@ local @ARGV = ( q{-} ) unless @ARGV;
 $tags =~ s/ //g;
 my @tags = split /,/, $tags;
 
+$covalent_queries =~ s/ //g;;
+$disulfide_queries =~ s/ //g;;
+$hydrogen_queries =~ s/ //g;;
+$metalc_queries =~ s/ //g;;
+
 my %atom_site_groups = ();
 
 for my $pdbx_file ( @ARGV ) {
@@ -126,6 +131,34 @@ for my $pdbx_file ( @ARGV ) {
         uniq( @{ filter( { 'atom_site' => $atom_site,
                            'data' => [ '[local]_selection_group' ],
                            'is_list' => 1 } ) } );
+
+    for my $group_id ( @group_ids ) {
+        if( ! exists $atom_site_groups{$group_id} ) {
+            my $group_atom_site =
+                filter( { 'atom_site' => $atom_site,
+                          'include' =>
+                              { '[local]_selection_state' => [ 'T' ],
+                                '[local]_selection_group' => [$group_id] }});
+            $atom_site_groups{$group_id} = $group_atom_site;
+        } else {
+            error( { 'program' => $0,
+                     'message' => 'there are multiple instances of the group ' .
+                                  "in different files.\n" } );
+        }
+    }
+}
+
+my %connections = ();
+for my $covalent_query ( split /;/, $covalent_queries) {
+
+}
+for my $disulfide_query ( split /;/, $disulfide_queries) {
+
+}
+for my $hydrogen_query ( split /;/, $hydrogen_queries) {
+
+}
+for my $metalc_query ( split /;/, $metalc_queries) {
 
 }
 
