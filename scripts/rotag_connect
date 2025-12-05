@@ -150,16 +150,35 @@ for my $pdbx_file ( @ARGV ) {
 
 my %connections = ();
 for my $covalent_query ( split /;/, $covalent_queries) {
-
+    my ( $group_id1, $group_id2 ) = ( split /,/, $covalent_query );
+    $connections{$group_id1}{$group_id2} = 'covale';
+    $connections{$group_id2}{$group_id1} = 'covale';
 }
 for my $disulfide_query ( split /;/, $disulfide_queries) {
-
+    my ( $group_id1, $group_id2 ) = ( split /,/, $disulfide_query );
+    $connections{$group_id1}{$group_id2} = 'disulf';
+    $connections{$group_id2}{$group_id1} = 'disulf';
 }
 for my $hydrogen_query ( split /;/, $hydrogen_queries) {
-
+    my ( $group_id1, $group_id2 ) = ( split /,/, $hydrogen_query );
+    $connections{$group_id1}{$group_id2} = 'hydrog';
+    $connections{$group_id2}{$group_id1} = 'hydrog';
 }
 for my $metalc_query ( split /;/, $metalc_queries) {
+    my ( $group_id1, $group_id2 ) = ( split /,/, $metalc_query );
+    $connections{$group_id1}{$group_id2} = 'metalc';
+    $connections{$group_id2}{$group_id1} = 'metalc';
+}
 
+my %visited_connections = ();
+for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
+    for my $group_id2 ( sort { $a <=> $b } keys %{ $connections{$group_id1} } ) {
+        next if $visited_connections{$group_id1}{$group_id2} ||
+            $visited_connections{$group_id2}{$group_id1};
+
+        $visited_connections{$group_id1}{$group_id2} = 1;
+        $visited_connections{$group_id2}{$group_id1} = 1;
+    }
 }
 
 # # Prints out cif or csv
