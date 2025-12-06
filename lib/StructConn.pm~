@@ -1,7 +1,0 @@
-package StructConn;
-
-use strict;
-use warnings;
-
-use Exporter qw( import );
-our @EXPORT_OK = qw( obtain_struct_conn )
