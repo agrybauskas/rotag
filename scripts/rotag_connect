@@ -154,93 +154,94 @@ for my $pdbx_file ( @ARGV ) {
                                   "in different files.\n" } );
         }
     }
-}
 
-# TODO: think what to do if the groups clash. Should queries overwrite?
-my %connections = ();
-for my $covalent_query ( split /;/, $covalent_queries) {
-    my @group_ids = split /,/, $covalent_query;
-    my $group_id1 = $group_ids[0];
-    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
-        $connections{$group_id1}{$group_id2} = 'covale';
-        $connections{$group_id2}{$group_id1} = 'covale';
-    }
-}
-for my $disulfide_query ( split /;/, $disulfide_queries) {
-    my @group_ids = split /,/, $disulfide_query;
-    my $group_id1 = $group_ids[0];
-    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
-        $connections{$group_id1}{$group_id2} = 'disulf';
-        $connections{$group_id2}{$group_id1} = 'disulf';
-    }
-}
-for my $hydrogen_query ( split /;/, $hydrogen_queries) {
-    my @group_ids = split /,/, $hydrogen_query;
-    my $group_id1 = $group_ids[0];
-    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
-        $connections{$group_id1}{$group_id2} = 'hydrog';
-        $connections{$group_id2}{$group_id1} = 'hydrog';
-    }
-}
-for my $metalc_query ( split /;/, $metalc_queries) {
-    my @group_ids = split /,/, $metalc_query;
-    my $group_id1 = $group_ids[0];
-    for my $group_id2 ( @group_ids[1..$#group_ids] ) {
-        $connections{$group_id1}{$group_id2} = 'metalc';
-        $connections{$group_id2}{$group_id1} = 'metalc';
-    }
-}
-
-my $counter = counter_struct_conn( \%struct_conn );
-my %struct_conn_added = ();
-my %visited_connections = ();
-for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
-    my $atom_site_1 = $atom_site_groups{$group_id1};
-
-    next if ! defined $atom_site_1;
-
-    my ( $atom_id1 ) = keys %{ $atom_site_1 };
-
-    for my $group_id2 ( sort { $a <=> $b } keys %{ $connections{$group_id1} } ) {
-        next if $visited_connections{$group_id1}{$group_id2} ||
-            $visited_connections{$group_id2}{$group_id1};
-
-        $visited_connections{$group_id1}{$group_id2} = 1;
-        $visited_connections{$group_id2}{$group_id1} = 1;
-
-        my $atom_site_2 = $atom_site_groups{$group_id2};
-
-        next if ! defined $atom_site_2;
-
-        my $connection_type = $connections{$group_id1}{$group_id2};
-
-        for my $atom_id2 ( sort { $a <=> $b } keys %{ $atom_site_2 } ) {
-            %struct_conn_added = (
-                %struct_conn_added,
-                %{ create_struct_conn( $atom_site_1->{$atom_id1},
-                                       $atom_site_2->{$atom_id2},
-                                       $connection_type,
-                                       $counter->{$connection_type} ) }
-            );
-            $counter->{$connection_type}++;
+    # TODO: think what to do if the groups clash. Should queries overwrite?
+    my %connections = ();
+    for my $covalent_query ( split /;/, $covalent_queries) {
+        my @group_ids = split /,/, $covalent_query;
+        my $group_id1 = $group_ids[0];
+        for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+            $connections{$group_id1}{$group_id2} = 'covale';
+            $connections{$group_id2}{$group_id1} = 'covale';
         }
     }
-}
+    for my $disulfide_query ( split /;/, $disulfide_queries) {
+        my @group_ids = split /,/, $disulfide_query;
+        my $group_id1 = $group_ids[0];
+        for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+            $connections{$group_id1}{$group_id2} = 'disulf';
+            $connections{$group_id2}{$group_id1} = 'disulf';
+        }
+    }
+    for my $hydrogen_query ( split /;/, $hydrogen_queries) {
+        my @group_ids = split /,/, $hydrogen_query;
+        my $group_id1 = $group_ids[0];
+        for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+            $connections{$group_id1}{$group_id2} = 'hydrog';
+            $connections{$group_id2}{$group_id1} = 'hydrog';
+        }
+    }
+    for my $metalc_query ( split /;/, $metalc_queries) {
+        my @group_ids = split /,/, $metalc_query;
+        my $group_id1 = $group_ids[0];
+        for my $group_id2 ( @group_ids[1..$#group_ids] ) {
+            $connections{$group_id1}{$group_id2} = 'metalc';
+            $connections{$group_id2}{$group_id1} = 'metalc';
+        }
+    }
 
-# # Prints out cif or csv
-# # TODO: decide what to do when group data is empty.
-# if( $output_format eq 'pdbx' ) {
-#     to_pdbx( \%pdbx_data, { 'tags' => \@tags } );
-# } elsif( $output_format eq 'csv' ) {
-#     if( scalar @tags == 1 ) {
-#         to_csv( \%pdbx_data, { 'category' => $tags[0] } );
-#     } else {
-#         warning( { 'message' => "only one tag has to be chosen for " .
-#                        "CSV format.\n" } );
-#         exit;
-#     }
-# } else {
-#     error( { 'program' => $0,
-#              'message' => "output format '${output_format}'" .
-#                           " is not supported.\n" } );
-# }
+    my $counter = counter_struct_conn( \%struct_conn );
+    my %struct_conn_added = ();
+    my %visited_connections = ();
+    for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
+        my $atom_site_1 = $atom_site_groups{$group_id1};
+
+        next if ! defined $atom_site_1;
+
+        my ( $atom_id1 ) = keys %{ $atom_site_1 };
+
+        for my $group_id2 ( sort { $a <=> $b } keys %{ $connections{$group_id1} } ) {
+            next if $visited_connections{$group_id1}{$group_id2} ||
+                $visited_connections{$group_id2}{$group_id1};
+
+            $visited_connections{$group_id1}{$group_id2} = 1;
+            $visited_connections{$group_id2}{$group_id1} = 1;
+
+            my $atom_site_2 = $atom_site_groups{$group_id2};
+
+            next if ! defined $atom_site_2;
+
+            my $connection_type = $connections{$group_id1}{$group_id2};
+
+            for my $atom_id2 ( sort { $a <=> $b } keys %{ $atom_site_2 } ) {
+                %struct_conn_added = (
+                    %struct_conn_added,
+                    %{ create_struct_conn( $atom_site_1->{$atom_id1},
+                                           $atom_site_2->{$atom_id2},
+                                           $connection_type,
+                                           $counter->{$connection_type} ) }
+                );
+                $counter->{$connection_type}++;
+            }
+        }
+    }
+
+    %struct_conn = ( %struct_conn, %struct_conn_added );
+
+    # Prints out cif or csv
+    if( $output_format eq 'pdbx' ) {
+        to_pdbx( $pdbx_data, { 'tags' => \@tags } );
+    } elsif( $output_format eq 'csv' ) {
+        if( scalar @tags == 1 ) {
+            to_csv( $pdbx_data, { 'category' => $tags[0] } );
+        } else {
+            warning( { 'message' => "only one tag has to be chosen for " .
+                           "CSV format.\n" } );
+            exit;
+        }
+    } else {
+        error( { 'program' => $0,
+                 'message' => "output format '${output_format}'" .
+                              " is not supported.\n" } );
+    }
+}
