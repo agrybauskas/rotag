@@ -16,7 +16,8 @@ use PDBxParser qw( filter
                    raw2indexed
                    to_pdbx
                    to_csv );
-use StructConn qw( create_struct_conn );
+use StructConn qw( counter_struct_conn
+                   create_struct_conn );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -154,6 +155,8 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 }
+
+my $struct_conn_counter = counter_struct_conn( \%struct_conn );
 
 # TODO: think what to do if the groups clash. Should queries overwrite?
 my %connections = ();

@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( create_struct_conn );
+our @EXPORT_OK = qw( counter_struct_conn
+                     create_struct_conn );
 
 use Carp;
 
@@ -38,6 +39,18 @@ sub create_struct_conn
         }
     );
     return \%struct_conn;
+}
+
+sub counter_struct_conn
+{
+    my ( $struct_conn ) = @_;
+    my %counter = (
+        'covale' => 1,
+        'disulf' => 1,
+        'hydrog' => 1,
+        'metalc' => 1,
+    );
+    return \%counter;
 }
 
 1;
