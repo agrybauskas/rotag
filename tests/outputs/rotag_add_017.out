@@ -12,6 +12,10 @@ Options:
                         produced with rotag_library).
     -H, --hydrogens
                         add hydrogen atoms to selected atoms.
+    -l, --ligands
+                        add specified ligand.
+    --list-ligands
+                        list available ligands that can be added.
     -a, --rotamer-angle-file
                         selects rotamer angles from the cif file.
     -j, --rotamer-angle-json-file

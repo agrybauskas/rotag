@@ -158,8 +158,13 @@ my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
 if( $list_ligands ) {
+    map { print $_, "\n" }
+    sort
+    keys %{ $parameters->{'_[local]_sidechain_hetatom_extension'} };
     exit;
 }
+
+my @add_ligands = grep { $_ ne '' } split /,/, $ligands;
 
 # NOTE: the whole script needs thorough refactoring.
 # TODO: rename rotamer angle to rotamer bond parameters.
@@ -757,6 +762,8 @@ for my $pdbx_file ( @ARGV ) {
                  { 'tags' => \@tags,
                    'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] } } );
+    } elsif( scalar @add_ligands > 0 ) {
+
     } else {
         error(
             { 'program' => $0,
