@@ -110,7 +110,6 @@ $hydrogen_queries =~ s/ //g;;
 $metalc_queries =~ s/ //g;;
 
 my %atom_site_groups = ();
-my %struct_conn = ();
 
 for my $pdbx_file ( @ARGV ) {
     my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );
@@ -128,11 +127,6 @@ for my $pdbx_file ( @ARGV ) {
 
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
-
-    # HACK: look at the situation where ids clash.
-    if( defined $struct_conn && %{ $struct_conn } ) {
-        %struct_conn = ( %struct_conn, %{ $struct_conn } );
-    }
 
     # Assigns filters atoms and assigns to specified groups.
     my @group_ids =
@@ -190,7 +184,7 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    my $counter = counter_struct_conn( \%struct_conn );
+    my $counter = counter_struct_conn( $struct_conn );
     my %struct_conn_added = ();
     my %visited_connections = ();
     for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
@@ -226,7 +220,10 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    %struct_conn = ( %struct_conn, %struct_conn_added );
+    $pdbx_data->{'_struct_conn'}{'data'} = {
+        %{ $pdbx_data->{'_struct_conn'}{'data'} },
+        %struct_conn_added
+    };
 
     # Prints out cif or csv
     if( $output_format eq 'pdbx' ) {
