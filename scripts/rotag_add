@@ -781,7 +781,7 @@ for my $pdbx_file ( @ARGV ) {
             for my $pseudo_atom_id ( sort { $a <=> $b }
                                      keys %{ $moieties->{$add_ligand} } ) {
                 $ligand_site{$last_atom_id} =
-                    $moieties->{$add_ligand}{$pseudo_atom_id};
+                    clone $moieties->{$add_ligand}{$pseudo_atom_id};
                 $ligand_site{$last_atom_id}{'group_PDB'} = 'HETATM';
                 $ligand_site{$last_atom_id}{'id'} = $last_atom_id;
                 $last_atom_id++;
