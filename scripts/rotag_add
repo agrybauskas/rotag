@@ -59,6 +59,10 @@ our $VERSION = $VERSION;
 #*                        produced with rotag_library).
 #*    -H, --hydrogens
 #*                        add hydrogen atoms to selected atoms.
+#*    -l, --ligands
+#*                        add specified ligand.
+#*    --list-ligands
+#*                        list available ligands that can be added.
 #*    -a, --rotamer-angle-file
 #*                        selects rotamer angles from the cif file.
 #*    -j, --rotamer-angle-json-file
@@ -85,6 +89,8 @@ our $VERSION = $VERSION;
 
 my $add_sidechains = 0;
 my $add_hydrogens = 0;
+my $ligands = '';
+my $list_ligands = 0;
 my $rotamer_angle_file = '';
 my $rotamer_angle_json_file = '';
 my $include_selected = 0;
@@ -113,6 +119,8 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'side-chains|S' => sub { $add_sidechains = 1 },
     'hydrogens|H' => sub { $add_hydrogens = 1 },
+    'l|ligands=s' => \$ligands,
+    'list-ligands' => sub { $list_ligands = 1 },
     'a|rotamer-angle-cif-file=s' => \$rotamer_angle_file,
     'j|rotamer-angle-json-file=s' => \$rotamer_angle_json_file,
     'selected|s' => sub { $include_selected = 1 },
@@ -137,6 +145,10 @@ GetOptions(
     'version|v' => sub { print $VERSION, "\n"; exit; }
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
+
+if( $list_ligands ) {
+    exit;
+}
 
 # ----------------------------------- Main ------------------------------------ #
 
