@@ -32,6 +32,9 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Moieties ---------------------------------- #
 
+# TODO: remove %atoms and %sidechains as it will be replaced with Parameters.cif
+# data.
+
 our %atoms = (
     'H' => {
         1 => {

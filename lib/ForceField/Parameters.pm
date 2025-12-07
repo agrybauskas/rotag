@@ -270,6 +270,8 @@ sub force_field
             $force_field_parameters{'_[local]_clear_hybridization'}{$residue_name}
                                    {$atom_name} = $hybridization;
         }
+
+        # Creating moiety data structure.
     }
 
     # Preparing atom names for torsion potential.
