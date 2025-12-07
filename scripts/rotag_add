@@ -156,6 +156,8 @@ my @tags = split /,/, $tags;
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+my $moieties = $parameters->{'_[local]_moieties'};
+my $heteroatom_extension = $parameters->{'_[local]_sidechain_hetatom_extension'};
 
 if( $list_ligands ) {
     map { print $_, "\n" }
@@ -763,8 +765,19 @@ for my $pdbx_file ( @ARGV ) {
                    'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] } } );
     } elsif( scalar @add_ligands > 0 ) {
-        my $last_atom_id = max( keys %{ $atom_site } );
+        my $last_atom_id = max( keys %{ $atom_site } ) + 1;
         my %ligand_site = ();
+
+        for my $add_ligand ( @add_ligands ) {
+            if( ! exists $heteroatom_extension->{$add_ligand}  ) {
+                error(
+                    { 'program' => $0,
+                      'filename' => $pdbx_file,
+                      'message' =>
+                          "\"$add_ligand\" cannot be added. Check moieties " .
+                          "that are available using --list-ligands option.\n" } );
+            }
+        }
 
         $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %ligand_site };
 
