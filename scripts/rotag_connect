@@ -5,6 +5,7 @@ use warnings;
 
 use autodie;
 use Carp;
+use Clone qw( clone );
 use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
@@ -219,10 +220,23 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    $pdbx_data->{'_struct_conn'}{'data'} = {
-        %{ $pdbx_data->{'_struct_conn'}{'data'} },
-        %struct_conn_added
-    };
+    if( ! %{ $pdbx_data->{'_struct_conn'} } ) {
+        $pdbx_data->{'_struct_conn'}{'data'} = clone \%struct_conn_added;
+        $pdbx_data->{'_struct_conn'}{'metadata'}{'attributes'} = [
+            'id', 'conn_type_id', 'ptnr1_label_seq_id', 'ptnr1_label_asym_id',
+            'pdbx_ptnr1_label_alt_id', 'ptnr1_auth_seq_id', 'ptnr1_auth_asym_id',
+            'ptnr1_label_atom_id', 'ptnr2_label_seq_id', 'ptnr2_label_asym_id',
+            'ptnr2_auth_seq_id', 'pdbx_ptnr2_label_alt_id', 'ptnr2_auth_asym_id',
+            'ptnr2_label_atom_id',
+        ];
+        $pdbx_data->{'_struct_conn'}{'metadata'}{'type'} = 'indexed';
+        $pdbx_data->{'_struct_conn'}{'metadata'}{'is_loop'} = 1;
+    } else {
+        $pdbx_data->{'_struct_conn'}{'data'} = {
+            %{ $pdbx_data->{'_struct_conn'}{'data'} },
+            %struct_conn_added
+        };
+    }
 
     # Prints out cif or csv
     if( $output_format eq 'pdbx' ) {
