@@ -295,8 +295,6 @@ sub force_field
                 'label_atom_id' => $atom_name,
                 'label_alt_id' => q{.},
                 'label_comp_id' => $residue_name,
-                'label_asym_id' => 'A',
-                'label_entity_id' => 1,
                 'label_seq_id' => q{.},
                 'Cartn_x' => $cartn_x,
                 'Cartn_y' => $cartn_y,
