@@ -763,7 +763,15 @@ for my $pdbx_file ( @ARGV ) {
                    'add_attributes' =>
                        { '_atom_site' => [ '[local]_selection_state' ] } } );
     } elsif( scalar @add_ligands > 0 ) {
+        my $last_atom_id = max( keys %{ $atom_site } );
+        my %ligand_site = ();
 
+        $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %ligand_site };
+
+        to_pdbx( $pdbx,
+                 { 'tags' => \@tags,
+                   'add_attributes' =>
+                       { '_atom_site' => [ '[local]_selection_state' ] } } );
     } else {
         error(
             { 'program' => $0,
