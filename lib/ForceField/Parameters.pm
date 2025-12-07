@@ -249,6 +249,11 @@ sub force_field
         my $atom_name = $chem_comp_atom->{'atom_id'};
         my $atom_type = $chem_comp_atom->{'type_symbol'};
         my $partial_charge = $chem_comp_atom->{'partial_charge'};
+        my ( $cartn_x, $cartn_y, $cartn_z ) = (
+            $chem_comp_atom->{'model_Cartn_x'},
+            $chem_comp_atom->{'model_Cartn_y'},
+            $chem_comp_atom->{'model_Cartn_z'}
+        );
 
         $force_field_parameters{'_[local]_partial_charge'}{$residue_name}
                                {$atom_name} = $partial_charge;
@@ -272,6 +277,33 @@ sub force_field
         }
 
         # Creating moiety data structure.
+        if( $necessity eq 'mandatory' ) {
+            my $last_id = 1;
+            if( defined $force_field_parameters{'_[local]_moieties'} &&
+                defined $force_field_parameters{'_[local]_moieties'}
+                                               {$residue_name} ) {
+                ( $last_id ) =
+                    sort { $b <=> $a }
+                    keys %{ $force_field_parameters{'_[local]_moieties'}
+                                                     {$residue_name} };
+                $last_id++;
+            }
+
+            $force_field_parameters{'_[local]_moieties'}{$residue_name}{$last_id} = {
+                'id' => $last_id,
+                'type_symbol' => $atom_type,
+                'label_atom_id' => $atom_name,
+                'label_alt_id' => q{.},
+                'label_comp_id' => $residue_name,
+                'label_asym_id' => 'A',
+                'label_entity_id' => 1,
+                'label_seq_id' => q{.},
+                'Cartn_x' => $cartn_x,
+                'Cartn_y' => $cartn_y,
+                'Cartn_z' => $cartn_z,
+                'pdbx_PDB_model_num' => 1,
+            };
+        }
     }
 
     # Preparing atom names for torsion potential.
