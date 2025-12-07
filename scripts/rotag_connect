@@ -109,8 +109,6 @@ $disulfide_queries =~ s/ //g;;
 $hydrogen_queries =~ s/ //g;;
 $metalc_queries =~ s/ //g;;
 
-my %atom_site_groups = ();
-
 for my $pdbx_file ( @ARGV ) {
     my $pdbx_data = obtain_pdbx_data( $pdbx_file, \@category_list );
 
@@ -134,6 +132,7 @@ for my $pdbx_file ( @ARGV ) {
                            'data' => [ '[local]_selection_group' ],
                            'is_list' => 1 } ) } );
 
+    my %atom_site_groups = ();
     for my $group_id ( @group_ids ) {
         if( ! exists $atom_site_groups{$group_id} ) {
             my $group_atom_site =
