@@ -146,10 +146,6 @@ GetOptions(
 ) or error( { 'program' => $0,
               'message' => "mistake in command line argument.\n" } );
 
-if( $list_ligands ) {
-    exit;
-}
-
 # ----------------------------------- Main ------------------------------------ #
 
 local @ARGV = ( q{-} ) unless @ARGV;
@@ -160,6 +156,10 @@ my @tags = split /,/, $tags;
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
 my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+
+if( $list_ligands ) {
+    exit;
+}
 
 # NOTE: the whole script needs thorough refactoring.
 # TODO: rename rotamer angle to rotamer bond parameters.

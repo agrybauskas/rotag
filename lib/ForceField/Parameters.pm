@@ -270,19 +270,6 @@ sub force_field
             $force_field_parameters{'_[local]_clear_hybridization'}{$residue_name}
                                    {$atom_name} = $hybridization;
         }
-
-        # # Restructuring parameters of hydrogen names.
-        # if( $atom_type eq 'H' ) {
-        #     for my $connected_atom_name (
-        #         keys %{ $force_field_parameters{'_[local]_connectivity'}
-        #                                        {$residue_name}
-        #                                        {$atom_name} } ) {
-        #         push @{ $force_field_parameters{'_[local]_hydrogen_names'}
-        #                                        {$residue_name}
-        #                                        {$connected_atom_name} },
-        #             $atom_name;
-        #     }
-        # }
     }
 
     # Preparing atom names for torsion potential.
