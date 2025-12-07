@@ -777,6 +777,15 @@ for my $pdbx_file ( @ARGV ) {
                           "\"$add_ligand\" cannot be added. Check moieties " .
                           "that are available using --list-ligands option.\n" } );
             }
+
+            for my $pseudo_atom_id ( sort { $a <=> $b }
+                                     keys %{ $moieties->{$add_ligand} } ) {
+                $ligand_site{$last_atom_id} =
+                    $moieties->{$add_ligand}{$pseudo_atom_id};
+                $ligand_site{$last_atom_id}{'group_PDB'} = 'HETATM';
+                $ligand_site{$last_atom_id}{'id'} = $last_atom_id;
+                $last_atom_id++;
+            }
         }
 
         $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %ligand_site };
