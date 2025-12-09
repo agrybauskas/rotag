@@ -73,4 +73,11 @@ sub counter_struct_conn
     return \%counter;
 }
 
+sub connection_tree
+{
+    my ( $struct_conn ) = $_;
+    my %connection_tree = ();
+    return \%connection_tree;
+}
+
 1;
