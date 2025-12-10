@@ -184,6 +184,7 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
+    # TODO: might be useful to move to the separate function.
     my $counter = counter_struct_conn( $struct_conn );
     my %struct_conn_added = ();
     my %visited_connections = ();
@@ -219,6 +220,8 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
     }
+
+    # TODO: also, should be moved to a separate function.
 
     if( ! %{ $pdbx_data->{'_struct_conn'} } ) {
         $pdbx_data->{'_struct_conn'}{'data'} = clone \%struct_conn_added;
