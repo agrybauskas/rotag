@@ -221,8 +221,6 @@ for my $pdbx_file ( @ARGV ) {
         }
     }
 
-    # TODO: also, should be moved to a separate function.
-
     if( ! %{ $pdbx_data->{'_struct_conn'} } ) {
         $pdbx_data->{'_struct_conn'}{'data'} = clone \%struct_conn_added;
         $pdbx_data->{'_struct_conn'}{'metadata'}{'attributes'} = [
