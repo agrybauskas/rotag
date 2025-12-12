@@ -127,6 +127,15 @@ for my $pdbx_file ( @ARGV ) {
     my $atom_site = $pdbx_data->{'_atom_site'}{'data'};
     my $struct_conn = $pdbx_data->{'_struct_conn'}{'data'};
 
+
+    my ( $last_auth_seq ) =
+        sort { $b <=> $a }
+        uniq
+        grep { $_ ne '?' }
+        grep { defined $_ }
+        map { $atom_site->{$_}{'auth_seq_id'} }
+        keys %{ $atom_site };
+
     # Assigns filters atoms and assigns to specified groups.
     my @group_ids =
         uniq( @{ filter( { 'atom_site' => $atom_site,
