@@ -15,6 +15,7 @@ our @EXPORT_OK = qw( change_unique_residue_key
                      filter_connected
                      filter_new
                      follow_hetatoms
+                     increase_chain_id
                      indexed2raw
                      mark_selection
                      obtain_pdbx_data
@@ -1740,6 +1741,20 @@ sub sort_by_list
         sort { $sort_order{$a} <=> $sort_order{$b} } @sorted_list;
 
     return \@sorted_list, \%sort_order;
+}
+
+sub increase_chain_id
+{
+    my ( $chain_id ) = @_;
+    my $updated_chain_id = "";
+    my %conversion_table = (
+        "A" => 1,  "B" => 2,  "C" => 3,  "D" => 4,  "E" => 5,  "F" => 6,
+        "G" => 7,  "H" => 8,  "I" => 9,  "J" => 10, "K" => 11, "L" => 12,
+        "M" => 13, "N" => 14, "O" => 15, "P" => 16, "Q" => 17, "R" => 18,
+        "S" => 19, "T" => 20, "U" => 21, "V" => 22, "W" => 23, "X" => 24,
+        "Y" => 25, "Z" => 26
+    );
+    return $updated_chain_id;
 }
 
 1;

@@ -31,6 +31,7 @@ use PDBxParser qw( change_unique_residue_key
                    filter
                    filter_new
                    filter_by_unique_residue_key
+                   increase_chain_id
                    mark_selection
                    obtain_pdbx_data
                    raw2indexed
