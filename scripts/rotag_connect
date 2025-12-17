@@ -207,6 +207,23 @@ for my $pdbx_file ( @ARGV ) {
 
             for my $atom_id2 ( sort { $a <=> $b }
                                keys %{ $atom_site_groups{$group_id2} } ) {
+                if( $atom_site->{$atom_id1}{'group_PDB'} eq 'HETATM' &&
+                    ( $atom_site->{$atom_id1}{'auth_asym_id'} eq '?' ||
+                      $atom_site->{$atom_id1}{'auth_asym_id'} eq '.' ) &&
+                    $atom_site->{$atom_id2}{'auth_asym_id'} ne '?' &&
+                    $atom_site->{$atom_id2}{'auth_asym_id'} ne '.' ) {
+                    $atom_site->{$atom_id1}{'auth_asym_id'} =
+                        $atom_site->{$atom_id2}{'auth_asym_id'};
+                }
+                if( $atom_site->{$atom_id2}{'group_PDB'} eq 'HETATM' &&
+                    ( $atom_site->{$atom_id2}{'auth_asym_id'} eq '?' ||
+                      $atom_site->{$atom_id2}{'auth_asym_id'} eq '.' ) &&
+                    $atom_site->{$atom_id1}{'auth_asym_id'} ne '?' &&
+                    $atom_site->{$atom_id1}{'auth_asym_id'} ne '.' ) {
+                    $atom_site->{$atom_id2}{'auth_asym_id'} =
+                        $atom_site->{$atom_id1}{'auth_asym_id'};
+                }
+
                 %struct_conn_added = (
                     %struct_conn_added,
                     %{ create_struct_conn(
