@@ -210,8 +210,8 @@ for my $pdbx_file ( @ARGV ) {
                 %struct_conn_added = (
                     %struct_conn_added,
                     %{ create_struct_conn(
-                           $atom_site_groups{$group_id1}->{$atom_id1},
-                           $atom_site_groups{$group_id2}->{$atom_id2},
+                           $atom_site->{$atom_id1},
+                           $atom_site->{$atom_id2},
                            $connection_type,
                            $counter->{$connection_type} ) }
                 );
