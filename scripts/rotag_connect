@@ -189,32 +189,31 @@ for my $pdbx_file ( @ARGV ) {
     my %struct_conn_added = ();
     my %visited_connections = ();
     for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
-        my $atom_site_1 = $atom_site_groups{$group_id1};
+        next if ! defined $atom_site_groups{$group_id1};
 
-        next if ! defined $atom_site_1;
+        my ( $atom_id1 ) = keys %{ $atom_site_groups{$group_id1} };
 
-        my ( $atom_id1 ) = keys %{ $atom_site_1 };
-
-        for my $group_id2 ( sort { $a <=> $b } keys %{ $connections{$group_id1} } ) {
+        for my $group_id2 ( sort { $a <=> $b }
+                            keys %{ $connections{$group_id1} } ) {
             next if $visited_connections{$group_id1}{$group_id2} ||
                 $visited_connections{$group_id2}{$group_id1};
 
             $visited_connections{$group_id1}{$group_id2} = 1;
             $visited_connections{$group_id2}{$group_id1} = 1;
 
-            my $atom_site_2 = $atom_site_groups{$group_id2};
-
-            next if ! defined $atom_site_2;
+            next if ! defined $atom_site_groups{$group_id2};
 
             my $connection_type = $connections{$group_id1}{$group_id2};
 
-            for my $atom_id2 ( sort { $a <=> $b } keys %{ $atom_site_2 } ) {
+            for my $atom_id2 ( sort { $a <=> $b }
+                               keys %{ $atom_site_groups{$group_id2} } ) {
                 %struct_conn_added = (
                     %struct_conn_added,
-                    %{ create_struct_conn( $atom_site_1->{$atom_id1},
-                                           $atom_site_2->{$atom_id2},
-                                           $connection_type,
-                                           $counter->{$connection_type} ) }
+                    %{ create_struct_conn(
+                           $atom_site_groups{$group_id1}->{$atom_id1},
+                           $atom_site_groups{$group_id2}->{$atom_id2},
+                           $connection_type,
+                           $counter->{$connection_type} ) }
                 );
                 $counter->{$connection_type}++;
             }
