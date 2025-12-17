@@ -4,6 +4,7 @@ sudo apt-get install -y \
      libclone-perl \
      liblist-moreutils-perl \
      liblist-allutils-perl \
+     libmath-basecalc-perl \
      libparse-yapp-perl \
      libreadonly-perl \
      libsort-naturally-perl \
