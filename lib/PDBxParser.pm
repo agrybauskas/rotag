@@ -44,6 +44,7 @@ use Carp;
 use Clone qw( clone );
 use List::MoreUtils qw( any
                         uniq );
+use Math::BaseCalc;
 use Sort::Naturally;
 
 use Version qw( $VERSION );
@@ -1745,16 +1746,15 @@ sub sort_by_list
 
 sub increase_chain_id
 {
-    my ( $chain_id ) = @_;
-    my $updated_chain_id = "";
-    my %conversion_table = (
-        "A" => 1,  "B" => 2,  "C" => 3,  "D" => 4,  "E" => 5,  "F" => 6,
-        "G" => 7,  "H" => 8,  "I" => 9,  "J" => 10, "K" => 11, "L" => 12,
-        "M" => 13, "N" => 14, "O" => 15, "P" => 16, "Q" => 17, "R" => 18,
-        "S" => 19, "T" => 20, "U" => 21, "V" => 22, "W" => 23, "X" => 24,
-        "Y" => 25, "Z" => 26
-    );
-    return $updated_chain_id;
+    my ( $chain_ids, $increase_by ) = @_;
+    $increase_by //= 0;
+    my $calc26 = new Math::BaseCalc( digits => [ 'A'..'Z' ] );
+    my ( $last_chain_id ) =
+        sort { $b <=> $a }
+        map { $calc26->from_base( $_ ) }
+        uniq
+        sort @{ $chain_ids };
+    return $calc26->to_base( $last_chain_id + $increase_by );
 }
 
 1;
