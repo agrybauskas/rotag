@@ -768,11 +768,20 @@ for my $pdbx_file ( @ARGV ) {
     } elsif( scalar @add_ligands > 0 ) {
         my $last_atom_id = max( keys %{ $atom_site } ) + 1;
         my $last_chain_id = increase_chain_id(
-            [ map { $atom_site->{$_}{'label_asym_id'} } keys %{ $atom_site } ],
+            [ grep { $_ ne '.' && $_ ne '?' }
+              map { $atom_site->{$_}{'label_asym_id'} }
+              keys %{ $atom_site } ],
             1
         );
-        my %ligand_site = ();
 
+        my ( $last_auth_seq_id ) =
+            sort { $b <=> $a }
+            grep { $_ ne '.' && $_ ne '?' }
+            map { $atom_site->{$_}{'auth_seq_id'} }
+            keys %{ $atom_site };
+        $last_auth_seq_id++;
+
+        my %ligand_site = ();
         for my $add_ligand ( @add_ligands ) {
             if( ! exists $heteroatom_extension->{$add_ligand}  ) {
                 error(
@@ -793,10 +802,12 @@ for my $pdbx_file ( @ARGV ) {
                 # TODO: check if it is OK to assume that it is always 1 if not
                 # specified.
                 $ligand_site{$last_atom_id}{'label_entity_id'} = 1;
+                $ligand_site{$last_atom_id}{'auth_seq_id'} = $last_auth_seq_id;
                 $last_atom_id++;
             }
 
             $last_chain_id = increase_chain_id( [ $last_chain_id ], 1 );
+            $last_auth_seq_id++;
         }
 
         $pdbx->{'_atom_site'}{'data'} = { %{ $atom_site }, %ligand_site };
