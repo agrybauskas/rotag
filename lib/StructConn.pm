@@ -17,7 +17,7 @@ our $VERSION = $VERSION;
 
 sub create_struct_conn
 {
-    my ( $atom1, $atom2, $type, $id, $auth_seq_id ) = @_;
+    my ( $atom1, $atom2, $type, $id ) = @_;
     # TODO: need to find more robust solution for assigning certain unknown
     # values.
     my %struct_conn = (
