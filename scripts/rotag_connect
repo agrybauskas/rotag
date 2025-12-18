@@ -10,6 +10,9 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
+use BondProperties qw( hybridization );
+use ConnectAtoms qw( connect_atoms );
+use ForceField::Parameters();
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
@@ -105,6 +108,8 @@ local @ARGV = ( q{-} ) unless @ARGV;
 $tags =~ s/ //g;
 my @tags = split /,/, $tags;
 
+my $parameters = Parameters->new();
+
 $covalent_queries =~ s/ //g;;
 $disulfide_queries =~ s/ //g;;
 $hydrogen_queries =~ s/ //g;;
@@ -141,6 +146,10 @@ for my $pdbx_file ( @ARGV ) {
                           'include' =>
                               { '[local]_selection_state' => [ 'T' ],
                                 '[local]_selection_group' => [$group_id] }});
+
+            hybridization( $parameters, $group_atom_site );
+            connect_atoms( $parameters, $group_atom_site );
+
             $atom_site_groups{$group_id} = $group_atom_site;
         } else {
             error( { 'program' => $0,
