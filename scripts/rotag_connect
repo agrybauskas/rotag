@@ -145,7 +145,7 @@ for my $pdbx_file ( @ARGV ) {
                 filter( { 'atom_site' => $atom_site,
                           'include' =>
                               { '[local]_selection_state' => [ 'T' ],
-                                '[local]_selection_group' => [$group_id] }});
+                                '[local]_selection_group' => [ $group_id ] }});
 
             hybridization( $parameters, $group_atom_site );
             connect_atoms( $parameters, $group_atom_site );
