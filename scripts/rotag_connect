@@ -10,9 +10,6 @@ use Getopt::Long;
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
 
-use BondProperties qw( hybridization );
-use ConnectAtoms qw( connect_atoms );
-use ForceField::Parameters();
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
@@ -110,8 +107,6 @@ local @ARGV = ( q{-} ) unless @ARGV;
 $tags =~ s/ //g;
 my @tags = split /,/, $tags;
 
-my $parameters = Parameters->new();
-
 $covalent_queries =~ s/ //g;;
 $disulfide_queries =~ s/ //g;;
 $hydrogen_queries =~ s/ //g;;
@@ -148,30 +143,6 @@ for my $pdbx_file ( @ARGV ) {
                           'include' =>
                               { '[local]_selection_state' => [ 'T' ],
                                 '[local]_selection_group' => [ $group_id ] }});
-
-            # Connects heteroatoms appropriately.
-            my  %visited_residue_keys = ();
-            for my $group_atom_id ( sort keys %{ $group_atom_site } ) {
-                next if $group_atom_site->{$group_atom_id}{'group_PDB'} ne 'HETATM';
-
-                my $residue_unique_key =
-                    unique_residue_key( $group_atom_site->{$group_atom_id} );
-
-                next if exists $visited_residue_keys{$residue_unique_key};
-
-                $visited_residue_keys{$residue_unique_key} = 1;
-
-                my $residue_site =
-                    filter_by_unique_residue_key(
-                        $atom_site,
-                        $residue_unique_key,
-                        1
-                    );
-
-                hybridization( $parameters, $residue_site );
-                connect_atoms( $parameters, $residue_site );
-            }
-
             $atom_site_groups{$group_id} = $group_atom_site;
         } else {
             error( { 'program' => $0,
