@@ -149,9 +149,11 @@ for my $pdbx_file ( @ARGV ) {
                               { '[local]_selection_state' => [ 'T' ],
                                 '[local]_selection_group' => [ $group_id ] }});
 
-            # Connects atoms appropriately.
+            # Connects heteroatoms appropriately.
             my  %visited_residue_keys = ();
             for my $group_atom_id ( sort keys %{ $group_atom_site } ) {
+                next if $group_atom_site->{$group_atom_id}{'group_PDB'} ne 'HETATM';
+
                 my $residue_unique_key =
                     unique_residue_key( $group_atom_site->{$group_atom_id} );
 
