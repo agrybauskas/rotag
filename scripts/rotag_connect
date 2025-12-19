@@ -214,16 +214,30 @@ for my $pdbx_file ( @ARGV ) {
                       $atom_site->{$atom_id1}{'auth_asym_id'} eq '.' ) &&
                     $atom_site->{$atom_id2}{'auth_asym_id'} ne '?' &&
                     $atom_site->{$atom_id2}{'auth_asym_id'} ne '.' ) {
-                    $atom_site->{$atom_id1}{'auth_asym_id'} =
-                        $atom_site->{$atom_id2}{'auth_asym_id'};
+                    my $residue_unique_key1 =
+                        unique_residue_key( $atom_site->{$atom_id1} );
+                    my $residue_atom_site1 =
+                        filter_by_unique_residue_key( $atom_site,
+                                                      $residue_unique_key1, 1 );
+                    for my $residue_atom_id1 ( sort keys %{ $residue_atom_site1 } ) {
+                        $atom_site->{$residue_atom_id1}{'auth_asym_id'} =
+                            $atom_site->{$atom_id2}{'auth_asym_id'};
+                    }
                 }
                 if( $atom_site->{$atom_id2}{'group_PDB'} eq 'HETATM' &&
                     ( $atom_site->{$atom_id2}{'auth_asym_id'} eq '?' ||
                       $atom_site->{$atom_id2}{'auth_asym_id'} eq '.' ) &&
                     $atom_site->{$atom_id1}{'auth_asym_id'} ne '?' &&
                     $atom_site->{$atom_id1}{'auth_asym_id'} ne '.' ) {
-                    $atom_site->{$atom_id2}{'auth_asym_id'} =
-                        $atom_site->{$atom_id1}{'auth_asym_id'};
+                    my $residue_unique_key2 =
+                        unique_residue_key( $atom_site->{$atom_id2} );
+                    my $residue_atom_site2 =
+                        filter_by_unique_residue_key( $atom_site,
+                                                      $residue_unique_key2, 1 );
+                    for my $residue_atom_id2 ( sort keys %{ $residue_atom_site2 } ) {
+                        $atom_site->{$residue_atom_id2}{'auth_asym_id'} =
+                            $atom_site->{$atom_id1}{'auth_asym_id'};
+                    }
                 }
 
                 %struct_conn_added = (
