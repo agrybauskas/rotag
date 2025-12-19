@@ -16,10 +16,12 @@ use ForceField::Parameters();
 use Logging qw( error
                 warning );
 use PDBxParser qw( filter
+                   filter_by_unique_residue_key
                    obtain_pdbx_data
                    raw2indexed
                    to_pdbx
-                   to_csv );
+                   to_csv
+                   unique_residue_key );
 use StructConn qw( counter_struct_conn
                    create_struct_conn );
 use Version qw( $VERSION );
@@ -147,8 +149,26 @@ for my $pdbx_file ( @ARGV ) {
                               { '[local]_selection_state' => [ 'T' ],
                                 '[local]_selection_group' => [ $group_id ] }});
 
-            hybridization( $parameters, $group_atom_site );
-            connect_atoms( $parameters, $group_atom_site );
+            # Connects atoms appropriately.
+            my  %visited_residue_keys = ();
+            for my $group_atom_id ( sort keys %{ $group_atom_site } ) {
+                my $residue_unique_key =
+                    unique_residue_key( $group_atom_site->{$group_atom_id} );
+
+                next if exists $visited_residue_keys{$residue_unique_key};
+
+                $visited_residue_keys{$residue_unique_key} = 1;
+
+                my $residue_site =
+                    filter_by_unique_residue_key(
+                        $atom_site,
+                        $residue_unique_key,
+                        1
+                    );
+
+                hybridization( $parameters, $residue_site );
+                connect_atoms( $parameters, $residue_site );
+            }
 
             $atom_site_groups{$group_id} = $group_atom_site;
         } else {
