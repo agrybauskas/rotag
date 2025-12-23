@@ -1,1 +1,35 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_[local]_bond_length.id
+_[local]_bond_length.label_comp_id
+_[local]_bond_length.label_seq_id
+_[local]_bond_length.label_asym_id
+_[local]_bond_length.pdbx_PDB_model_num
+_[local]_bond_length.label_alt_id
+_[local]_bond_length.atom_1_id
+_[local]_bond_length.label_atom_1_id
+_[local]_bond_length.site_1_id
+_[local]_bond_length.atom_2_id
+_[local]_bond_length.label_atom_2_id
+_[local]_bond_length.site_2_id
+_[local]_bond_length.type
+_[local]_bond_length.value
+1 ASP 219 A 1 . 1409 CA . 1412 CB . CA-CB 1.532915
+2 ASP 219 A 1 . 1412 CB . 1413 CG . CB-CG 1.521566
+3 ASP 219 A 1 . 1413 CG . 1414 OD1 . CG-OD1 1.249130
+4 HOH . B 1 . 1418 H1 1 1416 O . H1-O 0.970009
+5 HOH . B 1 . 1414 OD1 . 1418 H1 1 OD1.H1 88.657744
+6 HOH . B 1 . 1416 O . 1419 H2 1 O-H2 0.970009
+7 ASP 219 A 1 . 1409 CA . 1412 CB . CA-CB 1.532915
+8 ASP 219 A 1 . 1412 CB . 1413 CG . CB-CG 1.521566
+9 ASP 219 A 1 . 1413 CG . 1414 OD1 . CG-OD1 1.249130
+10 HOH . B 1 . 1418 H1 1 1416 O . H1-O 0.970009
+11 HOH . B 1 . 1419 H2 1 1417 MG 2 H2.MG 36.653320
+12 HOH . B 1 . 1414 OD1 . 1418 H1 1 OD1.H1 88.657744
+13 HOH . B 1 . 1416 O . 1419 H2 1 O-H2 0.970009
+14 ASP 219 A 1 . 1409 CA . 1412 CB . CA-CB 1.532915
+15 ASP 219 A 1 . 1412 CB . 1413 CG . CB-CG 1.521566
+16 ASP 219 A 1 . 1413 CG . 1414 OD1 . CG-OD1 1.249130
+17 ASP 219 A 1 . 1413 CG . 1415 OD2 . CG-OD2 1.250788
+#

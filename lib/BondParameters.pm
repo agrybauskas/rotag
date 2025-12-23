@@ -27,6 +27,7 @@ use List::Util qw( any
 use BondPath;
 use AtomProperties qw( contains_hetatoms
                        contains_sidechain_atoms );
+use ConnectAtoms qw( is_neighbour );
 use Combinatorics qw( permutation );
 use Measure qw( bond_angle
                 bond_length
@@ -865,11 +866,6 @@ sub bond_parameter_name_key
             $atom_site->{$bond_atom_ids->[$i]}{'label_atom_id'};
         my $ligand_site_id =
             $atom_site->{$bond_atom_ids->[$i]}{'ligand_site_id'};
-        my $first_unique_residue_key =
-            unique_residue_key( $atom_site->{$bond_atom_ids->[$i]} );
-        my $second_unique_residue_key =
-            defined $bond_atom_ids->[$i+1] ?
-            unique_residue_key( $atom_site->{$bond_atom_ids->[$i+1]} ) : undef;
         my $bond_symbol =
             $i == $#{ $bond_atom_ids } ?
             '':
@@ -877,9 +873,11 @@ sub bond_parameter_name_key
               $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'ATOM' ) ||
             ( $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'ATOM' &&
               $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'HETATM' ) ||
-            ( $first_unique_residue_key ne $second_unique_residue_key &&
-              $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'HETATM' &&
-              $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'HETATM' ) ?
+            ( $atom_site->{$bond_atom_ids->[$i]}{'group_PDB'} eq 'HETATM' &&
+              $atom_site->{$bond_atom_ids->[$i+1]}{'group_PDB'} eq 'HETATM' &&
+              ! is_neighbour( $atom_site,
+                              $bond_atom_ids->[$i],
+                              $bond_atom_ids->[$i+1] ) ) ?
             '.' : '-';
         my $ligand_symbol = defined $ligand_site_id ? "{$ligand_site_id}": '';
         push @bond_parameter_name_key_parts,
