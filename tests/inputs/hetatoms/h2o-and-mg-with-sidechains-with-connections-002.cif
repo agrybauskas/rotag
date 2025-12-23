@@ -46,5 +46,5 @@ _struct_conn.pdbx_ptnr2_label_alt_id
 _struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
 hydrog1 hydrog 219 A . 264 A OD1 . B 265 . A H1
-hydrog2 hydrog . B . 265 A H2 . C 266 . A MG
+hydrog2 hydrog . B . 265 A O . C 266 . A MG
 #
