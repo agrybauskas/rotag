@@ -258,9 +258,11 @@ sub bond_stretching_matrices
             map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] }
                 ( 1, 0 );
         my @mid_connections = # Excludes up atom.
+            grep { exists $ref_atom_site->{$_} }
             grep { $_ ne $up_atom_id }
                  ( @{ $ref_atom_site->{$mid_atom_id}{'connections'} },
                    @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatom'} } );
+
         my ( $side_atom_id ) =
             @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
 
