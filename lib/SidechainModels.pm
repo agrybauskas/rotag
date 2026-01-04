@@ -214,6 +214,11 @@ sub bond_torsion_matrices
         my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
             map { $rotatable_bonds->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
                 ( 2, 1, 0 );
+
+        next if ! exists $ref_atom_site->{$mid_atom_id} ||
+                ! exists $ref_atom_site->{$up_atom_id} ||
+                ! exists $ref_atom_site->{$side_atom_id};
+
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $ref_atom_site->{$_}{'Cartn_x'},
                     $ref_atom_site->{$_}{'Cartn_y'},
@@ -257,6 +262,10 @@ sub bond_stretching_matrices
         my ( $up_atom_id, $mid_atom_id ) =
             map { $stretchable_bonds->{$atom_id}{$bond_name}{'atom_ids'}[$_] }
                 ( 1, 0 );
+
+        next if ! exists $ref_atom_site->{$mid_atom_id} ||
+                ! exists $ref_atom_site->{$up_atom_id};
+
         my @mid_connections = # Excludes up atom.
             grep { exists $ref_atom_site->{$_} }
             grep { $_ ne $up_atom_id }
@@ -266,7 +275,8 @@ sub bond_stretching_matrices
         my ( $side_atom_id ) =
             @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
 
-        next if ! defined $side_atom_id;
+        next if ! defined $side_atom_id ||
+                ! exists $ref_atom_site->{$side_atom_id};
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $ref_atom_site->{$_}{'Cartn_x'},
@@ -310,6 +320,10 @@ sub angle_bending_matrices
         my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
             map { $bendable_angles->{$atom_id}{$angle_name}{'atom_ids'}[$_] }
                 ( 2, 1, 0 );
+
+        next if ! exists $ref_atom_site->{$mid_atom_id} ||
+                ! exists $ref_atom_site->{$up_atom_id} ||
+                ! exists $ref_atom_site->{$side_atom_id};
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $ref_atom_site->{$_}{'Cartn_x'},
