@@ -859,7 +859,7 @@ sub struct_conn_residue_keys
 
             my $is_atom_mainchain =
                 ( exists $mainchain_atom_names{$atom_name} &&
-                  $atom_group ne 'HETATM' )  ? 1 : 0;
+                  $atom_group ne 'HETATM' ) ? 1 : 0;
 
             my @related_atom_ids =
                 grep { $atom_site->{$_}{'group_PDB'} ne 'ATOM' }
