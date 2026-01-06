@@ -390,21 +390,6 @@ sub assign_hetatoms
     my $connections =
         connections_from_struct_conn( $ref_atom_site, $struct_conn );
 
-    # # Extends connections by looking at heteroatom connections within the
-    # # ligands.
-    # for my $atom_id ( sort keys %{ $atom_site } ) {
-    #     next if $ref_atom_site->{$atom_id}{'group_PDB'} ne 'HETATM';
-
-    #     for my $related_atom_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
-    #         next if $ref_atom_site->{$related_atom_id}{'group_PDB'} ne 'HETATM';
-    #         next if exists $connections->{$atom_id}{$related_atom_id} ||
-    #             exists $connections->{$related_atom_id}{$atom_id};
-
-    #         $connections->{$atom_id}{$related_atom_id} = 'covale';
-    #         $connections->{$related_atom_id}{$atom_id} = 'covale';
-    #     }
-    # }
-
     # TODO: has to be refactored.
     my @assigned_atom_ids = ();
 
