@@ -370,11 +370,18 @@ for my $pdbx_file ( @ARGV ) {
                                               $residue_site,
                                               $struct_conn );
 
+            my %current_struct_conn = ();
+            if( defined $struct_conn ) {
+                %current_struct_conn = ( %{ $struct_conn } );
+            }
+            %current_struct_conn =
+                ( %current_struct_conn, %{ $additional_struct_conn } );
+
             # Tracking the relatedness of the residues.
             my $unique_residue_keys =
                 struct_conn_residue_keys( $parameters,
                                           $residue_site,
-                                          $struct_conn );
+                                          \%current_struct_conn );
             for my $unique_residue_key (
                 keys %{ $unique_residue_keys } ) {
                 for my $related_unique_residue_key (
@@ -414,24 +421,21 @@ for my $pdbx_file ( @ARGV ) {
                 rotatable_bonds( $parameters,
                                  $residue_site,
                                  { ( 'include_hetatoms' =>
-                                     ( defined $struct_conn &&
-                                       %{ $struct_conn } &&
+                                     ( %current_struct_conn &&
                                        $include_hetatoms ? 1 : 0 ) ) } );
             }
             if( $do_stretchable_bonds ) {
                 stretchable_bonds( $parameters,
                                    $residue_site,
                                    { ( 'include_hetatoms' =>
-                                       ( defined $struct_conn &&
-                                         %{ $struct_conn } &&
+                                       ( %current_struct_conn &&
                                          $include_hetatoms ? 1 : 0 ) ) } );
             }
             if( $do_bendable_angles ) {
                 bendable_angles( $parameters,
                                  $residue_site,
                                  { ( 'include_hetatoms' =>
-                                         ( defined $struct_conn &&
-                                           %{ $struct_conn } &&
+                                         ( %current_struct_conn &&
                                            $include_hetatoms ? 1 : 0 ) ) } );
             }
 
