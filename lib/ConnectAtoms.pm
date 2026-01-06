@@ -38,6 +38,8 @@ use PDBxParser qw( change_unique_residue_key
                    follow_hetatoms
                    replace_atom_site_ids
                    unique_residue_key );
+use StructConn qw( counter_struct_conn
+                   create_struct_conn );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -1276,9 +1278,28 @@ sub connections_from_struct_conn
 
 sub struct_conn_from_connections
 {
-    my ( $parameters, $atom_site ) = @_;
-    my %struct_conn = ();
-    return \%struct_conn;
+    my ( $parameters, $atom_site, $struct_conn ) = @_;
+    $struct_conn //= {};
+
+    my $counter = counter_struct_conn( $struct_conn );
+    my %visited_conn = ();
+    my %struct_conn_from_conn = ();
+    for my $atom_id ( sort keys %{ $atom_site } ) {
+        next if ! exists $atom_site->{$atom_id}{'connections'};
+        next if $atom_site->{$atom_id}{'group_PDB'} ne 'HETATM';
+
+        for my $connected_atom_id ( @{ $atom_site->{$atom_id}{'connections'} } ) {
+            next if ! exists $atom_site->{$connected_atom_id};
+            next if $atom_site->{$connected_atom_id}{'group_PDB'} ne 'HETATM';
+
+            next if exists $visited_conn{$atom_id}{$connected_atom_id} ||
+                    exists $visited_conn{$connected_atom_id}{$atom_id};
+
+            $visited_conn{$atom_id}{$connected_atom_id} = 1;
+            $visited_conn{$connected_atom_id}{$atom_id} = 1;
+        }
+    }
+    return \%struct_conn_from_conn;
 }
 
 1;

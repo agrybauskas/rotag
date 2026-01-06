@@ -366,7 +366,9 @@ for my $pdbx_file ( @ARGV ) {
             }
 
             my $additional_struct_conn =
-                struct_conn_from_connections( $parameters, $residue_site );
+                struct_conn_from_connections( $parameters,
+                                              $residue_site,
+                                              $struct_conn );
 
             # Tracking the relatedness of the residues.
             my $unique_residue_keys =
