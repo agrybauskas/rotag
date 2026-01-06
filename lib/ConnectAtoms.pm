@@ -1276,7 +1276,9 @@ sub connections_from_struct_conn
 
 sub struct_conn_from_connections
 {
-
+    my ( $parameters, $atom_site ) = @_;
+    my %struct_conn = ();
+    return \%struct_conn;
 }
 
 1;
