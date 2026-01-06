@@ -21,6 +21,7 @@ use BondProperties qw( hybridization );
 use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
                      struct_conn_atom_ids
+                     struct_conn_from_connections
                      struct_conn_residue_keys );
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
@@ -363,6 +364,9 @@ for my $pdbx_file ( @ARGV ) {
                     $last_atom_id = $assigned_hetatom_id;
                 }
             }
+
+            my $additional_struct_conn =
+                struct_conn_from_connections( $parameters, $residue_site );
 
             # Tracking the relatedness of the residues.
             my $unique_residue_keys =

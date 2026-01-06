@@ -15,6 +15,7 @@ our @EXPORT_OK = qw( assign_hetatoms
                      is_neighbour
                      is_second_neighbour
                      struct_conn_atom_ids
+                     struct_conn_from_connections
                      struct_conn_residue_keys );
 }
 
@@ -1271,6 +1272,11 @@ sub connections_from_struct_conn
     }
 
     return \%heteroatom_connections;
+}
+
+sub struct_conn_from_connections
+{
+
 }
 
 1;
