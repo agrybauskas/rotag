@@ -1302,7 +1302,7 @@ sub struct_conn_from_connections
                 create_struct_conn( $atom_site->{$atom_id},
                                     $atom_site->{$connected_atom_id},
                                     'covale',
-                                    $counter->{'covale'} );
+                                    $counter->{'covale'} )->{"covale$counter->{'covale'}"};
 
             $counter->{'covale'}++;
         }
