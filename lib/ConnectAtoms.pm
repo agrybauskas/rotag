@@ -1297,8 +1297,17 @@ sub struct_conn_from_connections
 
             $visited_conn{$atom_id}{$connected_atom_id} = 1;
             $visited_conn{$connected_atom_id}{$atom_id} = 1;
+
+            $struct_conn_from_conn{"covale$counter->{'covale'}"} =
+                create_struct_conn( $atom_site->{$atom_id},
+                                    $atom_site->{$connected_atom_id},
+                                    'covale',
+                                    $counter->{'covale'} );
+
+            $counter->{'covale'}++;
         }
     }
+
     return \%struct_conn_from_conn;
 }
 
