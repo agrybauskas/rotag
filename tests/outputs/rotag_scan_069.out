@@ -36,7 +36,7 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -68.179843
+1 1 composite -80.167459
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -80,8 +80,6 @@ _struct_conn.ptnr2_auth_seq_id
 _struct_conn.pdbx_ptnr2_label_alt_id
 _struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
-covale1 covale . B . 265 A H1 . B 265 . A O
-covale2 covale . B . 265 A O . B 265 . A H2
 hydrog1 hydrog 219 A . 264 A OD1 . B 265 . A H1
 hydrog2 hydrog . B . 265 A O . C 266 . A MG
 #
