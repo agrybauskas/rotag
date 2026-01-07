@@ -58,6 +58,8 @@ sub replace_with_moiety
     $append_moieties //= {};
     $last_atom_id //= max( keys %{ $atom_site } );
 
+    $last_atom_id++; # The counter is incresed, because the next will be used.
+
     my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
