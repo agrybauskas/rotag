@@ -60,9 +60,11 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG C 1 266 A . 1414 1418 1416 1417 . 1 1 2 1.000000 OD1.H1-O.MG 170.000 degrees
-2 1 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 1.000000 chi1 -161.268 degrees
-3 1 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 1.000000 chi2 65.155 degrees
+1 1 . HOH B 1 265 A . 1412 1413 1414 1418 . . . 1 1.000000 CB-CG-OD1.H1 170.000 degrees
+2 1 . HOH B 1 265 A . 1413 1414 1418 1416 . . 1 1 1.000000 CG-OD1.H1-O 170.000 degrees
+3 1 . MG C 1 266 A . 1414 1418 1416 1417 . 1 1 2 1.000000 OD1.H1-O.MG 170.000 degrees
+4 1 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 1.000000 chi1 -161.268 degrees
+5 1 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 1.000000 chi2 65.155 degrees
 #
 loop_
 _struct_conn.id
