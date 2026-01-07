@@ -30,58 +30,6 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Moieties ---------------------------------- #
 
-# TODO: remove %sidechains as it will be replaced with Parameters.cif data.
-
-our %sidechains = (
-    'SER' => {
-        1 => {
-            'group_PDB' => 'ATOM',
-            'id' => 1,
-            'type_symbol' => 'C',
-            'label_atom_id' => 'CA',
-            'label_alt_id' => q{.},
-            'label_comp_id' => 'SER',
-            'label_asym_id' => 'A',
-            'label_entity_id' => 1,
-            'label_seq_id' => q{.},
-            'Cartn_x' => 0.009,
-            'Cartn_y' => 0.077,
-            'Cartn_z' => -0.688,
-            'pdbx_PDB_model_num' => 1,
-        },
-        2 => {
-            'group_PDB' => 'ATOM',
-            'id' => 2,
-            'type_symbol' => 'C',
-            'label_atom_id' => 'CB',
-            'label_alt_id' => q{.},
-            'label_comp_id' => 'SER',
-            'label_asym_id' => 'A',
-            'label_entity_id' => 1,
-            'label_seq_id' => q{.},
-            'Cartn_x' => -0.494,
-            'Cartn_y' => 0.929,
-            'Cartn_z' => 0.504,
-            'pdbx_PDB_model_num' => 1,
-        },
-        3 => {
-            'group_PDB' => 'ATOM',
-            'id' => 3,
-            'type_symbol' => 'O',
-            'label_atom_id' => 'OG',
-            'label_alt_id' => q{.},
-            'label_comp_id' => 'SER',
-            'label_asym_id' => 'A',
-            'label_entity_id' => 1,
-            'label_seq_id' => q{.},
-            'Cartn_x' => -0.029,
-            'Cartn_y' => 0.446,
-            'Cartn_z' => 1.769,
-            'pdbx_PDB_model_num' => 1,
-        },
-    },
-);
-
 #
 # Replaces selected side-chain with specified moiety (usually another
 # side-chain).
@@ -112,8 +60,9 @@ sub replace_with_moiety
     my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+    my $moieties = $parameters->{'_[local]_moieties'};
 
-    my %all_sidechains = ( %sidechains, %{ $append_moieties } );
+    my %all_sidechains = ( %{ $moieties }, %{ $append_moieties } );
 
     # First, transformation matrix is generated that will position moiety atoms
     # to the origin of reference frame.
