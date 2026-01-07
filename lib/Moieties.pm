@@ -5,9 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 BEGIN {
-our @EXPORT_OK = qw( %atoms
-                     %sidechain
-                     missing_atom_names
+our @EXPORT_OK = qw( missing_atom_names
                      replace_with_moiety );
 }
 
@@ -32,23 +30,7 @@ our $VERSION = $VERSION;
 
 # --------------------------------- Moieties ---------------------------------- #
 
-# TODO: remove %atoms and %sidechains as it will be replaced with Parameters.cif
-# data.
-
-our %atoms = (
-    'H' => {
-        1 => {
-            'group_PDB' => 'ATOM',
-            'id' => 1,
-            'type_symbol' => 'H',
-            'label_alt_id' => q{.},
-            'Cartn_x' => -53.464,
-            'Cartn_y' => -109.890,
-            'Cartn_z' => -5.544,
-            'pdbx_PDB_model_num' => 1,
-        },
-    },
-);
+# TODO: remove %sidechains as it will be replaced with Parameters.cif data.
 
 our %sidechains = (
     'SER' => {
