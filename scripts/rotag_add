@@ -348,7 +348,7 @@ for my $pdbx_file ( @ARGV ) {
             # dangerous.
             my $additional_struct_conn =
                 struct_conn_from_connections( $parameters,
-                                              $target_atom_site,
+                                              $current_target_atom_site,
                                               $struct_conn );
             $struct_conn = {
                 ( defined $struct_conn ? %{ $struct_conn } : () ),
