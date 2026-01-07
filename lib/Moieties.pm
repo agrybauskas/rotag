@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( missing_atom_names
                      replace_with_moiety );
 }
 
+use Clone qw( clone );
 use List::Util qw( max );
 use Math::Trig qw( acos );
 
@@ -61,6 +62,10 @@ sub replace_with_moiety
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
     my $moieties = $parameters->{'_[local]_moieties'};
+    my %sidechain_atom_names =
+        map { $_ => 1 } @{ $parameters->{'_[local]_sidechain_atom_names'} };
+    my $sidechain_hetero_residues =
+        $parameters->{'_[local]_sidechain_hetatom_extension'};
 
     my %all_sidechains = ( %{ $moieties }, %{ $append_moieties } );
 
@@ -147,7 +152,12 @@ sub replace_with_moiety
 
     # Adds moiety.
     for my $atom_id ( sort keys %{ $all_sidechains{$moiety} } ) {
-        my $moiety_atom = $all_sidechains{$moiety}{$atom_id};
+        my $moiety_atom = clone $all_sidechains{$moiety}{$atom_id};
+        my $moiety_atom_name = $moiety_atom->{'label_atom_id'};
+        my $moiety_residue_name = $moiety_atom->{'label_comp_id'};
+
+        next if ! exists $sidechain_atom_names{$moiety_atom_name};
+
         my ( $transf_atom_coord ) =
             @{ mult_matrix_product( [ @{ $rotational_matrix },
                                       $transf_matrix,
@@ -160,6 +170,9 @@ sub replace_with_moiety
                                       ( 'omega' => (-2) * $pi / 3 ) :
                                       ( 'omega' =>   2  * $pi / 3 ) } ) };
 
+        $moiety_atom->{'group_PDB'} =
+            exists $sidechain_hetero_residues->{$moiety_atom_name} ?
+            'HETATM' : 'ATOM';
         $moiety_atom->{'id'} = $last_atom_id;
         $moiety_atom->{'label_seq_id'} = $residue_id;
         $moiety_atom->{'label_asym_id'} = $residue_chain;
