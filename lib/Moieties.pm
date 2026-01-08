@@ -173,7 +173,7 @@ sub replace_with_moiety
                                       ( 'omega' =>   2  * $pi / 3 ) } ) };
 
         $moiety_atom->{'group_PDB'} =
-            exists $sidechain_hetero_residues->{$moiety_atom_name} ?
+            exists $sidechain_hetero_residues->{$moiety_residue_name} ?
             'HETATM' : 'ATOM';
         $moiety_atom->{'id'} = $last_atom_id;
         $moiety_atom->{'label_seq_id'} = $residue_id;
