@@ -1,30 +1,51 @@
 data_arginine
 #
 loop_
-_atom_site.group_PDB
-_atom_site.id
-_atom_site.type_symbol
-_atom_site.label_atom_id
-_atom_site.label_alt_id
-_atom_site.label_comp_id
-_atom_site.label_asym_id
-_atom_site.label_entity_id
-_atom_site.label_seq_id
-_atom_site.pdbx_PDB_ins_code
-_atom_site.Cartn_x
-_atom_site.Cartn_y
-_atom_site.Cartn_z
-_atom_site.occupancy
-_atom_site.B_iso_or_equiv
-_atom_site.pdbx_formal_charge
-_atom_site.auth_asym_id
-_atom_site.pdbx_PDB_model_num
-ATOM   1   C CA  . ARG . . 1 ?  0.519 -2.968  1.340 1.00   0.00 0 . 1
-ATOM   2   C CB  . ARG . . 1 ? -0.063 -1.527  1.282 1.00   0.00 0 . 1
-ATOM   3   C CG  . ARG . . 1 ?  0.188 -0.757 -0.045 1.00   0.00 0 . 1
-ATOM   4   C CD  . ARG . . 1 ? -0.388  0.668 -0.004 1.00   0.00 0 . 1
-ATOM   5   N NE  . ARG . . 1 ? -0.136  1.349 -1.308 1.00   0.00 0 . 1
-ATOM   6   C CZ  . ARG . . 1 ? -0.497  2.593 -1.608 1.00   0.00 0 . 1
-ATOM   7   N NH1 . ARG . . 1 ? -1.121  3.383 -0.780 1.00   0.00 1 . 1
-ATOM   8   N NH2 . ARG . . 1 ? -0.215  3.048 -2.788 1.00   0.00 0 . 1
+_chem_comp_atom.comp_id
+_chem_comp_atom.atom_id
+_chem_comp_atom.alt_atom_id
+_chem_comp_atom.type_symbol
+_chem_comp_atom.charge
+_chem_comp_atom.partial_charge
+_chem_comp_atom.[local]_hybridization
+_chem_comp_atom.[local]_mandatory_flag
+_chem_comp_atom.pdbx_align
+_chem_comp_atom.pdbx_aromatic_flag
+_chem_comp_atom.pdbx_leaving_atom_flag
+_chem_comp_atom.pdbx_stereo_config
+_chem_comp_atom.pdbx_backbone_atom_flag
+_chem_comp_atom.pdbx_n_terminal_atom_flag
+_chem_comp_atom.pdbx_c_terminal_atom_flag
+_chem_comp_atom.model_Cartn_x
+_chem_comp_atom.model_Cartn_y
+_chem_comp_atom.model_Cartn_z
+_chem_comp_atom.pdbx_model_Cartn_x_ideal
+_chem_comp_atom.pdbx_model_Cartn_y_ideal
+_chem_comp_atom.pdbx_model_Cartn_z_ideal
+_chem_comp_atom.pdbx_component_atom_id
+_chem_comp_atom.pdbx_component_comp_id
+_chem_comp_atom.pdbx_ordinal
+ARG CA   CA   C  0 -0.131 sp3 Y 1 N N S Y N N  0.519 -2.968  1.340 0.004  2.294 -1.708    CA   ARG 2
+ARG CB   CB   C  0  0.037 sp3 Y 1 N N N N N N -0.063 -1.527  1.282 1.475  2.150 -2.127    CB   ARG 5
+ARG CG   CG   C  0  0.012 sp3 Y 1 N N N N N N  0.188 -0.757 -0.045 1.745  1.017 -3.130    CG   ARG 6
+ARG CD   CD   C  0  0.126 sp3 Y 1 N N N N N N -0.388  0.668 -0.004 3.210  0.954 -3.557    CD   ARG 7
+ARG NE   NE   N  0  0.465 sp2 Y 1 N N N N N N -0.136  1.349 -1.308 4.071  0.726 -2.421    NE   ARG 8
+ARG CZ   CZ   C  0  0.566 sp2 Y 1 N N N N N N -0.497  2.593 -1.608 5.469  0.624 -2.528    CZ   ARG 9
+ARG NH1  NH1  N  0 -0.686 sp2 Y 1 N N N N N N -1.121  3.383 -0.780 6.259  0.404 -1.405    NH1  ARG 10
+ARG NH2  NH2  N  1 -0.686 sp2 Y 1 N N N N N N -0.215  3.048 -2.788 6.078  0.744 -3.773    NH2  ARG 11
 #
+loop_
+_chem_comp_bond.comp_id
+_chem_comp_bond.atom_id_1
+_chem_comp_bond.atom_id_2
+_chem_comp_bond.value_order
+_chem_comp_bond.pdbx_aromatic_flag
+_chem_comp_bond.pdbx_stereo_config
+_chem_comp_bond.pdbx_ordinal
+ARG CA  CB   SING N N 5
+ARG CB  CG   SING N N 9
+ARG CG  CD   SING N N 12
+ARG CD  NE   SING N N 15
+ARG NE  CZ   SING N N 18
+ARG CZ  NH1  SING N N 20
+ARG CZ  NH2  DOUB N N 21
