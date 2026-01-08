@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pdbx_file=$(dirname "$0")/../inputs/amino-acids/arginine-selected-002.cif
+pdbx_file=$(dirname "$0")/../inputs/amino-acids/leucine-selected-001.cif
 
-rotag_mutate -m '1:TYR' ${pdbx_file}
+rotag_mutate -m '1:TRP' ${pdbx_file}

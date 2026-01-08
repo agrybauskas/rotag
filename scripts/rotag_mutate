@@ -42,7 +42,8 @@ Getopt::Long::Configure qw( gnu_getopt );
 #*                                 '1:ASP, chi1=0.0, chi2=150.0; 2:SER'.
 #*    -M, --import-moiety <cif-file>
 #*                        use defined PDBx file where moiety atom site details
-#*                        are described.
+#*                        are described. "_chem_comp_atom" and "_chem_comp_bond"
+#*                        loops have to be present in CIF file.
 #*    -r, --radians
 #*                        radians are used in --angles argument.
 #*    -v, --version
