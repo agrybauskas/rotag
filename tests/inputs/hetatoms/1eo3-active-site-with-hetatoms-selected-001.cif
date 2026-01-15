@@ -1,0 +1,58 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 732 N N . GLU C 2 45 5.625 5.102 9.430 A 45 ? 1 S 1
+ATOM 733 C CA . GLU C 2 45 6.264 3.911 9.945 A 45 ? 1 S 1
+ATOM 734 C C . GLU C 2 45 7.759 4.146 10.013 A 45 ? 1 S 1
+ATOM 735 O O . GLU C 2 45 8.394 3.900 11.068 A 45 ? 1 S 1
+ATOM 736 C CB . GLU C 2 45 5.967 2.656 9.114 A 45 ? 1 S 1
+ATOM 737 C CG . GLU C 2 45 6.702 1.384 9.661 A 45 ? 1 S 1
+ATOM 738 C CD . GLU C 2 45 6.462 0.099 8.847 A 45 ? 1 S 1
+ATOM 739 O OE1 . GLU C 2 45 5.576 0.067 7.981 A 45 ? 1 T 1
+ATOM 740 O OE2 . GLU C 2 45 7.168 -0.907 9.056 A 45 ? 1 T 1
+ATOM 891 N N . GLU C 2 65 11.663 -6.936 12.657 A 65 ? 1 S 1
+ATOM 892 C CA . GLU C 2 65 10.647 -6.547 11.685 A 65 ? 1 S 1
+ATOM 893 C C . GLU C 2 65 10.431 -7.763 10.826 A 65 ? 1 S 1
+ATOM 894 O O . GLU C 2 65 11.278 -8.655 10.794 A 65 ? 1 S 1
+ATOM 895 C CB . GLU C 2 65 11.134 -5.376 10.837 A 65 ? 1 S 1
+ATOM 896 C CG . GLU C 2 65 11.350 -4.133 11.623 A 65 ? 1 S 1
+ATOM 897 C CD . GLU C 2 65 11.550 -2.952 10.757 A 65 ? 1 S 1
+ATOM 898 O OE1 . GLU C 2 65 12.665 -2.412 10.754 A 65 ? 1 T 1
+ATOM 899 O OE2 . GLU C 2 65 10.591 -2.549 10.079 A 65 ? 1 T 1
+ATOM 963 N N . ASP C 2 74 4.487 -5.018 12.400 A 74 ? 1 S 1
+ATOM 964 C CA . ASP C 2 74 5.617 -4.183 11.944 A 74 ? 1 S 1
+ATOM 965 C C . ASP C 2 74 6.865 -4.357 12.817 A 74 ? 1 S 1
+ATOM 966 O O . ASP C 2 74 7.988 -4.477 12.338 A 74 ? 1 S 1
+ATOM 967 C CB . ASP C 2 74 5.224 -2.707 11.909 A 74 ? 1 S 1
+ATOM 968 C CG . ASP C 2 74 4.263 -2.392 10.770 A 74 ? 1 S 1
+ATOM 969 O OD1 . ASP C 2 74 4.490 -2.847 9.617 A 74 ? 1 T 1
+ATOM 970 O OD2 . ASP C 2 74 3.272 -1.709 11.031 A 74 ? 1 T 1
+ATOM 1094 N N . ASP C 2 90 2.204 -2.615 16.051 A 90 ? 1 S 1
+ATOM 1095 C CA . ASP C 2 90 1.789 -2.370 14.684 A 90 ? 1 S 1
+ATOM 1096 C C . ASP C 2 90 1.384 -0.920 14.445 A 90 ? 1 S 1
+ATOM 1097 O O . ASP C 2 90 0.753 -0.267 15.295 A 90 ? 1 S 1
+ATOM 1098 C CB . ASP C 2 90 0.662 -3.299 14.337 A 90 ? 1 S 1
+ATOM 1099 C CG . ASP C 2 90 0.698 -3.731 12.896 A 90 ? 1 S 1
+ATOM 1100 O OD1 . ASP C 2 90 -0.332 -3.546 12.227 A 90 ? 1 T 1
+ATOM 1101 O OD2 . ASP C 2 90 1.738 -4.241 12.425 A 90 ? 1 T 1
+HETATM 4225 MG MG . MG E 3 . 6.630 -2.747 8.567 A 501 ? 1 T 2
+HETATM 4226 MG MG . MG F 3 . 1.560 -1.571 9.636 A 502 ? 1 T 2
+#
