@@ -193,62 +193,65 @@ for my $pdbx_file ( @ARGV ) {
     for my $group_id1 ( sort { $a <=> $b } keys %connections ) {
         next if ! defined $atom_site_groups{$group_id1};
 
-        my ( $atom_id1 ) = keys %{ $atom_site_groups{$group_id1} };
+        for my $atom_id1 ( sort { $a <=> $b }
+                           keys %{ $atom_site_groups{$group_id1} } ) {
+            for my $group_id2 ( sort { $a <=> $b }
+                                keys %{ $connections{$group_id1} } ) {
 
-        for my $group_id2 ( sort { $a <=> $b }
-                            keys %{ $connections{$group_id1} } ) {
-            next if $visited_connections{$group_id1}{$group_id2} ||
-                $visited_connections{$group_id2}{$group_id1};
+                next if ! defined $atom_site_groups{$group_id2};
 
-            $visited_connections{$group_id1}{$group_id2} = 1;
-            $visited_connections{$group_id2}{$group_id1} = 1;
+                my $connection_type = $connections{$group_id1}{$group_id2};
 
-            next if ! defined $atom_site_groups{$group_id2};
+                for my $atom_id2 ( sort { $a <=> $b }
+                                   keys %{ $atom_site_groups{$group_id2} } ) {
 
-            my $connection_type = $connections{$group_id1}{$group_id2};
+                    next if $visited_connections{$atom_id1}{$atom_id2} ||
+                            $visited_connections{$atom_id2}{$atom_id1};
 
-            for my $atom_id2 ( sort { $a <=> $b }
-                               keys %{ $atom_site_groups{$group_id2} } ) {
-                if( $atom_site->{$atom_id1}{'group_PDB'} eq 'HETATM' &&
-                    ( $atom_site->{$atom_id1}{'auth_asym_id'} eq '?' ||
-                      $atom_site->{$atom_id1}{'auth_asym_id'} eq '.' ) &&
-                    $atom_site->{$atom_id2}{'auth_asym_id'} ne '?' &&
-                    $atom_site->{$atom_id2}{'auth_asym_id'} ne '.' ) {
-                    my $residue_unique_key1 =
-                        unique_residue_key( $atom_site->{$atom_id1} );
-                    my $residue_atom_site1 =
-                        filter_by_unique_residue_key( $atom_site,
-                                                      $residue_unique_key1, 1 );
-                    for my $residue_atom_id1 ( sort keys %{ $residue_atom_site1 } ) {
-                        $atom_site->{$residue_atom_id1}{'auth_asym_id'} =
-                            $atom_site->{$atom_id2}{'auth_asym_id'};
+                    $visited_connections{$atom_id1}{$atom_id2} = 1;
+                    $visited_connections{$atom_id2}{$atom_id1} = 1;
+
+                    if( $atom_site->{$atom_id1}{'group_PDB'} eq 'HETATM' &&
+                        ( $atom_site->{$atom_id1}{'auth_asym_id'} eq '?' ||
+                          $atom_site->{$atom_id1}{'auth_asym_id'} eq '.' ) &&
+                        $atom_site->{$atom_id2}{'auth_asym_id'} ne '?' &&
+                        $atom_site->{$atom_id2}{'auth_asym_id'} ne '.' ) {
+                        my $residue_unique_key1 =
+                            unique_residue_key( $atom_site->{$atom_id1} );
+                        my $residue_atom_site1 =
+                            filter_by_unique_residue_key( $atom_site,
+                                                          $residue_unique_key1, 1 );
+                        for my $residue_atom_id1 ( sort keys %{ $residue_atom_site1 } ) {
+                            $atom_site->{$residue_atom_id1}{'auth_asym_id'} =
+                                $atom_site->{$atom_id2}{'auth_asym_id'};
+                        }
                     }
-                }
-                if( $atom_site->{$atom_id2}{'group_PDB'} eq 'HETATM' &&
-                    ( $atom_site->{$atom_id2}{'auth_asym_id'} eq '?' ||
-                      $atom_site->{$atom_id2}{'auth_asym_id'} eq '.' ) &&
-                    $atom_site->{$atom_id1}{'auth_asym_id'} ne '?' &&
-                    $atom_site->{$atom_id1}{'auth_asym_id'} ne '.' ) {
-                    my $residue_unique_key2 =
-                        unique_residue_key( $atom_site->{$atom_id2} );
-                    my $residue_atom_site2 =
-                        filter_by_unique_residue_key( $atom_site,
-                                                      $residue_unique_key2, 1 );
-                    for my $residue_atom_id2 ( sort keys %{ $residue_atom_site2 } ) {
-                        $atom_site->{$residue_atom_id2}{'auth_asym_id'} =
-                            $atom_site->{$atom_id1}{'auth_asym_id'};
+                    if( $atom_site->{$atom_id2}{'group_PDB'} eq 'HETATM' &&
+                        ( $atom_site->{$atom_id2}{'auth_asym_id'} eq '?' ||
+                          $atom_site->{$atom_id2}{'auth_asym_id'} eq '.' ) &&
+                        $atom_site->{$atom_id1}{'auth_asym_id'} ne '?' &&
+                        $atom_site->{$atom_id1}{'auth_asym_id'} ne '.' ) {
+                        my $residue_unique_key2 =
+                            unique_residue_key( $atom_site->{$atom_id2} );
+                        my $residue_atom_site2 =
+                            filter_by_unique_residue_key( $atom_site,
+                                                          $residue_unique_key2, 1 );
+                        for my $residue_atom_id2 ( sort keys %{ $residue_atom_site2 } ) {
+                            $atom_site->{$residue_atom_id2}{'auth_asym_id'} =
+                                $atom_site->{$atom_id1}{'auth_asym_id'};
+                        }
                     }
-                }
 
-                %struct_conn_added = (
-                    %struct_conn_added,
-                    %{ create_struct_conn(
-                           $atom_site->{$atom_id1},
-                           $atom_site->{$atom_id2},
-                           $connection_type,
-                           $counter->{$connection_type} ) }
-                );
-                $counter->{$connection_type}++;
+                    %struct_conn_added = (
+                        %struct_conn_added,
+                        %{ create_struct_conn(
+                               $atom_site->{$atom_id1},
+                               $atom_site->{$atom_id2},
+                               $connection_type,
+                               $counter->{$connection_type} ) }
+                    );
+                    $counter->{$connection_type}++;
+                }
             }
         }
     }
