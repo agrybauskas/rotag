@@ -94,6 +94,8 @@ local @ARGV = ( q{-} ) unless @ARGV;
 
 my $parameters = Parameters->new();
 my $pi = $parameters->{'_[local]_constants'}{'pi'};
+my %heteroatom_names =
+    map { $_ => 1 } @{ $parameters->{'_[local]_heteroatom_names'} };
 
 # Parsing mutation string.
 my @mutations;
@@ -199,30 +201,37 @@ for my $pdbx_file ( @ARGV ) {
 
     if( @mutations ) {
         for( my $i = 0; $i <= $#mutations; $i++ ) {
-            my $ca_atom_ids =
-                filter( { 'atom_site' => $target_atom_site,
-                          'include' =>
-                              { 'label_atom_id' => [ 'CA' ],
-                                '[local]_selection_group' =>
-                                    ( defined $mutations[$i]{'group_id'} ?
-                                      [ $mutations[$i]{'group_id'} ] :
-                                      [ @group_ids ] ) },
-                          'data' => [ 'id' ],
-                          'is_list' => 1 } );
+            my $group_id = $mutations[$i]{'group_id'};
+            my $moiety = $mutations[$i]{'moiety'};
+            my $angles = $mutations[$i]{'angles'};
+            if( exists $heteroatom_names{$moiety} ) {
 
-            for my $ca_atom_id ( @$ca_atom_ids ) {
-                my $unique_residue_key =
-                    unique_residue_key( $target_atom_site->{$ca_atom_id} );
+            } else {
+                my $ca_atom_ids =
+                    filter( { 'atom_site' => $target_atom_site,
+                              'include' =>
+                                  { 'label_atom_id' => [ 'CA' ],
+                                    '[local]_selection_group' =>
+                                        ( defined $group_id ?
+                                          [ $group_id ] :
+                                          [ @group_ids ] ) },
+                              'data' => [ 'id' ],
+                              'is_list' => 1 } );
 
-                # TODO: calculating $atom_site could be done once.
-                replace_with_moiety( $parameters,
-                                     $atom_site,
-                                     $unique_residue_key,
-                                     $mutations[$i]{'moiety'},
-                                     { 'angles' => $mutations[$i]{'angles'},
-                                       'append_moieties' => \%append_moieties,
-                                       'last_atom_id' =>
-                                           max( keys %{ $atom_site } ) } );
+                for my $ca_atom_id ( @$ca_atom_ids ) {
+                    my $unique_residue_key =
+                        unique_residue_key( $target_atom_site->{$ca_atom_id} );
+
+                    # TODO: calculating $atom_site could be done once.
+                    replace_with_moiety( $parameters,
+                                         $atom_site,
+                                         $unique_residue_key,
+                                         $moiety,
+                                         { 'angles' => $angles,
+                                           'append_moieties' => \%append_moieties,
+                                           'last_atom_id' =>
+                                               max( keys %{ $atom_site } ) } );
+                }
             }
         }
 
