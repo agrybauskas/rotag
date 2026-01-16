@@ -232,15 +232,15 @@ sub replace_with_moiety
 
 
 #
-# Replaces selected side-chain with specified moiety (usually another
-# side-chain).
+# Replaces selected heteroatoms with specified moiety (usually another
+# heteroatom).
 # Input:
 #     $atom_site - atom site data structure (see PDBxParser.pm);
 #     $unique_residue_key - key that can determine unique residue
 #     (see PDBxParser::unique_residue_key);
 #     $moiety - moiety in atom site data structure.
 # Output:
-#     changes atom site by replacing side-chain with specified moiety.
+#     changes atom site by replacing heteroatom with specified moiety.
 #
 
 sub replace_hetatoms_with_moiety
