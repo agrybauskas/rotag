@@ -247,29 +247,27 @@ sub replace_hetatoms_with_moiety
 {
     my ( $parameters, $atom_site, $unique_residue_key, $moiety, $options ) = @_;
 
-    my ( $isomer, $angles, $append_moieties, $last_atom_id ) =
-        ( $options->{'isomer'},
-          $options->{'angles'},
+    my ( $angles, $append_moieties, $last_atom_id ) =
+        ( $options->{'angles'},
           $options->{'append_moieties'},
           $options->{'last_atom_id'}, );
 
-    # $isomer //= 'R';
-    # $angles //= {};
-    # $append_moieties //= {};
-    # $last_atom_id //= max( keys %{ $atom_site } );
+    $angles //= {};
+    $append_moieties //= {};
+    $last_atom_id //= max( keys %{ $atom_site } );
 
-    # $last_atom_id++; # The counter is incresed, because the next will be used.
+    $last_atom_id++; # The counter is incresed, because the next will be used.
 
-    # my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
-    # my $pi = $parameters->{'_[local]_constants'}{'pi'};
-    # my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
-    # my $moieties = $parameters->{'_[local]_moieties'};
-    # my %sidechain_atom_names =
-    #     map { $_ => 1 } @{ $parameters->{'_[local]_sidechain_atom_names'} };
-    # my $sidechain_hetero_residues =
-    #     $parameters->{'_[local]_sidechain_hetatom_extension'};
+    my $sig_figs_min = $parameters->{'_[local]_constants'}{'sig_figs_min'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+    my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+    my $moieties = $parameters->{'_[local]_moieties'};
+    my %sidechain_atom_names =
+        map { $_ => 1 } @{ $parameters->{'_[local]_sidechain_atom_names'} };
+    my $sidechain_hetero_residues =
+        $parameters->{'_[local]_sidechain_hetatom_extension'};
 
-    # my %all_sidechains = ( %{ $moieties }, %{ $append_moieties } );
+    my %all_sidechains = ( %{ $moieties }, %{ $append_moieties } );
 
     # # First, transformation matrix is generated that will position moiety atoms
     # # to the origin of reference frame.
