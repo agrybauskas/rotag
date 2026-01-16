@@ -12,7 +12,8 @@ use Try::Tiny;
 use ForceField::Parameters;
 use Logging qw( error
                 warning );
-use Moieties qw( replace_with_moiety );
+use Moieties qw( replace_with_moiety
+                 replace_hetatoms_with_moiety );
 use PDBxParser qw( filter
                    obtain_atom_site
                    obtain_pdbx_data
@@ -205,9 +206,8 @@ for my $pdbx_file ( @ARGV ) {
             my $moiety = $mutations[$i]{'moiety'};
             my $angles = $mutations[$i]{'angles'};
 
-            my $target_atom_ids = [];
             if( exists $heteroatom_names{$moiety} ) {
-                $target_atom_ids =
+                my $target_atom_ids =
                     filter( { 'atom_site' => $target_atom_site,
                               'include' =>
                                   { '[local]_selection_group' =>
@@ -216,8 +216,23 @@ for my $pdbx_file ( @ARGV ) {
                                           [ @group_ids ] ) },
                               'data' => [ 'id' ],
                               'is_list' => 1 } );
+
+                for my $target_atom_id ( @$target_atom_ids ) {
+                    my $unique_residue_key =
+                        unique_residue_key( $target_atom_site->{$target_atom_id} );
+
+                    # TODO: calculating $atom_site could be done once.
+                    replace_hetatoms_with_moiety( $parameters,
+                                                  $atom_site,
+                                                  $unique_residue_key,
+                                                  $moiety,
+                                                  { 'angles' => $angles,
+                                                    'append_moieties' => \%append_moieties,
+                                                    'last_atom_id' =>
+                                                        max( keys %{ $atom_site } ) } );
+                }
             } else {
-                $target_atom_ids =
+                my $target_atom_ids =
                     filter( { 'atom_site' => $target_atom_site,
                               'include' =>
                                   { 'label_atom_id' => [ 'CA' ],
@@ -227,21 +242,21 @@ for my $pdbx_file ( @ARGV ) {
                                           [ @group_ids ] ) },
                               'data' => [ 'id' ],
                               'is_list' => 1 } );
-            }
 
-            for my $target_atom_id ( @$target_atom_ids ) {
-                my $unique_residue_key =
-                    unique_residue_key( $target_atom_site->{$target_atom_id} );
+                for my $target_atom_id ( @$target_atom_ids ) {
+                    my $unique_residue_key =
+                        unique_residue_key( $target_atom_site->{$target_atom_id} );
 
-                # TODO: calculating $atom_site could be done once.
-                replace_with_moiety( $parameters,
-                                     $atom_site,
-                                     $unique_residue_key,
-                                     $moiety,
-                                     { 'angles' => $angles,
-                                       'append_moieties' => \%append_moieties,
-                                       'last_atom_id' =>
-                                           max( keys %{ $atom_site } ) } );
+                    # TODO: calculating $atom_site could be done once.
+                    replace_with_moiety( $parameters,
+                                         $atom_site,
+                                         $unique_residue_key,
+                                         $moiety,
+                                         { 'angles' => $angles,
+                                               'append_moieties' => \%append_moieties,
+                                               'last_atom_id' =>
+                                               max( keys %{ $atom_site } ) } );
+                }
             }
         }
 
