@@ -207,7 +207,7 @@ for my $pdbx_file ( @ARGV ) {
             if( exists $heteroatom_names{$moiety} ) {
 
             } else {
-                my $ca_atom_ids =
+                my $target_atom_ids =
                     filter( { 'atom_site' => $target_atom_site,
                               'include' =>
                                   { 'label_atom_id' => [ 'CA' ],
@@ -218,9 +218,9 @@ for my $pdbx_file ( @ARGV ) {
                               'data' => [ 'id' ],
                               'is_list' => 1 } );
 
-                for my $ca_atom_id ( @$ca_atom_ids ) {
+                for my $target_atom_id ( @$target_atom_ids ) {
                     my $unique_residue_key =
-                        unique_residue_key( $target_atom_site->{$ca_atom_id} );
+                        unique_residue_key( $target_atom_site->{$target_atom_id} );
 
                     # TODO: calculating $atom_site could be done once.
                     replace_with_moiety( $parameters,
