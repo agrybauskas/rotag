@@ -205,7 +205,19 @@ for my $pdbx_file ( @ARGV ) {
             my $moiety = $mutations[$i]{'moiety'};
             my $angles = $mutations[$i]{'angles'};
             if( exists $heteroatom_names{$moiety} ) {
-
+                my $target_atom_ids =
+                    filter( { 'atom_site' => $target_atom_site,
+                              'include' =>
+                                  { '[local]_selection_group' =>
+                                        ( defined $group_id ?
+                                          [ $group_id ] :
+                                          [ @group_ids ] ) },
+                              'data' => [ 'id' ],
+                              'is_list' => 1 } );
+                for my $target_atom_id ( @$target_atom_ids ) {
+                    my $unique_residue_key =
+                        unique_residue_key( $target_atom_site->{$target_atom_id} );
+                }
             } else {
                 my $target_atom_ids =
                     filter( { 'atom_site' => $target_atom_site,
