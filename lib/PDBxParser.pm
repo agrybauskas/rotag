@@ -538,14 +538,19 @@ sub raw2indexed
 sub indexed2raw
 {
     my ( $pdbx, $options ) = @_;
-    my ( $categories, $attribute_order, $default_empty_values ) = (
+    my ( $categories, $attribute_order, $default_empty_values,
+         $change_value_to ) = (
         $options->{'categories'},
         $options->{'attribute_order'},
         $options->{'default_empty_values'},
+        $options->{'change_value_to'},
     );
 
     $categories //= [ keys %{ $pdbx } ];
     $default_empty_values //= {};
+    $change_value_to //= {
+        'pdbx_auth_alt_id' => 'label_auth_id'
+    };
 
     for my $category ( @{ $categories } ) {
         next if ! exists $pdbx->{$category} ||
