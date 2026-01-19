@@ -19,6 +19,6 @@ _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 971 N N . ASN A 1 135 19.336 7.920 44.511 A 180 ? 1 S ?
-ATOM 973 C C . ASN A 1 135 20.461 8.617 46.594 A 180 ? 1 T 1
+ATOM 971 N N . ASN A 1 135 19.336 7.920 44.511 A 180 . 1 S ?
+ATOM 973 C C . ASN A 1 135 20.461 8.617 46.594 A 180 . 1 T 1
 #

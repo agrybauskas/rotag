@@ -17,12 +17,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -53.536068 -111.787916 -3.955829 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_2:chi1:-2.827;E:0.000
 #
@@ -43,12 +43,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -53.854547 -111.532421 -3.764397 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_3:chi1:-2.513;E:0.000
 #
@@ -69,12 +69,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -54.249899 -111.334100 -3.676537 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_4:chi1:-1.571;E:0.000
 #
@@ -95,12 +95,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -55.495661 -111.237662 -4.065733 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_5:chi1:-1.257;E:0.000
 #
@@ -121,12 +121,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -55.794867 -111.382216 -4.370583 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_6:chi1:-0.942;E:0.000
 #
@@ -147,12 +147,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -55.981013 -111.598648 -4.719668 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_7:chi1:-0.628;E:0.000
 #
@@ -173,12 +173,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -56.035878 -111.865771 -5.078818 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_8:chi1:-0.314;E:0.000
 #
@@ -199,12 +199,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -55.954092 -112.157438 -5.412876 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_9:chi1:0.000;E:0.000
 #
@@ -225,12 +225,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -55.743660 -112.445098 -5.689143 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_10:chi1:0.314;E:0.000
 #
@@ -251,12 +251,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -55.425180 -112.700594 -5.880575 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_11:chi1:0.628;E:0.000
 #
@@ -277,12 +277,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -55.029828 -112.898915 -5.968434 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_12:chi1:0.942;E:0.000
 #
@@ -303,12 +303,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -54.596304 -113.020648 -5.944120 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_13:chi1:1.257;E:0.000
 #
@@ -329,12 +329,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -54.167044 -113.053878 -5.810012 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_14:chi1:1.571;E:0.000
 #
@@ -355,12 +355,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -53.784067 -112.995352 -5.579239 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_15:chi1:1.885;E:0.000
 #
@@ -381,12 +381,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -53.484861 -112.850798 -5.274389 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_16:chi1:2.199;E:0.000
 #
@@ -407,12 +407,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -53.298714 -112.634366 -4.925304 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_17:chi1:2.513;E:0.000
 #
@@ -433,12 +433,12 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -53.243849 -112.367243 -4.566154 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #
 data_18:chi1:2.827;E:0.000
 #
@@ -459,10 +459,10 @@ _atom_site.auth_asym_id
 _atom_site.auth_seq_id
 _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
-ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 ? 1
-ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 ? 1
+ATOM 1 C CA . XAA A 1 18 -54.128 -110.543 -6.071 A 18 . 1
+ATOM 2 C CB . XAA A 1 18 -54.506 -111.705 -5.149 A 18 . 1
 ATOM 3 C CG . XAA A 1 18 -53.325636 -112.075576 -4.232096 A 18 ? 1
-ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 ? 1
-ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 ? 1
-ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 ? 1
+ATOM 4 X XA . XAA A 1 18 -54.825 -110.501 -6.908 A 18 . 1
+ATOM 5 X XA2 . XAA A 1 18 -53.117 -110.694 -6.448 A 18 . 1
+ATOM 6 C C . SER A 1 19 -56.270 -110.188 -0.743 A 19 . 1
 #

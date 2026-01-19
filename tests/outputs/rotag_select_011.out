@@ -19,5 +19,5 @@ _atom_site.pdbx_auth_alt_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 _atom_site.[local]_selection_group
-ATOM 8410 C CA . LEU B 1 546 -3.888 36.087 50.407 B 591 ? 1 T 1
+ATOM 8410 C CA . LEU B 1 546 -3.888 36.087 50.407 B 591 . 1 T 1
 #
