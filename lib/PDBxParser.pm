@@ -592,7 +592,7 @@ sub indexed2raw
         for my $id ( nsort keys %{ $current_pdbx_indexed } ){
             if( ref $current_pdbx_indexed->{$id} eq 'HASH' ) {
                 for my $attribute ( @category_attributes ) {
-                    my $data_value =$current_pdbx_indexed->{$id}{$attribute};
+                    my $data_value = $current_pdbx_indexed->{$id}{$attribute};
                     if( defined $data_value ) {
                         push @{ $pdbx->{$category}{'data'} }, $data_value;
                     } else {
