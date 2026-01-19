@@ -322,7 +322,7 @@ sub create_pdbx_entry
     my $auth_seq_id = $args->{'auth_seq_id'};
     my $auth_asym_id = $args->{'auth_asym_id'};
     my $pdbx_auth_alt_id = $args->{'pdbx_auth_alt_id'};
-    $pdbx_auth_alt_id //= q{?};
+    $pdbx_auth_alt_id //= q{.};
     my $pdbx_model_num = $args->{'pdbx_PDB_model_num'};
 
     $atom_site->{$atom_id}{'group_PDB'} = $group_PDB;
@@ -549,7 +549,7 @@ sub indexed2raw
     $categories //= [ keys %{ $pdbx } ];
     $default_empty_values //= {};
     $change_value_to //= {
-        'pdbx_auth_alt_id' => 'label_auth_id'
+        'pdbx_auth_alt_id' => 'label_alt_id'
     };
 
     for my $category ( @{ $categories } ) {
@@ -603,7 +603,10 @@ sub indexed2raw
                     } else {
                         push @{ $pdbx->{$category}{'data'} },
                             ( defined $default_empty_values->{$attribute} ?
-                              $default_empty_values->{$attribute} : '?' );
+                              $default_empty_values->{$attribute} :
+                              ( exists $change_value_to->{$attribute} &&
+                                exists $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} ?
+                                $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} : '?' ) );
                     }
                 }
             } elsif( ref $current_pdbx_indexed->{$id} eq 'ARRAY' ) {
@@ -615,8 +618,11 @@ sub indexed2raw
                                 $data_value;
                         } else {
                             push @{ $pdbx->{$category}{'data'} },
-                            ( defined $default_empty_values->{$attribute} ?
-                              $default_empty_values->{$attribute} : '?' );
+                                ( defined $default_empty_values->{$attribute} ?
+                                  $default_empty_values->{$attribute} :
+                                  ( exists $change_value_to->{$attribute} &&
+                                    exists $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} ?
+                                    $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} : '?' ) );
                         }
                     }
                 }
@@ -684,14 +690,19 @@ sub raw2record
 sub record2raw
 {
     my ( $pdbx, $options ) = @_;
-    my ( $categories, $attribute_order, $default_empty_values ) = (
+    my ( $categories, $attribute_order, $default_empty_values,
+         $change_value_to ) = (
         $options->{'categories'},
         $options->{'attribute_order'},
         $options->{'default_empty_values'},
+        $options->{'change_value_to'},
     );
 
     $categories //= [ keys %{ $pdbx } ];
     $default_empty_values //= {};
+    $change_value_to //= {
+        'pdbx_auth_alt_id' => 'label_alt_id'
+    };
 
     for my $category ( @{ $categories } ) {
         next if ! exists $pdbx->{$category} ||
@@ -727,7 +738,10 @@ sub record2raw
                 } else {
                     push @{ $pdbx->{$category}{'data'} },
                         ( defined $default_empty_values->{$attribute} ?
-                          $default_empty_values->{$attribute} : '?' );
+                          $default_empty_values->{$attribute} :
+                          ( exists $change_value_to->{$attribute} &&
+                            exists $record->{$attribute}{$change_value_to->{$attribute}} ?
+                            $record->{$attribute}{$change_value_to->{$attribute}} : '?' ) );
                 }
             }
         }
