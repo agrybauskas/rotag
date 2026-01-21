@@ -606,7 +606,7 @@ sub indexed2raw
                               $default_empty_values->{$attribute} :
                               ( exists $change_value_to->{$attribute} &&
                                 exists $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} ?
-                                $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} : '?' ) );
+                                '.' : '?' ) );
                     }
                 }
             } elsif( ref $current_pdbx_indexed->{$id} eq 'ARRAY' ) {
@@ -622,7 +622,7 @@ sub indexed2raw
                                   $default_empty_values->{$attribute} :
                                   ( exists $change_value_to->{$attribute} &&
                                     exists $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} ?
-                                    $current_pdbx_indexed->{$id}{$change_value_to->{$attribute}} : '?' ) );
+                                    '.' : '?' ) );
                         }
                     }
                 }
@@ -741,7 +741,7 @@ sub record2raw
                           $default_empty_values->{$attribute} :
                           ( exists $change_value_to->{$attribute} &&
                             exists $record->{$attribute}{$change_value_to->{$attribute}} ?
-                            $record->{$attribute}{$change_value_to->{$attribute}} : '?' ) );
+                            '.' : '?' ) );
                 }
             }
         }
