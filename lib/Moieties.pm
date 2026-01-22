@@ -269,72 +269,53 @@ sub replace_hetatoms_with_moiety
 
     my %all_sidechains = ( %{ $moieties }, %{ $append_moieties } );
 
-    # # First, transformation matrix is generated that will position moiety atoms
-    # # to the origin of reference frame.
-    # my $moiety_ca_atom_coord =
-    #     filter( { 'atom_site' => $all_sidechains{$moiety},
-    #               'include' => { 'label_atom_id' => [ 'CA' ] },
-    #               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
-    # my $moiety_cb_atom_coord =
-    #     filter( { 'atom_site' => $all_sidechains{$moiety},
-    #               'include' => { 'label_atom_id' => [ 'CB' ] },
-    #               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
-    # my @moiety_helper_atom_coord = map { $_ + 1 } @{ $moiety_ca_atom_coord };
+    # First, transformation matrix is generated that will position moiety atoms
+    # to the origin of reference frame.
+    my $moiety_atom_coord =
+        filter( { 'atom_site' => $all_sidechains{$moiety},
+                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+    my @moiety_helper_z_atom_coord = (
+        $moiety_atom_coord->[0],
+        $moiety_atom_coord->[1],
+        $moiety_atom_coord->[2] + 1,
+    );
+    my @moiety_helper_y_atom_coord = (
+        $moiety_atom_coord->[0],
+        $moiety_atom_coord->[1] + 1,
+        $moiety_atom_coord->[2],
+    );
 
-    # my ( $moiety_transf_matrix ) =
-    #     @{ switch_ref_frame( $parameters,
-    #                          $moiety_ca_atom_coord,
-    #                          $moiety_cb_atom_coord,
-    #                          \@moiety_helper_atom_coord,
-    #                          'local' ) };
+    my ( $moiety_transf_matrix ) =
+        @{ switch_ref_frame( $parameters,
+                             $moiety_atom_coord,
+                             \@moiety_helper_z_atom_coord,
+                             \@moiety_helper_y_atom_coord,
+                             'local' ) };
 
-    # # Then generates transformation matrix that will align moiety atoms with
-    # # target atoms.
-    # my $residue_site =
-    #     filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
-    # my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
-    #     split /,/smx, $unique_residue_key;
+    # Then generates transformation matrix that will align moiety atoms with
+    # target atoms.
+    my $residue_site =
+        filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
+    my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
+        split /,/smx, $unique_residue_key;
 
-    # my @sidechain_ids =
-    #     @{ filter( { 'atom_site' => $atom_site,
-    #                  'include' =>
-    #                      { 'label_seq_id' => [ $residue_id ],
-    #                        'pdbx_PDB_model_num' => [ $pdbx_model ],
-    #                        'label_asym_id' => [ $residue_chain ] },
-    #                  'exclude' =>
-    #                      # TODO: make proper list of mainchain atoms.
-    #                      { 'label_atom_id' =>
-    #                            [ grep { $_ ne 'CB' }
-    #                                   @{ $interaction_atom_names } ] },
-    #                  'data' => [ 'id' ],
-    #                  'is_list' => 1 } ) };
+    my @sidechain_ids =
+        @{ filter( { 'atom_site' => $atom_site,
+                     'include' =>
+                         { 'label_seq_id' => [ $residue_id ],
+                           'pdbx_PDB_model_num' => [ $pdbx_model ],
+                           'label_asym_id' => [ $residue_chain ] },
+                     'exclude' =>
+                         # TODO: make proper list of mainchain atoms.
+                         { 'label_atom_id' =>
+                               [ grep { $_ ne 'CB' }
+                                      @{ $interaction_atom_names } ] },
+                     'data' => [ 'id' ],
+                     'is_list' => 1 } ) };
 
-    # my $n_atom_coord =
-    #     filter( { 'atom_site' => $residue_site,
-    #               'include' => { 'label_atom_id' => [ 'N' ] },
-    #               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
-    # my $ca_atom_id =
-    #     filter( { 'atom_site' => $residue_site,
-    #               'include' => { 'label_atom_id' => [ 'CA' ] },
-    #               'data' => [ 'id' ] } )->[0][0];
-    # my $ca_atom_coord =
-    #     [ map { $residue_site->{$ca_atom_id}{$_} }
-    #           ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) ];
-    # my $c_atom_coord =
-    #     filter( { 'atom_site' => $residue_site,
-    #               'include' => { 'label_atom_id' => [ 'C' ] },
-    #               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
-    # my $o_atom_coord =
-    #     filter( { 'atom_site' => $residue_site,
-    #               'include' => { 'label_atom_id' => [ 'O' ] },
-    #               'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
-
-    # # TODO: should be refactored, because the code is familiar to
-    # # PseudoAtoms::add_hydrogen().
-    # my $bond_angle =
-    #     bond_angle( [ $n_atom_coord, $ca_atom_coord, $c_atom_coord ] );
-
-    # my $moiety_angle = acos( ( - 4 - 2 * cos $bond_angle ) / 10 );
+    my $atom_coord =
+        filter( { 'atom_site' => $residue_site,
+                  'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
 
     # my ( $transf_matrix ) =
     #     @{ switch_ref_frame( $parameters,
