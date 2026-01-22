@@ -296,7 +296,9 @@ sub replace_hetatoms_with_moiety
     # target atoms.
     my $residue_site =
         filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
-    my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt ) =
+    my ( $residue_atom_id ) = sort { $a <=> $b } keys %{ $residue_site };
+    my ( $residue_id, $residue_chain, $pdbx_model, $residue_alt,
+         $residue_auth_id, $residue_auth_chain, $residue_auth_alt ) =
         split /,/smx, $unique_residue_key;
 
     my @sidechain_ids =
@@ -316,94 +318,96 @@ sub replace_hetatoms_with_moiety
     my $atom_coord =
         filter( { 'atom_site' => $residue_site,
                   'data' => [ 'Cartn_x', 'Cartn_y', 'Cartn_z' ] } )->[0];
+    my @helper_z_atom_coord = (
+        $atom_coord->[0],
+        $atom_coord->[1],
+        $atom_coord->[2] + 1,
+    );
+    my @helper_y_atom_coord = (
+        $atom_coord->[0],
+        $atom_coord->[1] + 1,
+        $atom_coord->[2],
+    );
 
-    # my ( $transf_matrix ) =
-    #     @{ switch_ref_frame( $parameters,
-    #                          $ca_atom_coord,
-    #                          $n_atom_coord,
-    #                          $c_atom_coord,
-    #                          'global' ) };
+    my ( $transf_matrix ) =
+        @{ switch_ref_frame( $parameters,
+                             $atom_coord,
+                             \@helper_z_atom_coord,
+                             \@helper_y_atom_coord,
+                             'global' ) };
 
-    # # Rotational matrix is created for producing 'R' or 'S' configuration.
-    # my $rotational_matrix = bond_torsion( $parameters,
-    #                                       $c_atom_coord,
-    #                                       $ca_atom_coord,
-    #                                       $o_atom_coord,
-    #                                       'omega' );
+    # Adds moiety.
+    for my $atom_id ( sort keys %{ $all_sidechains{$moiety} } ) {
+        my $moiety_atom = clone $all_sidechains{$moiety}{$atom_id};
+        my $moiety_atom_name = $moiety_atom->{'label_atom_id'};
+        my $moiety_residue_name = $moiety_atom->{'label_comp_id'};
 
-    # # Adds moiety.
-    # for my $atom_id ( sort keys %{ $all_sidechains{$moiety} } ) {
-    #     my $moiety_atom = clone $all_sidechains{$moiety}{$atom_id};
-    #     my $moiety_atom_name = $moiety_atom->{'label_atom_id'};
-    #     my $moiety_residue_name = $moiety_atom->{'label_comp_id'};
+        next if ! exists $sidechain_atom_names{$moiety_atom_name} &&
+            ! exists $sidechain_hetero_residues->{$moiety_residue_name};
 
-    #     next if ! exists $sidechain_atom_names{$moiety_atom_name};
+        my ( $transf_atom_coord ) =
+            @{ mult_matrix_product( [ $transf_matrix,
+                                      $moiety_transf_matrix,
+                                      [ [ $moiety_atom->{'Cartn_x'} ],
+                                        [ $moiety_atom->{'Cartn_y'} ],
+                                        [ $moiety_atom->{'Cartn_z'} ],
+                                        [ 1 ] ] ] ) };
 
-    #     my ( $transf_atom_coord ) =
-    #         @{ mult_matrix_product( [ @{ $rotational_matrix },
-    #                                   $transf_matrix,
-    #                                   $moiety_transf_matrix,
-    #                                   [ [ $moiety_atom->{'Cartn_x'} ],
-    #                                     [ $moiety_atom->{'Cartn_y'} ],
-    #                                     [ $moiety_atom->{'Cartn_z'} ],
-    #                                     [ 1 ] ] ],
-    #                                 { $isomer eq 'R' ?
-    #                                   ( 'omega' => (-2) * $pi / 3 ) :
-    #                                   ( 'omega' =>   2  * $pi / 3 ) } ) };
+        $moiety_atom->{'group_PDB'} =
+            exists $sidechain_hetero_residues->{$moiety_residue_name} ?
+            'HETATM' : 'ATOM';
+        $moiety_atom->{'id'} = $last_atom_id;
+        $moiety_atom->{'label_seq_id'} = $residue_id;
+        $moiety_atom->{'label_asym_id'} = $residue_chain;
+        $moiety_atom->{'label_entity_id'} =
+            $residue_site->{$residue_atom_id}{'label_entity_id'};
+        $moiety_atom->{'auth_seq_id'} =
+            $residue_site->{$residue_atom_id}{'auth_seq_id'};
+        $moiety_atom->{'auth_asym_id'} =
+            $residue_site->{$residue_atom_id}{'auth_asym_id'};
+        $moiety_atom->{'pdbx_PDB_model_num'} = $pdbx_model;
+        # TODO: check if there will be situations when non '.' label_alt_id is
+        # needed.
+        $moiety_atom->{'label_alt_id'} = q{.};
+        $moiety_atom->{'Cartn_x'} =
+            sprintf $sig_figs_min, $transf_atom_coord->[0][0];
+        $moiety_atom->{'Cartn_y'}=
+            sprintf $sig_figs_min, $transf_atom_coord->[1][0];
+        $moiety_atom->{'Cartn_z'}=
+            sprintf $sig_figs_min, $transf_atom_coord->[2][0];
 
-    #     $moiety_atom->{'group_PDB'} =
-    #         exists $sidechain_hetero_residues->{$moiety_residue_name} ?
-    #         'HETATM' : 'ATOM';
-    #     $moiety_atom->{'id'} = $last_atom_id;
-    #     $moiety_atom->{'label_seq_id'} = $residue_id;
-    #     $moiety_atom->{'label_asym_id'} = $residue_chain;
-    #     $moiety_atom->{'auth_seq_id'} =
-    #         $residue_site->{$ca_atom_id}{'auth_seq_id'};
-    #     $moiety_atom->{'auth_asym_id'} =
-    #         $residue_site->{$ca_atom_id}{'auth_asym_id'};
-    #     $moiety_atom->{'pdbx_PDB_model_num'} = $pdbx_model;
-    #     # TODO: check if there will be situations when non '.' label_alt_id is
-    #     # needed.
-    #     $moiety_atom->{'label_alt_id'} = q{.};
-    #     $moiety_atom->{'Cartn_x'} =
-    #         sprintf $sig_figs_min, $transf_atom_coord->[0][0];
-    #     $moiety_atom->{'Cartn_y'}=
-    #         sprintf $sig_figs_min, $transf_atom_coord->[1][0];
-    #     $moiety_atom->{'Cartn_z'}=
-    #         sprintf $sig_figs_min, $transf_atom_coord->[2][0];
+        $atom_site->{$last_atom_id} = $moiety_atom;
+        $last_atom_id++;
+    }
 
-    #     $atom_site->{$last_atom_id} = $moiety_atom;
-    #     $last_atom_id++;
-    # }
+    # Removes old side-chain atoms.
+    foreach( @sidechain_ids ) {
+        delete $residue_site->{$_};
+        delete $atom_site->{$_};
+    }
 
-    # # Removes old side-chain atoms.
-    # foreach( @sidechain_ids ) {
-    #     delete $residue_site->{$_};
-    #     delete $atom_site->{$_};
-    # }
+    # Renames residue.
+    foreach( keys %{ $residue_site } ) {
+        $atom_site->{$_}{'label_comp_id'} = $moiety;
+    }
 
-    # # Renames residue.
-    # foreach( keys %{ $residue_site } ) {
-    #     $atom_site->{$_}{'label_comp_id'} = $moiety;
-    # }
+    if( %{ $angles } ) {
+        $residue_site =
+            filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
 
-    # if( %{ $angles } ) {
-    #     $residue_site =
-    #         filter_by_unique_residue_key( $atom_site, $unique_residue_key, 1 );
+        connect_atoms( $parameters, $residue_site );
+        hybridization( $parameters, $residue_site );
+        rotatable_bonds( $parameters, $residue_site );
 
-    #     connect_atoms( $parameters, $residue_site );
-    #     hybridization( $parameters, $residue_site );
-    #     rotatable_bonds( $parameters, $residue_site );
+        rotation_translation( $parameters, $residue_site );
 
-    #     rotation_translation( $parameters, $residue_site );
+        replace_with_rotamer( $parameters, $residue_site, $unique_residue_key,
+                              $angles );
 
-    #     replace_with_rotamer( $parameters, $residue_site, $unique_residue_key,
-    #                           $angles );
-
-    #     for my $atom_id ( keys %{ $residue_site } ) {
-    #         $atom_site->{$atom_id} = $residue_site->{$atom_id};
-    #     }
-    # }
+        for my $atom_id ( keys %{ $residue_site } ) {
+            $atom_site->{$atom_id} = $residue_site->{$atom_id};
+        }
+    }
 
     return;
 }
