@@ -516,8 +516,18 @@ for my $pdbx_file ( @ARGV ) {
                                                 'is_list' => 1 } )->[0];
             }
 
-            next if ! defined $residue_angle_key ||
-                    ! defined $rotamer_angle_split_groups->{$residue_angle_key};
+            next if ! defined $residue_angle_key;
+
+            # HACK: more robust check should be implemented.
+            if( ! defined $rotamer_angle_split_groups->{$residue_angle_key} ) {
+                my @key_parts = split /,/, $residue_angle_key;
+                $key_parts[$#key_parts] =
+                    $key_parts[$#key_parts] eq '.' ?
+                    '?' : $key_parts[$#key_parts];
+                $residue_angle_key = join ',', @key_parts;
+            }
+
+            next if ! defined $rotamer_angle_split_groups->{$residue_angle_key};
 
             for my $id ( sort { $a <=> $b }
                          @{ $rotamer_angle_split_groups->{$residue_angle_key}
