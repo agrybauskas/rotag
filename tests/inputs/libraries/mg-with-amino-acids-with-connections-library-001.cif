@@ -1,0 +1,118 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 923 N N . GLU A 1 123 20.990 31.555 51.476 A 123 . 1 T
+ATOM 924 C CA . GLU A 1 123 21.296 32.480 52.567 A 123 . 1 T
+ATOM 925 C C . GLU A 1 123 21.788 33.832 52.048 A 123 . 1 T
+ATOM 926 O O . GLU A 1 123 21.344 34.879 52.549 A 123 . 1 T
+ATOM 927 C CB . GLU A 1 123 22.351 31.937 53.510 A 123 . 1 T
+ATOM 928 C CG . GLU A 1 123 21.795 30.814 54.385 A 123 . 1 T
+ATOM 929 C CD . GLU A 1 123 22.809 30.290 55.390 A 123 . 1 T
+ATOM 930 O OE1 . GLU A 1 123 23.779 31.024 55.727 A 123 . 1 T
+ATOM 931 O OE2 . GLU A 1 123 22.627 29.142 55.836 A 123 . 1 T
+ATOM 1118 N N . ASP A 1 147 20.510 31.381 61.236 A 147 . 1 T
+ATOM 1119 C CA . ASP A 1 147 21.095 32.061 60.084 A 147 . 1 T
+ATOM 1120 C C . ASP A 1 147 20.919 33.559 60.096 A 147 . 1 T
+ATOM 1121 O O . ASP A 1 147 21.779 34.250 59.582 A 147 . 1 T
+ATOM 1122 C CB . ASP A 1 147 20.491 31.513 58.805 A 147 . 1 T
+ATOM 1123 C CG . ASP A 1 147 20.705 30.021 58.676 A 147 . 1 T
+ATOM 1124 O OD1 . ASP A 1 147 21.885 29.612 58.592 A 147 . 1 T
+ATOM 1125 O OD2 . ASP A 1 147 19.700 29.266 58.682 A 147 . 1 T
+HETATM 3719 MG MG . MG C 1 . 0.000 0.000 0.000 A 232 . 1 T
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite -149.666000
+2 2 composite -151.389151
+3 3 composite -148.714583
+4 4 composite -149.190915
+5 5 composite -146.749384
+6 6 composite -148.526887
+7 7 composite -149.331375
+8 8 composite -146.596190
+9 9 composite -145.956256
+10 10 composite -146.527894
+11 11 composite -146.959181
+12 12 composite -145.716634
+13 13 composite -148.019387
+14 14 composite -147.350896
+15 15 composite -148.117685
+16 16 composite -147.773955
+17 17 composite -145.849875
+18 18 composite -147.908972
+19 19 composite -143.057384
+20 20 composite -143.467176
+21 21 composite -143.065302
+22 22 composite -142.416922
+23 23 composite -138.695743
+24 24 composite -132.012511
+25 25 composite -131.618194
+26 26 composite -128.512669
+27 27 composite -123.694416
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 . MG C 1 232 A . 1122 1123 1124 3719 . . . 1 0.037037 CB-CG-OD1.MG -144.000 degrees
+2 1 . MG C 1 232 A . 1123 1124 3719 . . . 1 . 0.037037 CG-OD1.MG 81.100 degrees
+3 1 . MG C 1 232 A . 1124 3719 . . . 1 . . 0.037037 OD1.MG 1.700000 angstrom
+4 1 147 ASP A 1 147 A . 1118 1119 1122 1123 . . . . 0.037037 chi1 -70.000 degrees
+5 1 147 ASP A 1 147 A . 1119 1122 1123 1124 . . . . 0.037037 chi2 -50.000 degrees
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 123 A . 123 A OE1 . C 232 . A MG
+metalc3 metalc 147 A . 147 A OD1 . C 232 . A MG
+#
