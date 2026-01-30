@@ -43,6 +43,7 @@ _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
 1 1 composite -149.666000
+2 2 composite -145.675500
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -66,11 +67,17 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG C 1 232 A . 1122 1123 1124 3719 . . . 1 0.037037 CB-CG-OD1.MG -144.000 degrees
-2 1 . MG C 1 232 A . 1123 1124 3719 . . . 1 . 0.037037 CG-OD1.MG 81.100 degrees
-3 1 . MG C 1 232 A . 1124 3719 . . . 1 . . 0.037037 OD1.MG 1.700000 angstrom
-4 1 147 ASP A 1 147 A . 1118 1119 1122 1123 . . . . 0.037037 chi1 -70.000 degrees
-5 1 147 ASP A 1 147 A . 1119 1122 1123 1124 . . . . 0.037037 chi2 -50.000 degrees
+1  1 . MG C 1 232 A . 1122 1123 1124 3719 . . . 1 0.037037 CB-CG-OD1.MG -144.000 degrees
+2  1 . MG C 1 232 A . 1123 1124 3719 . . . 1 . 0.037037 CG-OD1.MG 81.100 degrees
+3  1 . MG C 1 232 A . 1124 3719 . . . 1 . . 0.037037 OD1.MG 1.700000 angstrom
+4  1 147 ASP A 1 147 A . 1118 1119 1122 1123 . . . . 0.037037 chi1 -70.000 degrees
+5  1 147 ASP A 1 147 A . 1119 1122 1123 1124 . . . . 0.037037 chi2 -50.000 degrees
+6  2 . MG C 1 232 A . 929 930 3719 . . . 1 . 0.027778 CD-OE1.MG 144.000 degrees
+7  2 . MG C 1 232 A . 928 929 930 3719 . . . 1 0.027778 CG-CD-OE1.MG 162.000 degrees
+8  2 . MG C 1 232 A . 930 3719 . . . 1 . . 0.027778 OE1.MG 1.570796 angstrom
+9  2 123 GLU A 1 123 A . 923 924 927 928 . . . . 0.027778 chi1 -126.000 degrees
+10 2 123 GLU A 1 123 A . 924 927 928 929 . . . . 0.027778 chi2 -180.000 degrees
+11 2 123 GLU A 1 123 A . 927 928 929 930 . . . . 0.027778 chi3 -90.000 degrees
 #
 loop_
 _struct_conn.id
@@ -88,5 +95,5 @@ _struct_conn.pdbx_ptnr2_label_alt_id
 _struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
 metalc1 metalc 123 A . 123 A OE1 . C 232 . A MG
-metalc3 metalc 147 A . 147 A OD1 . C 232 . A MG
+metalc2 metalc 147 A . 147 A OD1 . C 232 . A MG
 #
