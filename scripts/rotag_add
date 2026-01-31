@@ -326,6 +326,7 @@ for my $pdbx_file ( @ARGV ) {
         my %rotamer_angles_atom_ids_tbl = ();
         my %related_unique_residue_keys = ();
         my %tracked_alt_ids = ();
+        my %delete_original = ();
         my $last_atom_id = max( keys %{ $atom_site } );
         for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
             my $current_target_atom_site =
@@ -408,7 +409,7 @@ for my $pdbx_file ( @ARGV ) {
                 $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
 
                 if( ! $keep_original ) {
-                    delete $target_atom_site->{$origin_atom_id};
+                    $delete_original{$origin_atom_id} = 1;
                 }
 
                 delete $target_atom_site_only->{$origin_atom_id};
@@ -552,6 +553,12 @@ for my $pdbx_file ( @ARGV ) {
                 $rotamer_angles_atom_ids_tbl{$residue_unique_key}
                                             {"$rotamer_id"}
                                             {$angle_name} = $origin_atom_ids_key;
+            }
+        }
+
+        if( ! $keep_original ) {
+            for my $origin_atom_id ( sort keys %delete_original ) {
+                delete $target_atom_site->{$origin_atom_id};
             }
         }
 
