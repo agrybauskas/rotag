@@ -1,0 +1,86 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1261 N N A LYS A 1 163 16.305 26.802 55.502 A 163 . 1 T
+ATOM 1263 C CA A LYS A 1 163 16.791 25.554 54.922 A 163 . 1 T
+ATOM 1265 C C A LYS A 1 163 16.283 25.454 53.514 A 163 . 1 T
+ATOM 1267 O O A LYS A 1 163 15.237 25.983 53.191 A 163 . 1 T
+ATOM 1269 C CB A LYS A 1 163 16.310 24.344 55.750 A 163 . 1 T
+ATOM 1271 C CG A LYS A 1 163 16.858 24.249 57.164 A 163 . 1 T
+ATOM 1273 C CD A LYS A 1 163 18.368 24.131 57.163 A 163 . 1 T
+ATOM 1275 C CE A LYS A 1 163 18.951 23.711 58.517 A 163 . 1 T
+ATOM 1277 N NZ A LYS A 1 163 20.430 23.574 58.371 A 163 . 1 T
+HETATM 3719 MG MG . MG C 1 . 0.000 0.000 0.000 A 232 . 1 T
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite -25.938425
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1  1 . MG C 1 232 A A 1273 1275 1277 3719 . . . 1 0.015625 CD-CE-NZ.MG -180.000 degrees
+2  1 . MG C 1 232 A A 1275 1277 3719 . . . 1 . 0.015625 CE-NZ.MG -72.000 degrees
+3  1 163 LYS A 1 163 A A 1271 1273 1275 1277 . . . . 0.015625 CG-CD-CE-NZ 72.000 degrees
+4  1 . MG C 1 232 A A 1277 3719 . . . 1 . . 0.015625 NZ.MG -3.141593 angstrom
+5  1 163 LYS A 1 163 A A 1261 1263 1269 1271 . . . . 0.015625 chi1 -108.000 degrees
+6  1 163 LYS A 1 163 A A 1263 1269 1271 1273 . . . . 0.015625 chi2 144.000 degrees
+7  1 163 LYS A 1 163 A A 1269 1271 1273 1275 . . . . 0.015625 chi3 -144.000 degrees
+8  1 163 LYS A 1 163 A A 1271 1273 1275 1277 . . . . 0.015625 chi4 -180.000 degrees
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc7 metalc 163 A A 163 A NZ . C 232 . A MG
+#
