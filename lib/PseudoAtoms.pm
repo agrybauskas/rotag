@@ -515,13 +515,22 @@ sub generate_library
                     $current_atom_site->{$target_atom_id}{'label_comp_id'};
                 my $residue_chain =
                     $current_atom_site->{$target_atom_id}{'label_asym_id'};
+                my $auth_chain =
+                    $current_atom_site->{$target_atom_id}{'auth_asym_id'};
+                my $auth_residue_id =
+                    $current_atom_site->{$target_atom_id}{'auth_seq_id'};
+
                 my $residue_site =
                     filter_new( $current_atom_site,
                                 { 'include' =>
                                   { 'pdbx_PDB_model_num' => [ $pdbx_model_num ],
                                     'label_alt_id' => [ $alt_id, q{.} ],
                                     'label_seq_id' => [ $residue_id ],
-                                    'label_asym_id' => [ $residue_chain ] } } );
+                                    'label_asym_id' => [ $residue_chain ],
+                                    ( defined $auth_residue_id ?
+                                      ( 'auth_seq_id' => [ $auth_residue_id ] ) : () ),
+                                    ( defined $auth_chain ?
+                                      ( 'auth_asym_id' => [ $auth_chain ] ) : () ) } } );
                 my $residue_unique_key = determine_residue_keys(
                     $residue_site,
                     { 'exclude_dot' => 1 }
