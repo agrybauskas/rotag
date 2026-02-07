@@ -411,9 +411,9 @@ sub generate_library
         my ( $pdbx_model_num, $alt_id ) = split /,/, $atom_site_identifier;
         my $current_atom_site =
             filter_new( $ref_atom_site,
-                    { 'include' =>
-                          { 'id' => $atom_site_groups->{$atom_site_identifier}
-                                                       {'atom_ids'} } } );
+                        { 'include' =>
+                              { 'id' => $atom_site_groups->{$atom_site_identifier}
+                                                           {'atom_ids'} } } );
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
