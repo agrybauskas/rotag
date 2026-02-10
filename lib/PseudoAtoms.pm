@@ -403,14 +403,14 @@ sub generate_library
     my %rotamer_library;
 
     my $atom_site_groups =
-        split_by( { 'atom_site' => $ref_atom_site,
+        split_by( { 'atom_site' => $atom_site,
                     'attributes' => [ 'pdbx_PDB_model_num', 'label_alt_id' ],
                     'append_dot' => 1  } );
 
     for my $atom_site_identifier ( sort keys %{ $atom_site_groups } ) {
         my ( $pdbx_model_num, $alt_id ) = split /,/, $atom_site_identifier;
         my $current_atom_site =
-            filter_new( $ref_atom_site,
+            filter_new( $atom_site,
                         { 'include' =>
                               { 'id' => $atom_site_groups->{$atom_site_identifier}
                                                            {'atom_ids'} } } );
@@ -424,7 +424,7 @@ sub generate_library
                 { 'filter_unique_keys' => $residue_unique_keys,
                   'heteroatom_depth' => $heteroatom_depth,
                   'exclude_hetatom_connections' => $exclude_hetatom_connections,
-                  'ref_atom_site' => $ref_atom_site,
+                  'ref_atom_site' => $atom_site,
                   'keep_original' => 0 }
         );
         # my $assigned_hetatom_mainchain_ids =
@@ -701,9 +701,9 @@ sub generate_library
 
                             push @{ $origin_atom_ids{$angle_name} }, $origin_atom_id;
 
-                            if( exists $ref_atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
+                            if( exists $atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
                                 push @{ $site_ids{$angle_name} },
-                                    $ref_atom_site->{$origin_atom_id}{'ligand_site_id'};
+                                    $atom_site->{$origin_atom_id}{'ligand_site_id'};
                             } else {
                                 push @{ $site_ids{$angle_name} }, undef;
                             }
