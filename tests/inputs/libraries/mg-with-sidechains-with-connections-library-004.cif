@@ -58,9 +58,9 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1  1 . MG C 1 232 A A 1273 1275 1277 3719 . . . 1 0.015625 CD-CE-NZ.MG -180.000 degrees
-2  1 . MG C 1 232 A A 1275 1277 3719 . . . 1 . 0.015625 CE-NZ.MG -72.000 degrees
-4  1 . MG C 1 232 A A 1277 3719 . . . 1 . . 0.015625 NZ.MG 3.5 angstrom
+1  1 . MG C 1 232 A . 1273 1275 1277 3719 . . . 1 0.015625 CD-CE-NZ.MG -180.000 degrees
+2  1 . MG C 1 232 A . 1275 1277 3719 . . . 1 . 0.015625 CE-NZ.MG -72.000 degrees
+4  1 . MG C 1 232 A . 1277 3719 . . . 1 . . 0.015625 NZ.MG 3.5 angstrom
 5  1 163 LYS A 1 163 A A 1261 1263 1269 1271 . . . . 0.015625 chi1 -108.000 degrees
 6  1 163 LYS A 1 163 A A 1263 1269 1271 1273 . . . . 0.015625 chi2 144.000 degrees
 7  1 163 LYS A 1 163 A A 1269 1271 1273 1275 . . . . 0.015625 chi3 -144.000 degrees
