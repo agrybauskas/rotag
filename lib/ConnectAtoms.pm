@@ -1147,9 +1147,6 @@ sub unique_from_struct_conn
             'label_asym_id' => [
                 $struct_conn->{$struct_conn_id}{'ptnr1_label_asym_id'},
             ],
-            'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr1_label_atom_id'},
-            ],
             'auth_seq_id' => [
                 $struct_conn->{$struct_conn_id}{'ptnr1_auth_seq_id'},
             ],
@@ -1163,9 +1160,6 @@ sub unique_from_struct_conn
             ],
             'label_asym_id' => [
                 $struct_conn->{$struct_conn_id}{'ptnr2_label_asym_id'},
-            ],
-            'label_atom_id' => [
-                $struct_conn->{$struct_conn_id}{'ptnr2_label_atom_id'},
             ],
             'auth_seq_id' => [
                 $struct_conn->{$struct_conn_id}{'ptnr2_auth_seq_id'},
