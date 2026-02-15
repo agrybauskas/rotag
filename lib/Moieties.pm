@@ -307,11 +307,6 @@ sub replace_hetatoms_with_moiety
                          { 'label_seq_id' => [ $residue_id ],
                            'pdbx_PDB_model_num' => [ $pdbx_model ],
                            'label_asym_id' => [ $residue_chain ] },
-                     'exclude' =>
-                         # TODO: make proper list of mainchain atoms.
-                         { 'label_atom_id' =>
-                               [ grep { $_ ne 'CB' }
-                                      @{ $interaction_atom_names } ] },
                      'data' => [ 'id' ],
                      'is_list' => 1 } ) };
 
