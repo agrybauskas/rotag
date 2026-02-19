@@ -212,7 +212,9 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     if( defined $ignore_cmds && $i < scalar @{ $ignore_cmds } ) {
         $ignore_cmd = $ignore_cmds->[$i];
     }
-    $ignore_cmd //='';
+    # HACK: instead of using non-existent atom, empty field '' should be allowed
+    # in the parser itself.
+    $ignore_cmd //='atomid 0';
 
     # Parses command line arguments to select certain atoms in PDBx.
     my $selection_parser = SelectionParser->new();
@@ -266,14 +268,12 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                        $parameters,
                        { 'seed' => $random_seed } ) };
 
-    my @ignored_atom_ids = ();
-
-    # my @ignored_atom_ids =
-    #     @{ $selection_parser->
-    #            parser( $atom_site,
-    #                    $ignore_cmd,
-    #                    $parameters,
-    #                    { 'seed' => $random_seed } ) };
+    my @ignored_atom_ids =
+        @{ $selection_parser->
+               parser( $atom_site,
+                       $ignore_cmd,
+                       $parameters,
+                       { 'seed' => $random_seed } ) };
 
     mark_selection( $atom_site, { 'target' => \@target_atom_ids,
                                   'select' => \@selected_atom_ids,
