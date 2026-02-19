@@ -268,8 +268,16 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
 
     my @ignored_atom_ids = ();
 
+    # my @ignored_atom_ids =
+    #     @{ $selection_parser->
+    #            parser( $atom_site,
+    #                    $ignore_cmd,
+    #                    $parameters,
+    #                    { 'seed' => $random_seed } ) };
+
     mark_selection( $atom_site, { 'target' => \@target_atom_ids,
-                                  'select' => \@selected_atom_ids } );
+                                  'select' => \@selected_atom_ids,
+                                  'ignore' => \@ignored_atom_ids } );
 
     if( ! $keep_ignored ) {
         $atom_site =
