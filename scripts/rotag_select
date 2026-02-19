@@ -208,6 +208,12 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
         $select_cmd = $select_cmds->[$i];
     }
 
+    my $ignore_cmd;
+    if( defined $ignore_cmds && $i < scalar @{ $ignore_cmds } ) {
+        $ignore_cmd = $ignore_cmds->[$i];
+    }
+    $ignore_cmd //='';
+
     # Parses command line arguments to select certain atoms in PDBx.
     my $selection_parser = SelectionParser->new();
 
@@ -235,14 +241,13 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
     }
 
     my @target_cmds = split /;/smx, $target_cmd;
+    my @target_atom_ids;
 
     # By default, target atoms are used for surrounding atom selection.
     $select_cmd //= $target_cmd;
     $select_cmd =~ s/(target)/$target_cmd/smgx;
 
-    my @target_atom_ids;
     my $group_id = 1;
-
     for my $target_cmd ( @target_cmds ) {
         push @target_atom_ids,
             @{ $selection_parser->
@@ -260,6 +265,8 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                        $select_cmd,
                        $parameters,
                        { 'seed' => $random_seed } ) };
+
+    my @ignored_atom_ids = ();
 
     mark_selection( $atom_site, { 'target' => \@target_atom_ids,
                                   'select' => \@selected_atom_ids } );
