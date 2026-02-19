@@ -39,7 +39,7 @@ our $VERSION = $VERSION;
 #*
 #*Options:
 #*    -t, --target <selection-query>
-#*                        command describing the residues that will be marked
+#*                        option describing the residues that will be marked
 #*                        as target (T) (default: all).
 #*
 #*                        Selection keywords (equivalent PDBx category data
@@ -92,8 +92,11 @@ our $VERSION = $VERSION;
 #*                        Annotation operator:
 #*                            : - assigns <int> or <str> as group id.
 #*    -s, --select <selection-query>
-#*                        command (same as --target) describing the atoms that
-#*                        will be marked as selected (S) (default: target).
+#*                        option (same as --target) describing the atoms that
+#*                        will be marked as selected (S).
+#*    -I, --ignore <selection-query>
+#*                        option (same as --target) describing the atoms that
+#*                        will be marked as ignored (I).
 #*    --tags <tag>[,<tag>...]
 #*                        select PDBx tag that will be in the output
 #*                        (default: '_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,_[local]_rmsd').
@@ -115,6 +118,7 @@ our $VERSION = $VERSION;
 
 my $target_cmds;
 my $select_cmds;
+my $ignore_cmds;
 my $tags = '_atom_site,_[local]_rotamer_angle,_[local]_dihedral_angle,_[local]_rotamer_energy,_[local]_pairwise_energy,_[local]_energy,_[local]_rmsd';
 my $is_related = 0;
 my $is_pdb = 0;
@@ -141,6 +145,7 @@ local $SIG{__DIE__} = sub {
 GetOptions(
     'target|t=s@' => \$target_cmds,
     'select|s=s@' => \$select_cmds,
+    'ignore|I=s@' => \$ignore_cmds,
     'tags=s' => \$tags,
     'related-data|r' => sub { $is_related = 1 },
     'pdb|p' => sub { $is_pdb = 1 },
