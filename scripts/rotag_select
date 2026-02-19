@@ -280,9 +280,15 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                                   'ignore' => \@ignored_atom_ids } );
 
     if( ! $keep_ignored ) {
+        my @exclude_atom_ids =
+            keys %{ filter_new( $atom_site,
+                                { 'include' => {
+                                      '[local]_selection_state' => [ 'I' ] },
+                                  'exclude' => {
+                                      'id' => \@ignored_atom_ids } } ) };
         $atom_site =
             filter_new( $atom_site,
-                        {'exclude' => { '[local]_selection_state' => [ 'I' ] }});
+                        { 'exclude' => { 'id' => \@exclude_atom_ids }});
     }
 
     next if ! %{ $atom_site };
