@@ -1,1 +1,42 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 148 N N . ASP A 1 27 -31.459 -9.382 -0.630 A 27 . 1 T 1
+ATOM 149 C CA . ASP A 1 27 -32.444 -9.886 0.303 A 27 . 1 T 1
+ATOM 150 C C . ASP A 1 27 -33.790 -10.232 -0.318 A 27 . 1 T 1
+ATOM 151 O O . ASP A 1 27 -34.560 -10.956 0.317 A 27 . 1 T 1
+ATOM 152 C CB . ASP A 1 27 -32.650 -8.892 1.445 A 27 . 1 T 1
+ATOM 153 C CG . ASP A 1 27 -33.510 -7.732 1.055 A 27 . 1 T 1
+ATOM 154 O OD1 . ASP A 1 27 -33.182 -7.066 0.057 A 27 . 1 T 1
+ATOM 155 O OD2 . ASP A 1 27 -34.527 -7.497 1.737 A 27 . 1 T 1
+ATOM 156 H H . ASP A 1 27 -31.436 -8.527 -0.724 A 27 . 1 T 1
+ATOM 157 H HA . ASP A 1 27 -32.095 -10.702 0.695 A 27 . 1 T 1
+ATOM 158 H HB2 . ASP A 1 27 -33.079 -9.347 2.187 A 27 . 1 T 1
+ATOM 159 H HB3 . ASP A 1 27 -31.787 -8.546 1.723 A 27 . 1 T 1
+ATOM 883 N N . LYS A 1 72 -29.098 -2.262 -0.794 A 72 . 1 S 1
+ATOM 884 C CA . LYS A 1 72 -30.255 -2.208 0.102 A 72 . 1 S 1
+ATOM 885 C C . LYS A 1 72 -30.295 -3.515 0.864 A 72 . 1 S 1
+ATOM 886 O O . LYS A 1 72 -30.932 -4.484 0.452 A 72 . 1 S 1
+ATOM 887 C CB . LYS A 1 72 -31.539 -1.981 -0.687 A 72 . 1 S 1
+ATOM 892 H H . LYS A 1 72 -29.265 -2.633 -1.552 A 72 . 1 S 1
+ATOM 893 H HA . LYS A 1 72 -30.146 -1.481 0.734 A 72 . 1 S 1
+HETATM 1925 MG MG . MG B 1 . -31.184 -6.586 -1.238 A 101 . 1 I 1
+#
