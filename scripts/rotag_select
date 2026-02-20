@@ -276,8 +276,7 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                        { 'seed' => $random_seed } ) };
 
     mark_selection( $atom_site, { 'target' => \@target_atom_ids,
-                                  'select' => \@selected_atom_ids,
-                                  'ignore' => \@ignored_atom_ids } );
+                                  'select' => \@selected_atom_ids } );
 
     if( ! $keep_ignored ) {
         my @exclude_atom_ids =

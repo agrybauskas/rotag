@@ -1516,17 +1516,11 @@ sub mark_selection
 {
     my ( $atom_site, $options ) = @_;
 
-    my ( $target_atom_ids, $selected_atom_ids, $ignored_atom_ids ) =
-        ( $options->{'target'}, $options->{'select'}, $options->{'ignore'});
+    my ( $target_atom_ids, $selected_atom_ids ) =
+        ( $options->{'target'}, $options->{'select'} );
 
-    if( defined $ignored_atom_ids && @{ $ignored_atom_ids } ) {
-        for my $ignored_atom_id ( @{ $ignored_atom_ids } ) {
+    for my $ignored_atom_id ( keys %{ $atom_site } ) {
             $atom_site->{$ignored_atom_id}{'[local]_selection_state'} = 'I';
-        }
-    } else {
-        for my $ignored_atom_id ( keys %{ $atom_site } ) {
-            $atom_site->{$ignored_atom_id}{'[local]_selection_state'} = 'I';
-        }
     }
 
     for my $selected_atom_id ( @{ $selected_atom_ids } ) {
