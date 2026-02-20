@@ -1520,7 +1520,7 @@ sub mark_selection
         ( $options->{'target'}, $options->{'select'}, $options->{'ignore'});
 
     if( defined $ignored_atom_ids && @{ $ignored_atom_ids } ) {
-        for my $ignored_atom_id ( $ignored_atom_ids ) {
+        for my $ignored_atom_id ( @{ $ignored_atom_ids } ) {
             $atom_site->{$ignored_atom_id}{'[local]_selection_state'} = 'I';
         }
     } else {
