@@ -105,7 +105,7 @@ sub sample_bond_parameters_qs_parsing
     my $float_regexp = '-?\d+(?:\.\d+)?';
     my $float_pos_regexp = '\d+(?:\.\d+)?';
     my $step_only_regexp =
-        $legacy_grammar ? ${float_pos_regexp} : "\.\.(${float_pos_regexp})\.\.";
+        $legacy_grammar ? ${float_pos_regexp} : "\\.\\.(${float_pos_regexp})\\.\\.";
 
     my %bond_parameters = ();
     for my $query_string ( split /;/, $query_strings ) {
