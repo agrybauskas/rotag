@@ -175,7 +175,7 @@ sub sample_bond_parameters_qs_parsing
                 } else {
                     ( $bond_parameter_start,
                       $bond_parameter_step,
-                      $bond_parameter_end ) = ( $1, 0, $1 );
+                      $bond_parameter_end ) = ( $1, 1.0, $1 + 1.0 );
                 }
             } else {
                 die "Syntax '$bond_parameter_query' is incorrect\n";
