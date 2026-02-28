@@ -13,48 +13,30 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
-ATOM 147 N N . SER A 1 18 -55.320 -109.795 -6.452 1 T
-ATOM 148 C CA . SER A 1 18 -54.128 -110.543 -6.071 1 T
-ATOM 149 C C . SER A 1 18 -53.415 -111.063 -7.316 1 T
-ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 1 T
-ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 1 T
-ATOM 1926 O OG 26 SER A 1 18 -53.351780 -112.439342 -4.772586 1 T
-HETATM 1927 MG MG 26 MG A 1 18 -52.233149 -112.632779 -5.753018 1 T
-#
-loop_
-_[local]_rotamer_energy.id
-_[local]_rotamer_energy.rotamer_id
-_[local]_rotamer_energy.calculation_method
-_[local]_rotamer_energy.value
-26 26 composite -102.578316
-#
-loop_
-_[local]_rotamer_bond_parameter.id
-_[local]_rotamer_bond_parameter.rotamer_id
-_[local]_rotamer_bond_parameter.label_seq_id
-_[local]_rotamer_bond_parameter.label_comp_id
-_[local]_rotamer_bond_parameter.label_asym_id
-_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
-_[local]_rotamer_bond_parameter.label_alt_id
-_[local]_rotamer_bond_parameter.frequency
-_[local]_rotamer_bond_parameter.type
-_[local]_rotamer_bond_parameter.value
-_[local]_rotamer_bond_parameter.units
-101 26 18 SER A 1 . 0.001715 CA-CB-OG.MG -36.000 degrees
-102 26 18 SER A 1 . 0.001715 CB-OG.MG 120.000 degrees
-103 26 18 SER A 1 . 0.001715 OG.MG 1.500000 angstrom
-104 26 18 SER A 1 . 0.001715 chi1 -180.000 degrees
+ATOM 147 N N . SER A 1 18 -55.320 -109.795 -6.452 18 A 1 T
+ATOM 148 C CA . SER A 1 18 -54.128 -110.543 -6.071 18 A 1 T
+ATOM 149 C C . SER A 1 18 -53.415 -111.063 -7.316 18 A 1 T
+ATOM 150 O O . SER A 1 18 -52.258 -111.482 -7.255 18 A 1 T
+ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 18 A 1 T
+ATOM 1926 O OG 26 SER A 1 18 -53.351780 -112.439342 -4.772586 18 A 1 T
+HETATM 1927 MG MG 26 MG B 1 . -52.233149 -112.632779 -5.753018 101 A 1 T
 #
 loop_
 _struct_conn.id
 _struct_conn.conn_type_id
 _struct_conn.ptnr1_label_seq_id
 _struct_conn.ptnr1_label_asym_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
 _struct_conn.ptnr1_label_atom_id
 _struct_conn.ptnr2_label_seq_id
 _struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
-metalc1 metalc 18 A OG 18 A MG
+metalc1 metalc 18 A 18 A OG 18 B . A MG
 #
