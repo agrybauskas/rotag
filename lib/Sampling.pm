@@ -40,7 +40,7 @@ sub sample_bond_parameters
     my ( $bond_parameter_ranges, $sampling_count, $inclusive_start,
          $inclusive_end ) = @_;
 
-    return [] if ! $sampling_count;
+    $sampling_count = ! $sampling_count ? 1 : $sampling_count;
 
     $inclusive_start //= 1;
     $inclusive_end //= 1;
