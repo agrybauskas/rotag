@@ -195,9 +195,10 @@ sub sample_bond_parameters_qs_parsing
                 { 'in_radians' => $in_radians }
             );
 
+            my ( $bond_parameter_type ) =
+                detect_bond_parameter_type( $bond_parameter_name );
+
             for my $residue_name ( @{ $residue_names } ) {
-                my ( $bond_parameter_type ) =
-                    detect_bond_parameter_type( $bond_parameter_name );
                 $bond_parameters{$residue_name}{$bond_parameter_name} = {
                     'from' => $bond_parameter_start,
                     'step' => $bond_parameter_step,
