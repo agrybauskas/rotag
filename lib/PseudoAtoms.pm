@@ -1089,7 +1089,8 @@ sub calc_favourable_angle
     my ( $args, $array_blocks ) = @_;
 
     my ( $parameters, $atom_site, $atom_id, $bond_parameters, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $options ) = (
+         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
+         $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'atom_id'},
@@ -1097,10 +1098,11 @@ sub calc_favourable_angle
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
+        $args->{'energy_cutoff_atom'},
         $args->{'options'},
     );
 
-    my $energy_cutoff_atom=$parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    $energy_cutoff_atom //= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
