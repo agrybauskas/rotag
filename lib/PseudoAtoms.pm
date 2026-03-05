@@ -973,6 +973,35 @@ sub calc_favourable_angles
                          $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
 
+            # my ( $next_allowed_bond_parameters, $next_allowed_energies )=([],[]);
+            # my $iteration = 0;
+            # my $max_iteration = 4;
+            # my $energy_cutoff_atom =
+            #     $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+            # while( ! @{ $next_allowed_bond_parameters } &&
+            #        $iteration < $max_iteration ) {
+            #     ( $next_allowed_bond_parameters, $next_allowed_energies ) =
+            #         @{ threading(
+            #                \&calc_favourable_angle,
+            #                { 'parameters' => $parameters,
+            #                  'atom_site' => $atom_site,
+            #                  'atom_id' => $atom_id,
+            #                  'bond_parameters' => \%bond_parameters,
+            #                  'interaction_site' => $interaction_site,
+            #                  'energy_cutoff_atom' => $energy_cutoff_atom,
+            #                  'non_bonded_potential' => $non_bonded_potential,
+            #                  'bonded_potential' => $bonded_potential },
+            #                [ $bond_combinations{$parameter_key_sorted},
+            #                  $energy_combinations{$parameter_key_sorted} ],
+            #                $threads ) };
+
+            #     if( ! @{ $next_allowed_bond_parameters } ) {
+            #         $energy_cutoff_atom *= 2;
+            #     }
+
+            #     $iteration++;
+            # }
+
             # # NOTE: Keeping commented code for coverage tests as
             # # multi-threading cannot be processed.
             # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
