@@ -1100,11 +1100,6 @@ sub calc_favourable_angle
         $args->{'options'},
     );
 
-    my $energy_cutoff_atom =
-        $parameters->{'_[local]_force_field'}{'cutoff_atom'};
-    my $energy_cutoff_hetatom =
-        $parameters->{'_[local]_force_field'}{'cutoff_atom'};
-
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
 
@@ -1136,6 +1131,10 @@ sub calc_favourable_angle
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
 
+        my $energy_cutoff =
+            # $pseudo_atom_site->{$pseudo_atom_id}{'group_PDB'} eq 'HETATM' ?
+            # $parameters->{'_[local]_force_field'}{'cutoff_hetatom'} :
+            $parameters->{'_[local]_force_field'}{'cutoff_atom'};
         my $potential_energy = 0; # TODO: look if here should be zeros.
         my $potential_sum = 0;
 
@@ -1155,7 +1154,7 @@ sub calc_favourable_angle
                     \%options
                 );
                 $potential_sum += $potential_energy;
-                last if $potential_energy > $energy_cutoff_atom;
+                last if $potential_energy > $energy_cutoff;
             }
         }
 
@@ -1164,7 +1163,7 @@ sub calc_favourable_angle
         # last calculated potential. If potential was greater
         # than the cutoff, then calculation was halted, but the
         # value remained.
-        if( $potential_energy <= $energy_cutoff_atom ) {
+        if( $potential_energy <= $energy_cutoff ) {
             push @allowed_bond_parameters, $bond_parameter_values;
             push @allowed_energies, [ $energies + $potential_sum ];
         }
