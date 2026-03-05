@@ -1100,7 +1100,10 @@ sub calc_favourable_angle
         $args->{'options'},
     );
 
-    my $energy_cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    my $energy_cutoff_atom =
+        $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    my $energy_cutoff_hetatom =
+        $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
