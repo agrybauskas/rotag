@@ -1137,7 +1137,8 @@ sub calc_favourable_angle
         my $potential_sum = 0;
 
         # Calculation of potential energy of non-bonded atoms.
-        foreach my $interaction_id ( keys %{ $interaction_site } ) {
+        foreach my $interaction_id ( sort { $a <=> $b }
+                                     keys %{ $interaction_site } ) {
             if( ( ! is_neighbour( $atom_site,
                                   $pseudo_origin_id,
                                   $interaction_id ) ) &&
