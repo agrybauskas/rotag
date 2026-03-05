@@ -973,35 +973,6 @@ sub calc_favourable_angles
                          $energy_combinations{$parameter_key_sorted} ],
                        $threads ) };
 
-            # my ( $next_allowed_bond_parameters, $next_allowed_energies )=([],[]);
-            # my $iteration = 0;
-            # my $max_iteration = 4;
-            # my $energy_cutoff_atom =
-            #     $parameters->{'_[local]_force_field'}{'cutoff_atom'};
-            # while( ! @{ $next_allowed_bond_parameters } &&
-            #        $iteration < $max_iteration ) {
-            #     ( $next_allowed_bond_parameters, $next_allowed_energies ) =
-            #         @{ threading(
-            #                \&calc_favourable_angle,
-            #                { 'parameters' => $parameters,
-            #                  'atom_site' => $atom_site,
-            #                  'atom_id' => $atom_id,
-            #                  'bond_parameters' => \%bond_parameters,
-            #                  'interaction_site' => $interaction_site,
-            #                  'energy_cutoff_atom' => $energy_cutoff_atom,
-            #                  'non_bonded_potential' => $non_bonded_potential,
-            #                  'bonded_potential' => $bonded_potential },
-            #                [ $bond_combinations{$parameter_key_sorted},
-            #                  $energy_combinations{$parameter_key_sorted} ],
-            #                $threads ) };
-
-            #     if( ! @{ $next_allowed_bond_parameters } ) {
-            #         $energy_cutoff_atom *= 2;
-            #     }
-
-            #     $iteration++;
-            # }
-
             # # NOTE: Keeping commented code for coverage tests as
             # # multi-threading cannot be processed.
             # my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
@@ -1118,8 +1089,7 @@ sub calc_favourable_angle
     my ( $args, $array_blocks ) = @_;
 
     my ( $parameters, $atom_site, $atom_id, $bond_parameters, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $energy_cutoff_atom,
-         $options ) = (
+         $non_bonded_potential, $bonded_potential, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'atom_id'},
@@ -1127,11 +1097,10 @@ sub calc_favourable_angle
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
-        $args->{'energy_cutoff_atom'},
         $args->{'options'},
     );
 
-    $energy_cutoff_atom //= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    my $energy_cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
