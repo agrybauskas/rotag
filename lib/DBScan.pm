@@ -3,14 +3,24 @@ package DBScan;
 use strict;
 use warnings;
 
-use Exporter qw( import );
-our @EXPORT_OK = qw();
+use DBScan;
 
-use Version qw( $VERSION );
+# ------------------------- Constructors/Destructors -------------------------- #
 
-our $VERSION = $VERSION;
+sub new
+{
+    my ( $class, $points ) = @_;
+    my $self = {};
+    my $id = 0;
+    for my $point ( @{ $points } ) {
+        $self->{$id}{'label'} = -1;
+        $self->{$id}{'coord'} = $point;
+        $id++;
+    }
+    return bless $self, $class;
+}
 
-# ----------------------------------- DBScan ---------------------------------- #
+# --------------------------------- Methods ----------------------------------- #
 
 #
 # Performs DBSCAN clusterization for given data points.
@@ -25,7 +35,7 @@ our $VERSION = $VERSION;
 
 sub dbscan
 {
-    my ( $points, $radius, $options ) = @_;
+    my ( $self, $radius, $options ) = @_;
     my ( $min_points, $distance_func ) =
         ( $options->{'min_points'}, $options->{'distance_func'} );
     $min_points //= 1;
