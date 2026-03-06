@@ -11,8 +11,9 @@ sub new
 {
     my ( $class, $points ) = @_;
     my $self = {};
-    my $id = 0;
+    my $id = 1;
     for my $point ( @{ $points } ) {
+        $self->{$id}{'id'} = $id;
         $self->{$id}{'label'} = -1;
         $self->{$id}{'coord'} = $point;
         $id++;
@@ -39,6 +40,20 @@ sub dbscan
     my ( $min_points, $distance_func ) =
         ( $options->{'min_points'}, $options->{'distance_func'} );
     $min_points //= 1;
+    for my $id ( sort keys %{ $self } ) {
+        my $point = $self->{$id};
+
+        next if $point->{'label'} > 0;
+
+        my $neighbours = range_query( $self, $point, $distance_func, $radius );
+    }
+}
+
+# -------------------------------- Functions ---------------------------------- #
+
+sub range_query
+{
+    my ( $points, $point, $distance_func, $radius ) = @_;
 }
 
 1;
