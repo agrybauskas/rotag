@@ -1253,6 +1253,12 @@ sub calc_full_atom_energy
 
         my $rotamer_energy_sum = 0;
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+            # Calculation of potential energy of non-bonded atoms.
+            my $energy_cutoff =
+                # $rotamer_interaction_site{$rotamer_atom_id}{'group_PDB'} eq 'HETATM' ?
+                # $parameters->{'_[local]_force_field'}{'cutoff_hetatom'} :
+                $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+
             # Calculation of potential energy of bonded atoms.
             if( defined $bonded_potential ) {
                 $rotamer_energy_sum += $bonded_potential->(
@@ -1262,7 +1268,6 @@ sub calc_full_atom_energy
                 );
             }
 
-            # Calculation of potential energy of non-bonded atoms.
             for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
                 my $rotamer_atom_energy = 0;
                 if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
@@ -1280,7 +1285,7 @@ sub calc_full_atom_energy
                             $options );
 
                     next ALLOWED_ANGLES
-                        if $rotamer_atom_energy > $energy_cutoff_atom;
+                        if $rotamer_atom_energy > $energy_cutoff;
 
                     $rotamer_energy_sum += $rotamer_atom_energy;
                 }
