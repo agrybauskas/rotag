@@ -8233,6 +8233,7 @@ $VAR1 = bless( {
     'cutoff_end' => '5.00',
     'cutoff_hetatom' => '800.0',
     'cutoff_hydrog' => '1.50',
+    'cutoff_iteration' => '4',
     'cutoff_metalc' => '2.50',
     'cutoff_start' => '2.50',
     'description' => '\'Parameter weights were optimized using particle swarm optimization algorithm.\'',
