@@ -959,19 +959,28 @@ sub calc_favourable_angles
 
             # Starts calculating potential energy.
             my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
-            my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
-                @{ threading(
-                       \&calc_favourable_angle,
-                       { 'parameters' => $parameters,
-                         'atom_site' => $atom_site,
-                         'atom_id' => $atom_id,
-                         'bond_parameters' => \%bond_parameters,
-                         'interaction_site' => $interaction_site,
-                         'non_bonded_potential' => $non_bonded_potential,
-                         'bonded_potential' => $bonded_potential },
-                       [ $bond_combinations{$parameter_key_sorted},
-                         $energy_combinations{$parameter_key_sorted} ],
-                       $threads ) };
+            my ( $next_allowed_bond_parameters, $next_allowed_energies )=([],[]);
+            for my $energy_cutoff (
+                $parameters->{'_[local]_force_field'}{'cutoff_atom'},
+                $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'} ) {
+                ( $next_allowed_bond_parameters, $next_allowed_energies ) =
+                    @{ threading(
+                           \&calc_favourable_angle,
+                           { 'parameters' => $parameters,
+                             'atom_site' => $atom_site,
+                             'atom_id' => $atom_id,
+                             'bond_parameters' => \%bond_parameters,
+                             'interaction_site' => $interaction_site,
+                             'energy_cutoff' => $energy_cutoff,
+                             'non_bonded_potential' => $non_bonded_potential,
+                             'bonded_potential' => $bonded_potential },
+                           [ $bond_combinations{$parameter_key_sorted},
+                             $energy_combinations{$parameter_key_sorted} ],
+                           $threads ) };
+
+                last if $atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
+                last if @{ $next_allowed_bond_parameters };
+            }
 
             # # NOTE: Keeping commented code for coverage tests as
             # # multi-threading cannot be processed.
