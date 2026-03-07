@@ -1208,7 +1208,7 @@ sub calc_full_atom_energy
 
     my ( $parameters, $atom_site, $residue_unique_keys, $bond_parameter_names,
          $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
-         $energy_cutoff, $options ) = (
+         $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_keys'},
@@ -1217,12 +1217,10 @@ sub calc_full_atom_energy
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'rmsd'},
-        $args->{'energy_cutoff'},
         $args->{'options'},
     );
 
-    $energy_cutoff //= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
-
+    my $energy_cutoff = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
     my $residue_site = {
