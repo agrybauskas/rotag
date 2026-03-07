@@ -1089,7 +1089,7 @@ sub calc_favourable_angle
     my ( $args, $array_blocks ) = @_;
 
     my ( $parameters, $atom_site, $atom_id, $bond_parameters, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $options ) = (
+         $non_bonded_potential, $bonded_potential, $energy_cutoff, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'atom_id'},
@@ -1097,11 +1097,14 @@ sub calc_favourable_angle
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
+        $args->{'energy_cutoff'},
         $args->{'options'},
     );
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
+
+    $energy_cutoff //= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     # TODO: a good place to make an parameter name sorting function.
     my @bond_parameter_names =
@@ -1131,10 +1134,6 @@ sub calc_favourable_angle
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
 
-        my $energy_cutoff =
-            # $pseudo_atom_site->{$pseudo_atom_id}{'group_PDB'} eq 'HETATM' ?
-            # $parameters->{'_[local]_force_field'}{'cutoff_hetatom'} :
-            $parameters->{'_[local]_force_field'}{'cutoff_atom'};
         my $potential_energy = 0; # TODO: look if here should be zeros.
         my $potential_sum = 0;
 
@@ -1200,7 +1199,7 @@ sub calc_full_atom_energy
 
     my ( $parameters, $atom_site, $residue_unique_keys, $bond_parameter_names,
          $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
-         $options ) = (
+         $energy_cutoff, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_keys'},
@@ -1209,10 +1208,12 @@ sub calc_full_atom_energy
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'rmsd'},
+        $args->{'energy_cutoff'},
         $args->{'options'},
     );
 
-    my $energy_cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    $energy_cutoff //= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
     my $residue_site = {
@@ -1253,12 +1254,6 @@ sub calc_full_atom_energy
 
         my $rotamer_energy_sum = 0;
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
-            # Calculation of potential energy of non-bonded atoms.
-            my $energy_cutoff =
-                # $rotamer_interaction_site{$rotamer_atom_id}{'group_PDB'} eq 'HETATM' ?
-                # $parameters->{'_[local]_force_field'}{'cutoff_hetatom'} :
-                $parameters->{'_[local]_force_field'}{'cutoff_atom'};
-
             # Calculation of potential energy of bonded atoms.
             if( defined $bonded_potential ) {
                 $rotamer_energy_sum += $bonded_potential->(
