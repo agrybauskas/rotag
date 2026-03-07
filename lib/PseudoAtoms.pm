@@ -1220,7 +1220,6 @@ sub calc_full_atom_energy
         $args->{'options'},
     );
 
-    my $energy_cutoff = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
     my $residue_site = {
@@ -1261,6 +1260,11 @@ sub calc_full_atom_energy
 
         my $rotamer_energy_sum = 0;
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+            my $energy_cutoff =
+                # $rotamer_interaction_site{$rotamer_atom_id}{'group_PDB'} eq 'HETATM' ?
+                # $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'} :
+                $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+
             # Calculation of potential energy of bonded atoms.
             if( defined $bonded_potential ) {
                 $rotamer_energy_sum += $bonded_potential->(
