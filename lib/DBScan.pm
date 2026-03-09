@@ -54,6 +54,11 @@ sub dbscan
 sub range_query
 {
     my ( $points, $point, $distance_func, $radius ) = @_;
+    my @neighbour_ids = ();
+    my $radius_squared = $radius ** 2;
+    for my $point_id ( sort { $a <=> $b } keys %{ $points } ) {
+
+    }
 }
 
 1;
