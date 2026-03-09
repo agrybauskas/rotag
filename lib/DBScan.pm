@@ -63,7 +63,10 @@ sub range_query
             sum( map { $_ ** 2 } @{ $points->{$point_id}{'coord'} } );
 
         next if $distance_squared > $radius_squared;
+
+        push @neighbour_ids, $point_id;
     }
+    return \@neighbour_ids;
 }
 
 1;
