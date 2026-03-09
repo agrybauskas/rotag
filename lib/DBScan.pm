@@ -3,6 +3,8 @@ package DBScan;
 use strict;
 use warnings;
 
+use List::Util qw( sum );
+
 use DBScan;
 
 # ------------------------- Constructors/Destructors -------------------------- #
@@ -29,7 +31,6 @@ sub new
 #     $points - data structure that stores both point coordination and label;
 #     $radius - distance between points to be included to the cluster;
 #     $min_points - minimum points required by the cluster;
-#     $distance_func - dinstance function to be calculated by;
 # Output:
 #     labels points by cluster name.
 #
@@ -37,15 +38,14 @@ sub new
 sub dbscan
 {
     my ( $self, $radius, $options ) = @_;
-    my ( $min_points, $distance_func ) =
-        ( $options->{'min_points'}, $options->{'distance_func'} );
+    my ( $min_points ) = ( $options->{'min_points'} );
     $min_points //= 1;
     for my $id ( sort keys %{ $self } ) {
         my $point = $self->{$id};
 
         next if $point->{'label'} > 0;
 
-        my $neighbours = range_query( $self, $point, $distance_func, $radius );
+        my $neighbours = range_query( $self, $point, $radius );
     }
 }
 
@@ -53,11 +53,16 @@ sub dbscan
 
 sub range_query
 {
-    my ( $points, $point, $distance_func, $radius ) = @_;
+    my ( $points, $point, $radius ) = @_;
     my @neighbour_ids = ();
     my $radius_squared = $radius ** 2;
     for my $point_id ( sort { $a <=> $b } keys %{ $points } ) {
+        next if $point_id eq $point->{'id'};
 
+        my $distance_squared =
+            sum( map { $_ ** 2 } @{ $points->{$point_id}{'coord'} } );
+
+        next if $distance_squared > $radius_squared;
     }
 }
 
