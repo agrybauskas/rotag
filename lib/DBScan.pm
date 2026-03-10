@@ -68,8 +68,12 @@ sub dbscan
         $self->{$id}{'label'} = $label;
 
         for my $neighbour_id ( @{ $neighbours }) {
+            if( defined $self->{$neighbour_id}{'label'} &&
+                $self->{$neighbour_id}{'label'} < 0 ) {
+                $self->{$neighbour_id}{'label'} = $label;
+            }
+
             next if defined $self->{$neighbour_id}{'label'};
-            next if $self->{$neighbour_id}{'label'} > 0;
 
             $self->{$neighbour_id}{'label'} = $label;
         }
@@ -86,8 +90,12 @@ sub range_query
     for my $point_id ( sort { $a <=> $b } keys %{ $points } ) {
         next if $point_id eq $point->{'id'};
 
+        my $dimension = scalar @{ $point->{'coord'} };
+
         my $distance_squared =
-            sum( map { $_ ** 2 } @{ $points->{$point_id}{'coord'} } );
+            sum( map { ( $points->{$point_id}{'coord'}[$_] -
+                         $point->{'coord'}[$_] ) ** 2 }
+                     ( 0..$dimension-1 ) );
 
         next if $distance_squared > $radius_squared;
 
