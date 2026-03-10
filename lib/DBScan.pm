@@ -56,7 +56,7 @@ sub dbscan
     $min_points //= 1;
     my $label = 0;
     for my $id ( sort keys %{ $self } ) {
-        next if defined $self->{$id}{'label'};
+        next if defined $self->{$id}{'label'} && $self->{$id}{'label'} > 0;
 
         my $neighbours = range_query( $self, $self->{$id}, $radius );
 
@@ -73,9 +73,11 @@ sub dbscan
                 $self->{$neighbour_id}{'label'} = $label;
             }
 
-            next if defined $self->{$neighbour_id}{'label'};
-
-            $self->{$neighbour_id}{'label'} = $label;
+            if( defined $self->{$neighbour_id}{'label'} &&
+                $self->{$neighbour_id}{'label'} > 0 ) {
+                $self->{$id}{'label'} = $self->{$neighbour_id}{'label'};
+                $label--;
+            }
         }
     }
 }
