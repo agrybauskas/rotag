@@ -16,7 +16,7 @@ sub new
     my $id = 1;
     for my $point ( @{ $points } ) {
         $self->{$id}{'id'} = $id;
-        $self->{$id}{'label'} = -1;
+        $self->{$id}{'label'} = undef;
         $self->{$id}{'coord'} = $point;
         $id++;
     }
@@ -54,19 +54,24 @@ sub dbscan
     my ( $self, $radius, $options ) = @_;
     my ( $min_points ) = ( $options->{'min_points'} );
     $min_points //= 1;
-    my $label = 1;
+    my $label = 0;
     for my $id ( sort keys %{ $self } ) {
-        my $point = $self->{$id};
+        next if defined $self->{$id}{'label'};
 
-        next if $point->{'label'} > 0;
+        my $neighbours = range_query( $self, $self->{$id}, $radius );
 
-        my $neighbours = range_query( $self, $point, $radius );
+        if( scalar @{ $neighbours } < $min_points ) {
+            $self->{$id}{'label'} = -1;
+        }
+
+        $label++;
+        $self->{$id}{'label'} = $label;
+
         for my $neighbour_id ( @{ $neighbours }) {
-            if( $self->{$neighbour_id}{'label'} > 0 ) {
-                $self->{$id}{'label'} = $self->{$neighbour_id}{'label'};
-            } else {
+            next if defined $self->{$neighbour_id}{'label'};
+            next if $self->{$neighbour_id}{'label'} > 0;
 
-            }
+            $self->{$neighbour_id}{'label'} = $label;
         }
     }
 }
