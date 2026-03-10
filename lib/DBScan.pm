@@ -23,6 +23,20 @@ sub new
     return bless $self, $class;
 }
 
+# ----------------------------- Setters/Getters ------------------------------- #
+
+sub get_ids
+{
+    my ( $self ) = @_;
+    return [ sort { $a <=> $b } keys %{ $self } ];
+}
+
+sub get_point
+{
+    my ( $self, $id ) = @_;
+    return $self->{$id};
+}
+
 # --------------------------------- Methods ----------------------------------- #
 
 #
