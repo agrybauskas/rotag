@@ -636,7 +636,7 @@ sub generate_library
                            $a cmp $b }
                     keys %bond_parameters;
 
-                my ( $allowed_angles, $energy_sums, $rmsds ) =
+                my ( $allowed_angles_full, $energy_sums, $rmsds ) =
                     @{ threading(
                            \&calc_full_atom_energy,
                            { 'parameters' => $parameters,
@@ -658,7 +658,7 @@ sub generate_library
 
                 # # NOTE: Keeping commented code for coverage tests as
                 # # multi-threading cannot be processed.
-                # my ( $allowed_angles, $energy_sums, $rmsds ) =
+                # my ( $allowed_angles_full, $energy_sums, $rmsds ) =
                 #     @{ calc_full_atom_energy(
                 #            { 'parameters' => $parameters,
                 #              'atom_site' => $current_atom_site,
@@ -676,11 +676,12 @@ sub generate_library
                 #              'options' => $options },
                 #            [ \@allowed_angles ] ) };
 
-                for( my $i = 0; $i <= $#{ $allowed_angles }; $i++  ) {
+                for( my $i = 0; $i <= $#{ $allowed_angles_full }; $i++  ) {
                     my %angles =
                         map { my $angle_id = $_ + 1;
-                              ( $bond_parameter_names[$_] => $allowed_angles->[$i][$_] ) }
-                            ( 0..$#{ $allowed_angles->[$i] } );
+                              ( $bond_parameter_names[$_] =>
+                                $allowed_angles_full->[$i][$_] ) }
+                            ( 0..$#{ $allowed_angles_full->[$i] } );
                     my %atom_ids = ();
                     my %origin_atom_ids = ();
                     my %site_ids = ();
