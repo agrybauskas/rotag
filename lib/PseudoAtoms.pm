@@ -1121,7 +1121,10 @@ sub calc_favourable_angle
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
 
-    my $energy_cutoff = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    $energy_threshold //= {
+        'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
+        'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
+    };
 
     # TODO: a good place to make an parameter name sorting function.
     my @bond_parameter_names =
@@ -1150,6 +1153,11 @@ sub calc_favourable_angle
         my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
+
+        my $energy_cutoff =
+            $pseudo_atom_site->{$pseudo_atom_id}{'group_PDB'} eq 'HETATM' ?
+            $energy_threshold->{'hetatom'} :
+            $energy_threshold->{'atom'};
 
         my $potential_energy = 0; # TODO: look if here should be zeros.
         my $potential_sum = 0;
