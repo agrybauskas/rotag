@@ -958,10 +958,15 @@ sub calc_favourable_angles
             if $include_hetatoms &&
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
 
+            my %energy_threshold = (
+                'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
+                'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
+            );
+
             # Starts calculating potential energy.
             my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
             my ( $next_allowed_bond_parameters, $next_allowed_energies )=([],[]);
-            for my $energy_cutoff (
+            for my $energy_threshold_hetatom (
                 $parameters->{'_[local]_force_field'}{'cutoff_atom'},
                 $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'} ) {
                 ( $next_allowed_bond_parameters, $next_allowed_energies ) =
@@ -972,7 +977,7 @@ sub calc_favourable_angles
                              'atom_id' => $atom_id,
                              'bond_parameters' => \%bond_parameters,
                              'interaction_site' => $interaction_site,
-                             'energy_cutoff' => $energy_cutoff,
+                             'energy_threshold' => \%energy_threshold,
                              'non_bonded_potential' => $non_bonded_potential,
                              'bonded_potential' => $bonded_potential },
                            [ $bond_combinations{$parameter_key_sorted},
@@ -1099,7 +1104,8 @@ sub calc_favourable_angle
     my ( $args, $array_blocks ) = @_;
 
     my ( $parameters, $atom_site, $atom_id, $bond_parameters, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $energy_cutoff, $options ) = (
+         $non_bonded_potential, $bonded_potential, $energy_threshold,
+         $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'atom_id'},
@@ -1107,14 +1113,14 @@ sub calc_favourable_angle
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
-        $args->{'energy_cutoff'},
+        $args->{'energy_threshold'},
         $args->{'options'},
     );
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
 
-    $energy_cutoff //= $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+    my $energy_cutoff = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
     # TODO: a good place to make an parameter name sorting function.
     my @bond_parameter_names =
