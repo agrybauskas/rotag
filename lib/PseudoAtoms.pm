@@ -590,8 +590,8 @@ sub generate_library
                 # by step-by-step adding atoms to sidechains. This is called
                 # growing side chain.
                 my %options = %{ $options };
-                my @allowed_angles =
-                    @{ calc_favourable_angles(
+                my ( $allowed_angles, $energy_thresholds ) =
+                    calc_favourable_angles(
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
                              'residue_unique_keys' => [
@@ -609,9 +609,9 @@ sub generate_library
                                  $potential_functions{$interactions}{'bonded'},
                              'min_max_ratio' => $min_max_ratio,
                              'threads' => $threads,
-                             'options' => $options } ) };
+                             'options' => $options } );
 
-                next if ! @allowed_angles;
+                next if ! @{ $allowed_angles };
 
                 # Then, re-checks if each atom of the rotamer obey energy
                 # cutoffs.
@@ -653,7 +653,7 @@ sub generate_library
                                  $potential_functions{$interactions}{'bonded'},
                              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                              'options' => $options },
-                           [ \@allowed_angles ],
+                           [ $allowed_angles ],
                            $threads ) };
 
                 # # NOTE: Keeping commented code for coverage tests as
@@ -674,7 +674,7 @@ sub generate_library
                 #                  $potential_functions{$interactions}{'bonded'},
                 #              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
                 #              'options' => $options },
-                #            [ \@allowed_angles ] ) };
+                #            [ $allowed_angles ] ) };
 
                 for( my $i = 0; $i <= $#{ $allowed_angles_full }; $i++  ) {
                     my %angles =
@@ -1071,7 +1071,7 @@ sub calc_favourable_angles
     my $allowed_bond_parameters =
         combine_permuted_values( \%bond_combinations, \@parameter_names_all );
 
-    return $allowed_bond_parameters;
+    return $allowed_bond_parameters, {};
 }
 
 #
