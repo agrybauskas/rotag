@@ -966,9 +966,7 @@ sub calc_favourable_angles
             # Starts calculating potential energy.
             my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
             my ( $next_allowed_bond_parameters, $next_allowed_energies )=([],[]);
-            for my $energy_threshold_hetatom (
-                $parameters->{'_[local]_force_field'}{'cutoff_atom'},
-                $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'} ) {
+            foreach( 1, 2 ) {  # Currently, there are only two cicles.
                 ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                     @{ threading(
                            \&calc_favourable_angle,
@@ -986,6 +984,9 @@ sub calc_favourable_angles
 
                 last if $atom_site->{$atom_id}{'group_PDB'} eq 'ATOM';
                 last if @{ $next_allowed_bond_parameters };
+
+                $energy_threshold{'hetatom'} =
+                    $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'};
             }
 
             # # NOTE: Keeping commented code for coverage tests as
