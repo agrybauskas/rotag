@@ -310,7 +310,20 @@ for( my $i = 0; $i <= $#ARGV; $i++ ) {
                               'reference_keys' => [ 'label_seq_id',
                                                     'label_asym_id',
                                                     'pdbx_PDB_model_num',
-                                                    'rotamer_id' ] } ] } } );
+                                                    'rotamer_id' ] } ],
+                      '_struct_conn' =>
+                          [ { 'keys' => [ 'label_seq_id',
+                                          'label_asym_id',
+                                          'label_atom_id' ],
+                              'reference_keys' => [ 'ptnr1_label_seq_id',
+                                                    'ptnr1_label_asym_id',
+                                                    'ptnr1_label_atom_id' ] },
+                            { 'keys' => [ 'label_seq_id',
+                                          'label_asym_id',
+                                          'label_atom_id' ],
+                              'reference_keys' => [ 'ptnr2_label_seq_id',
+                                                    'ptnr2_label_asym_id',
+                                                    'ptnr2_label_atom_id' ] } ] } } );
         for my $category ( keys %{ $related_pdbx_data } ) {
             my $reference_category =
                 $related_pdbx_data->{$category}{'reference_category'};
