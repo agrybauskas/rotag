@@ -65,6 +65,9 @@ our $VERSION = $VERSION;
 #*                        add specified ligand.
 #*    --list-ligands
 #*                        list available ligands that can be added.
+#*    --optimise-ligands
+#*                        clusters ligands using DBScan algorithm, reduces
+#*                        possible positions and checks the ligand coordination.
 #*    -a, --rotamer-angle-file
 #*                        selects rotamer angles from the cif file.
 #*    -j, --rotamer-angle-json-file
@@ -93,6 +96,7 @@ my $add_sidechains = 0;
 my $add_hydrogens = 0;
 my $ligands = '';
 my $list_ligands = 0;
+my $optimise_ligands = 0;
 my $rotamer_angle_file = '';
 my $rotamer_angle_json_file = '';
 my $include_selected = 0;
@@ -123,6 +127,7 @@ GetOptions(
     'hydrogens|H' => sub { $add_hydrogens = 1 },
     'l|ligands=s' => \$ligands,
     'list-ligands' => sub { $list_ligands = 1 },
+    'optimise-ligands' => sub { $optimise_ligands = 1 },
     'a|rotamer-angle-cif-file=s' => \$rotamer_angle_file,
     'j|rotamer-angle-json-file=s' => \$rotamer_angle_json_file,
     'selected|s' => sub { $include_selected = 1 },
