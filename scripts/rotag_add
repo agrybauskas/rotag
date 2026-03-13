@@ -712,6 +712,10 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
 
+        if( $optimise_ligands ) {
+
+        }
+
         if( $add_B_iso ) {
             for my $atom_id ( keys %rotamer_atom_site ) {
                 next if ! defined $rotamer_atom_site{$atom_id}{'label_alt_id'};
