@@ -356,6 +356,8 @@ sub related_category_data
         next if ! exists $pdbx_data->{$category};
 
         for my $related_category ( sort keys %{ $relationships->{$category} } ) {
+            next if ! exists $pdbx_data->{$related_category};
+
             my @references = @{ $relationships->{$category}{$related_category} };
             for my $reference ( @references ) {
                 my $keys = $reference->{'keys'};
