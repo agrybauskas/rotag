@@ -18,7 +18,7 @@ my $cluster =
                    [ -31.258069, -6.547636, 4.577997 ],
                    [ -32.157446, -6.263706, 4.270443 ] ] );
 
-$cluster->dbscan( 0.99 );
+$cluster->dbscan( 0.993 );
 
 for my $id ( sort { $a <=> $b } @{ $cluster->get_ids() } ) {
     print $id . " " . join( ',', @{ $cluster->get_point( $id )->{'coord'} } ) .
