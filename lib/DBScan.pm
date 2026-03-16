@@ -68,13 +68,13 @@ sub dbscan
         $self->{$id}{'label'} = $label;
 
         for my $neighbour_id ( @{ $neighbours }) {
-            if( defined $self->{$neighbour_id}{'label'} &&
-                $self->{$neighbour_id}{'label'} < 0 ) {
+            next if ! defined $self->{$neighbour_id}{'label'};
+
+            if( $self->{$neighbour_id}{'label'} < 0 ) {
                 $self->{$neighbour_id}{'label'} = $label;
             }
 
-            if( defined $self->{$neighbour_id}{'label'} &&
-                $self->{$neighbour_id}{'label'} > 0 ) {
+            if( $self->{$neighbour_id}{'label'} > 0 ) {
                 $self->{$id}{'label'} = $self->{$neighbour_id}{'label'};
                 $label--;
             }
