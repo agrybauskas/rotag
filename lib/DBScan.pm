@@ -42,9 +42,9 @@ sub get_point
 #
 # Performs DBSCAN clusterization for given data points.
 # Input:
-#     $points - data structure that stores both point coordination and label;
 #     $radius - distance between points to be included to the cluster;
-#     $min_points - minimum points required by the cluster;
+#     $options->{'min_points'} - minimum points required for them to be in the
+#     cluster;
 # Output:
 #     labels points by cluster name.
 #
@@ -83,6 +83,17 @@ sub dbscan
 }
 
 # -------------------------------- Functions ---------------------------------- #
+
+#
+# Detects neighbouring points by defined search radius.
+# Input:
+#     $points - data structure created by DBScan library containing
+#     coordinate values, cluster names and ids;
+#     $point - a point from $points data structure which neighbours are searched
+#     for;
+# Output:
+#     @neighbour_ids -- return neighbouring point ids.
+#
 
 sub range_query
 {
