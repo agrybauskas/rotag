@@ -76,7 +76,7 @@ sub dbscan
 
             if( $self->{$neighbour_id}{'label'} > 0 ) {
                 $self->{$id}{'label'} = $self->{$neighbour_id}{'label'};
-                $label--;
+                $label--;  # Resets the label as it was not used.
             }
         }
     }
