@@ -55,7 +55,7 @@ sub dbscan
     my ( $min_points ) = ( $options->{'min_points'} );
     $min_points //= 1;
     my $label = 0;
-    for my $id ( sort keys %{ $self } ) {
+    for my $id ( @{ $self->get_ids() } ) {
         next if defined $self->{$id}{'label'} && $self->{$id}{'label'} > 0;
 
         my $neighbours = range_query( $self, $self->{$id}, $radius );
@@ -100,7 +100,7 @@ sub range_query
     my ( $points, $point, $radius ) = @_;
     my @neighbour_ids = ();
     my $radius_squared = $radius ** 2;
-    for my $point_id ( sort { $a <=> $b } keys %{ $points } ) {
+    for my $point_id ( @{ $points->get_ids() } ) {
         next if $point_id eq $point->{'id'};
 
         my $dimension = scalar @{ $point->{'coord'} };
