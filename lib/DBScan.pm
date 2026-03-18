@@ -40,6 +40,26 @@ sub get_point
 # --------------------------------- Methods ----------------------------------- #
 
 #
+# Adds points.
+# Input:
+#     $coord - coordinates;
+#     $id - point id;
+# Output:
+#     appends points to the data structure.
+#
+
+sub add_point
+{
+    my ( $self, $coord, $id ) = @_;
+    ( $id ) //= sort { $b <=> $a } $self->get_ids();
+    $id++;
+    $self->{$id}{'id'} = $id;
+    $self->{$id}{'label'} = undef;
+    $self->{$id}{'coord'} = $coord;
+    return;
+}
+
+#
 # Performs DBSCAN clusterization for given data points.
 # Input:
 #     $radius - distance between points to be included to the cluster;
@@ -80,6 +100,8 @@ sub dbscan
             }
         }
     }
+
+    return;
 }
 
 # -------------------------------- Functions ---------------------------------- #
