@@ -717,7 +717,12 @@ for my $pdbx_file ( @ARGV ) {
                 split_by( { 'atom_site' =>
                                 filter_new( \%rotamer_atom_site,
                                             { 'include' =>
-                                              { 'group_PDB' => [ 'HETATM' ] } } ) } );
+                                              { 'group_PDB' => [ 'HETATM' ] } } ),
+                            'attributes' => [
+                                'label_seq_id', 'label_asym_id',
+                                'pdbx_PDB_model_num', 'auth_seq_id',
+                                'auth_asym_id'
+                            ] } );
 
             for my $group_id ( sort keys %{ $ligand_groups } ) {
 
