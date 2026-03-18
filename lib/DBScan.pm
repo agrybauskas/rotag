@@ -3,7 +3,8 @@ package DBScan;
 use strict;
 use warnings;
 
-use List::Util qw( sum );
+use List::Util qw( max
+                   sum );
 
 use DBScan;
 
@@ -51,8 +52,7 @@ sub get_point
 sub add_point
 {
     my ( $self, $coord, $id ) = @_;
-    ( $id ) //= sort { $b <=> $a } $self->get_ids();
-    $id++;
+    $id //= max @{ $self->get_ids() } + 1;
     $self->{$id}{'id'} = $id;
     $self->{$id}{'label'} = undef;
     $self->{$id}{'coord'} = $coord;
