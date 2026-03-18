@@ -590,7 +590,7 @@ sub generate_library
                 # by step-by-step adding atoms to sidechains. This is called
                 # growing side chain.
                 my %options = %{ $options };
-                my ( $allowed_angles, $energy_thresholds ) =
+                my ( $allowed_angles, $energy_threshold ) =
                     calc_favourable_angles(
                            { 'parameters' => $parameters,
                              'atom_site' => $current_atom_site,
@@ -647,6 +647,7 @@ sub generate_library
                              ],
                              'bond_parameter_names' => \@bond_parameter_names,
                              'interaction_site' => \%interaction_site,
+                             'energy_threshold' => $energy_threshold,
                              'non_bonded_potential' =>
                                  $potential_functions{$interactions}{'non_bonded'},
                              'bonded_potential' =>
@@ -1223,13 +1224,14 @@ sub calc_full_atom_energy
     my ( $args, $array_blocks ) = @_;
 
     my ( $parameters, $atom_site, $residue_unique_keys, $bond_parameter_names,
-         $interaction_site, $non_bonded_potential, $bonded_potential, $rmsd,
-         $options ) = (
+         $interaction_site, $energy_threshold, $non_bonded_potential,
+         $bonded_potential, $rmsd, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_keys'},
         $args->{'bond_parameter_names'},
         $args->{'interaction_site'},
+        $args->{'energy_threshold'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
         $args->{'rmsd'},
@@ -1237,6 +1239,11 @@ sub calc_full_atom_energy
     );
 
     my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+
+    $energy_threshold //= {
+        'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
+        'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
+    };
 
     my $residue_site = {
         map { %{ filter_by_unique_residue_key( $atom_site, $_, 1 ) } }
