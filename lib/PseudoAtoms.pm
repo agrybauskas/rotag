@@ -1294,10 +1294,10 @@ sub calc_full_atom_energy
 
             for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
                 my $energy_cutoff =
-                    # ( $rotamer_interaction_site{$rotamer_atom_id}{'group_PDB'} eq 'HETATM' ||
-                    #   $rotamer_interaction_site{$neighbour_atom_id}{'group_PDB'} eq 'HETATM' ) ?
-                    # $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'} :
-                    $parameters->{'_[local]_force_field'}{'cutoff_atom'};
+                    ( $rotamer_interaction_site{$rotamer_atom_id}{'group_PDB'} eq 'HETATM' ||
+                      $rotamer_interaction_site{$neighbour_atom_id}{'group_PDB'} eq 'HETATM' ) ?
+                    $energy_threshold->{'hetatom'} :
+                    $energy_threshold->{'atom'};
 
                 my $rotamer_atom_energy = 0;
                 if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
