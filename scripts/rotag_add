@@ -725,7 +725,7 @@ for my $pdbx_file ( @ARGV ) {
                             ] } );
 
             for my $group_id ( sort keys %{ $ligand_groups } ) {
-
+                my $atom_ids = $ligand_groups->{$group_id}{'atom_ids'};
             }
         }
 
