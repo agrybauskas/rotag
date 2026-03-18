@@ -714,8 +714,14 @@ for my $pdbx_file ( @ARGV ) {
 
         if( $optimise_ligands ) {
             my $ligand_groups =
-                split_by( { 'atom_site' => filter_new( \%rotamer_atom_site ),
-                            { 'include' => { 'group_PDB' => [ 'HETATM' ] } } } );
+                split_by( { 'atom_site' =>
+                                filter_new( \%rotamer_atom_site,
+                                            { 'include' =>
+                                              { 'group_PDB' => [ 'HETATM' ] } } ) } );
+
+            for my $group_id ( sort keys %{ $ligand_groups } ) {
+
+            }
         }
 
         if( $add_B_iso ) {
