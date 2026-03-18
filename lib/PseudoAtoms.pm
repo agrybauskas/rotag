@@ -845,6 +845,11 @@ sub calc_favourable_angles
         }
     }
 
+    my %energy_threshold = (
+        'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
+        'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
+    );
+
     my %all_bond_parameters = ();
     my %bond_combinations = ();
     my %energy_combinations = ();
@@ -958,15 +963,10 @@ sub calc_favourable_angles
             if $include_hetatoms &&
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
 
-            my %energy_threshold = (
-                'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
-                'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
-            );
-
             # Starts calculating potential energy.
             my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
             my ( $next_allowed_bond_parameters, $next_allowed_energies )=([],[]);
-            foreach( 1, 2 ) {  # Currently, there are only two cicles.
+            foreach( 1, 2 ) {  # Currently, there are only two cycles.
                 ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                     @{ threading(
                            \&calc_favourable_angle,
@@ -1077,7 +1077,7 @@ sub calc_favourable_angles
     my $allowed_bond_parameters =
         combine_permuted_values( \%bond_combinations, \@parameter_names_all );
 
-    return $allowed_bond_parameters, {};
+    return $allowed_bond_parameters, \%energy_threshold;
 }
 
 #
