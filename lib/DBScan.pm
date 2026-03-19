@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use List::Util qw( max
-                   sum );
+                   sum
+                   uniq );
 
 use DBScan;
 
@@ -29,13 +30,31 @@ sub new
 sub get_ids
 {
     my ( $self ) = @_;
-    return [ sort { $a <=> $b } keys %{ $self } ];
+    return [ sort { $a <=> $b }
+             keys %{ $self } ];
+}
+
+sub get_labels
+{
+    my ( $self ) = @_;
+    return [ uniq
+             sort { $a <=> $b }
+             map { $self->{$_}{'label'} }
+             keys %{ $self } ];
 }
 
 sub get_point
 {
     my ( $self, $id ) = @_;
     return $self->{$id};
+}
+
+sub get_ids_by_label
+{
+    my ( $self, $label ) = @_;
+    return [ sort { $a <=> $b }
+             grep { $self->{$_}{'label'} eq $label }
+             keys %{ $self } ];
 }
 
 # --------------------------------- Methods ----------------------------------- #

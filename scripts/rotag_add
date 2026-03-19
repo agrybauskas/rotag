@@ -725,6 +725,8 @@ for my $pdbx_file ( @ARGV ) {
                                 'auth_asym_id'
                             ] } );
 
+            # Ligands are bein clusterised in order to reduce the count of
+            # suggested ligand positions.
             my %cluster_core_ligands = ();
             for my $group_id ( sort keys %{ $ligand_groups } ) {
                 # HACK: has to be generalised and not only used with ions.
@@ -737,7 +739,13 @@ for my $pdbx_file ( @ARGV ) {
                         $atom_id
                     );
                 }
+                # TODO: parametrise the distance.
                 $cluster->dbscan( 1.0 );
+
+                # Chooses the
+                for my $label ( @{ $cluster->get_labels() } ) {
+                    my $atom_ids = $cluster->get_ids_by_label( $label );
+                }
             }
         }
 
