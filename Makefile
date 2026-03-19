@@ -43,9 +43,11 @@ define can_run_test
 [ ! -e ${TEST_CASES_DIR}/$*.chk ]
 endef
 
-.PHONY: test listdiff
+.PHONY: tests test listdiff
 
 test: ${GRAMMAR_MODULES} | ${TEST_DIFF}
+
+tests: test
 
 check: test
 
