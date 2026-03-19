@@ -744,6 +744,11 @@ for my $pdbx_file ( @ARGV ) {
                 # of the cluster.
                 for my $label ( @{ $cluster->get_labels() } ) {
                     my $atom_ids = $cluster->get_ids_by_label( $label );
+                    my ( $lowest_energy_member ) =
+                        sort { $a->{'value'} <=> $b->{'value'} }
+                        map { $rotamer_energy->{$_} }
+                        uniq map { $rotamer_atom_site{$_}{'label_alt_id'} }
+                        @{ $atom_ids };
                 }
             }
         }
