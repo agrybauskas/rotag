@@ -106,10 +106,8 @@ my $add_clear_positions = 0;
 my $keep_original = 0;
 my $add_B_iso = 0;
 my @category_list =
-    ( '_atom_site', '_[local]_rotamer_bond_parameter', '_struct_conn' );
-my @attribute_list =
-    ( 'label_seq_id', 'label_comp_id', 'label_entity_id', 'label_alt_id',
-      'rotamer_id', 'type', 'value', );
+    ( '_atom_site', '_[local]_rotamer_energy', '_[local]_rotamer_bond_parameter',
+      '_struct_conn' );
 
 local $SIG{__WARN__} = sub {
     warning( { 'program' => $0,
@@ -186,7 +184,7 @@ for my $pdbx_file ( @ARGV ) {
                                      '_[local]_rotamer_bond_parameter' =>
                                          [ 'id' ],
                                      '_struct_conn' => [ 'id' ],
-                                     ( $add_B_iso ?
+                                     ( $add_B_iso || $optimise_ligands ?
                                        ( '_[local]_rotamer_energy' =>
                                              [ 'rotamer_id' ] ) : () ) } } );
 
@@ -256,7 +254,7 @@ for my $pdbx_file ( @ARGV ) {
             $rotamer_angle = $pdbx->{'_[local]_rotamer_bond_parameter'}{'data'};
         }
 
-        if( $add_B_iso ) {
+        if( $add_B_iso || $optimise_ligands ) {
             $rotamer_energy = $pdbx->{'_[local]_rotamer_energy'}{'data'};
         }
 
