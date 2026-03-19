@@ -742,7 +742,8 @@ for my $pdbx_file ( @ARGV ) {
                 # TODO: parametrise the distance.
                 $cluster->dbscan( 1.0 );
 
-                # Chooses the
+                # Chooses the most energetically and structurally stable member
+                # of the cluster.
                 for my $label ( @{ $cluster->get_labels() } ) {
                     my $atom_ids = $cluster->get_ids_by_label( $label );
                 }
