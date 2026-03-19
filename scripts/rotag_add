@@ -23,6 +23,7 @@ use ConnectAtoms qw( assign_hetatoms
                      struct_conn_atom_ids
                      struct_conn_from_connections
                      struct_conn_residue_keys );
+use DBScan;
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
@@ -724,8 +725,19 @@ for my $pdbx_file ( @ARGV ) {
                                 'auth_asym_id'
                             ] } );
 
+            my %cluster_core_ligands = ();
             for my $group_id ( sort keys %{ $ligand_groups } ) {
-                my $atom_ids = $ligand_groups->{$group_id}{'atom_ids'};
+                # HACK: has to be generalised and not only used with ions.
+                my $cluster = new DBScan();
+                for my $atom_id ( @{ $ligand_groups->{$group_id}{'atom_ids'} } ) {
+                    $cluster->add_point(
+                        [ $rotamer_atom_site{$atom_id}{'Cartn_x'},
+                          $rotamer_atom_site{$atom_id}{'Cartn_y'},
+                          $rotamer_atom_site{$atom_id}{'Cartn_z'} ],
+                        $atom_id
+                    );
+                }
+                $cluster->dbscan( 1.0 );
             }
         }
 
