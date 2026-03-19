@@ -749,8 +749,13 @@ for my $pdbx_file ( @ARGV ) {
                         map { $rotamer_energy->{$_} }
                         uniq map { $rotamer_atom_site{$_}{'label_alt_id'} }
                         @{ $atom_ids };
+                    $cluster_core_ligands{$lowest_energy_member->{'rotamer_id'}} = 1;
                 }
             }
+            %rotamer_atom_site =
+                map { $_ => $rotamer_atom_site{$_} }
+                grep { exists $cluster_core_ligands{$rotamer_atom_site{$_}{'label_alt_id'}} }
+                keys %rotamer_atom_site;
         }
 
         if( $add_B_iso ) {
