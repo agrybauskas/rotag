@@ -1038,6 +1038,30 @@ sub calc_favourable_angles
                     \@updated_next_allowed_energies;
             }
 
+            if( defined $top_rank &&
+                @{ $next_allowed_bond_parameters } &&
+                ! exists $existing_bond_parameters->{$unique_residue_key}
+                                                    {$parameter_key_sorted} ) {
+                my @energy_values_sorted =
+                    sort { $a->[0] <=> $b->[0] } @{ $next_allowed_energies };
+
+                my @updated_next_allowed_bond_parameters = ();
+                my @updated_next_allowed_energies = ();
+                for my $i ( 0..$#{ $next_allowed_bond_parameters } ) {
+                    last if $i == $top_rank;
+
+                    push @updated_next_allowed_bond_parameters,
+                        $next_allowed_bond_parameters->[$i];
+                    push @updated_next_allowed_energies,
+                        $next_allowed_energies->[$i];
+                }
+
+                $next_allowed_bond_parameters =
+                    \@updated_next_allowed_bond_parameters;
+                $next_allowed_energies =
+                    \@updated_next_allowed_energies;
+            }
+
             if( scalar @{ $next_allowed_bond_parameters } > 0 ) {
                 $bond_combinations{$parameter_key_sorted} =
                     $next_allowed_bond_parameters;
