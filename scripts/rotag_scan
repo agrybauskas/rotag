@@ -115,6 +115,8 @@ our $VERSION = $VERSION;
 #*    -M, --min-max-ratio <float>
 #*                        ratio of the lowest energies in the range of min/max
 #*                        energy values.
+#*    -t, --top-rank, --limit <int>
+#*                        top rotamers according to the value of energies.
 #*    -x, --rand-seed <int>
 #*                        set a seed for random bond parameter selection.
 #*    -X, --rand-count <int>
@@ -146,6 +148,7 @@ my $bond_parameters_qs = '';
 my $legacy_grammar = 0;
 my $in_radians = 0;
 my $min_max_ratio;
+my $top_rank;
 my $rand_seed;
 my $rand_count;
 my $threads = 1;
@@ -183,6 +186,7 @@ GetOptions(
     'rand-count|X=s' => \$rand_count,
     'radians|r' => sub { $in_radians = 1 },
     'min-max-ratio|M=s' => \$min_max_ratio,
+    'top-rank|limit|t=s' => \$top_rank,
     'tags=s' => \$tags,
     'format|F=s' => \$output_format,
     'threads|n=s' => \$threads,
@@ -343,6 +347,7 @@ for my $pdbx_file ( @ARGV ) {
                   'bond_parameters' => $bond_parameters,
                   'interactions' => $interactions,
                   'min_max_ratio' => $min_max_ratio,
+                  'top_rank' => $top_rank,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
                                  'rand_count' => $rand_count,

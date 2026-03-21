@@ -77,6 +77,8 @@ Options:
     -M, --min-max-ratio <float>
                         ratio of the lowest energies in the range of min/max
                         energy values.
+    -t, --top-rank, --limit <int>
+                        top rotamers according to the value of energies.
     -x, --rand-seed <int>
                         set a seed for random bond parameter selection.
     -X, --rand-count <int>
