@@ -1517,8 +1517,8 @@ sub default_bond_parameter_values
                     scalar @{ $bond_parameters->{$current_residue_name}
                                                 {$current_bond_parameter_name}
                                                 {'values'} } ){
-                    die 'number of randomly bond parameter values is greater than '.
-                        "possible values.\n";
+                    die 'number of randomly selected bond parameter values is '.
+                        "greater than possible values.\n";
                 }
                 my @shuffled_idxs =
                     shuffle( 0..$#{ $bond_parameters->{$current_residue_name}
