@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( sample_bond_parameters
+our @EXPORT_OK = qw( halton_sequence
+                     sample_bond_parameters
                      sample_bond_parameters_qs_parsing );
 
 use List::Util qw( uniq );
@@ -436,6 +437,11 @@ sub resolve_bond_parameters
     }
 
     return;
+}
+
+sub halton_sequence
+{
+    my ( $range_start, $range_end, $count, $options ) = @_;
 }
 
 1;
