@@ -5,6 +5,7 @@ use warnings;
 
 use Exporter qw( import );
 our @EXPORT_OK = qw( halton_sequence
+                     random_sequence
                      sample_bond_parameters
                      sample_bond_parameters_qs_parsing );
 
@@ -439,9 +440,18 @@ sub resolve_bond_parameters
     return;
 }
 
+sub random_sequence
+{
+    my ( $range_start, $range_end, $count, $options ) = @_;
+    my @sequence = ();
+    return \@sequence;
+}
+
 sub halton_sequence
 {
     my ( $range_start, $range_end, $count, $options ) = @_;
+    my @sequence = ();
+    return \@sequence;
 }
 
 1;
