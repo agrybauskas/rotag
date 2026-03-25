@@ -440,6 +440,16 @@ sub resolve_bond_parameters
     return;
 }
 
+#
+# Creates and returns random number in the defined range.
+# Input:
+#     $range_start - range start;
+#     $range_end - range end;
+#     $count - count of required numbers;
+# Output:
+#     @sequence - sequence of random numbers.
+#
+
 sub random_sequence
 {
     my ( $range_start, $range_end, $count ) = @_;
