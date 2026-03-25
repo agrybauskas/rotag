@@ -443,6 +443,8 @@ sub resolve_bond_parameters
 sub random_sequence
 {
     my ( $range_start, $range_end, $count, $options ) = @_;
+    my ( $seed ) = ( $options->{'seed'} );
+    $seed //= 23;
     my @sequence = ();
     return \@sequence;
 }
@@ -450,6 +452,8 @@ sub random_sequence
 sub halton_sequence
 {
     my ( $range_start, $range_end, $count, $options ) = @_;
+    my ( $seed ) = ( $options->{'seed'} );
+    $seed //= 23;
     my @sequence = ();
     return \@sequence;
 }
