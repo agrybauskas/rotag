@@ -444,6 +444,9 @@ sub random_sequence
 {
     my ( $range_start, $range_end, $count ) = @_;
     my @sequence = ();
+    foreach( 0..$count-1 ) {
+        push @sequence, $range_start + rand() * ( $range_end - $range_start );
+    }
     return \@sequence;
 }
 

@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Sampling qw( random_sequence );
+
+#
+# Unit test: Sampling::random_sequence.
+# Example: ./random_sequence 1 2 5
+#
+
+srand( 23 );
+
+my ( $start, $end, $count ) = @ARGV;
+
+print join( ' ', @{ random_sequence( $start, $end, $count ) } ), "\n";
