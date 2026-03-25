@@ -442,14 +442,14 @@ sub resolve_bond_parameters
 
 sub random_sequence
 {
-    my ( $range_start, $range_end, $count, $options ) = @_;
+    my ( $range_start, $range_end, $count ) = @_;
     my @sequence = ();
     return \@sequence;
 }
 
 sub halton_sequence
 {
-    my ( $range_start, $range_end, $count, $options ) = @_;
+    my ( $range_start, $range_end, $count ) = @_;
     my @sequence = ();
     return \@sequence;
 }
