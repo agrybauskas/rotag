@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Sampling qw( halton_sequence );
+
+#
+# Unit test: Sampling::halton_sequence.
+# Example: ./halton_sequence 1 2 5
+#
+
+srand( 23 );
+
+my ( $start, $end, $count ) = @ARGV;
+
+print join( ' ', @{ halton_sequence( $start, $end, $count ) } ), "\n";
