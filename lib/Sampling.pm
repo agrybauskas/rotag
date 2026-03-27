@@ -460,10 +460,31 @@ sub random_sequence
     return \@sequence;
 }
 
+#
+# Creates and returns Halton sequence in the defined range.
+# Input:
+#     $range_start - range start;
+#     $range_end - range end;
+#     $count - count of required numbers;
+# Output:
+#     @sequence - sequence of random numbers.
+#
+
 sub halton_sequence
 {
     my ( $range_start, $range_end, $count ) = @_;
+    my $base = 2;
     my @sequence = ();
+    for my $i ( 0..$count-1 ) {
+        my $result = 0;
+        my $f = 1 / $base;
+        while( $i > 0 ) {
+            $result += $f * ( $i % $base );
+            $i = int( $i / $base );
+            $f /= $base;
+        }
+        push @sequence, $range_start + $result * ( $range_end - $range_start );
+    }
     return \@sequence;
 }
 
