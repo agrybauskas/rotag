@@ -444,8 +444,7 @@ sub resolve_bond_parameters
 #
 # Creates and returns random number in the defined range.
 # Input:
-#     $range_start - range start;
-#     $range_end - range end;
+#     $ranges - array of range starts and ends;
 #     $count - count of required numbers;
 # Output:
 #     @sequence - sequence of random numbers.
@@ -453,10 +452,14 @@ sub resolve_bond_parameters
 
 sub random_sequence
 {
-    my ( $range_start, $range_end, $count ) = @_;
+    my ( $ranges, $count ) = @_;
     my @sequence = ();
     foreach( 0..$count-1 ) {
-        push @sequence, $range_start + rand() * ( $range_end - $range_start );
+        my @values = ();
+        for my $range ( @{ $ranges } ) {
+            push @values, $range->[0] + rand() * ( $range->[1] - $range->[0] );
+        }
+        push @sequence, \@values;
     }
     return \@sequence;
 }

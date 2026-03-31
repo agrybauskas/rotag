@@ -7,11 +7,19 @@ use Sampling qw( random_sequence );
 
 #
 # Unit test: Sampling::random_sequence.
-# Example: ./random_sequence 1 2 5
+# Example: ./random_sequence 1,2;3,4 5
 #
 
 srand( 23 );
 
-my ( $start, $end, $count ) = @ARGV;
+my ( $ranges, $count ) = @ARGV;
 
-print join( ' ', @{ random_sequence( $start, $end, $count ) } ), "\n";
+my @ranges = ();
+for my $range ( split /;/, $ranges ) {
+    my ( $start, $end ) = split /,/, $range;
+    push @ranges, [ $start, $end ];
+}
+
+my $sequence = random_sequence( \@ranges, $count );
+
+print join( ' ', map { join( ',', @{ $_ } ) } @{ $sequence } ), "\n";
