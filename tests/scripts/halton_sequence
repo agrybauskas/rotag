@@ -7,11 +7,17 @@ use Sampling qw( halton_sequence );
 
 #
 # Unit test: Sampling::halton_sequence.
-# Example: ./halton_sequence 1 2 5
+# Example: ./halton_sequence 1,2;3,4 5
 #
 
-srand( 23 );
+my ( $ranges, $count ) = @ARGV;
 
-my ( $start, $end, $count ) = @ARGV;
+my @ranges = ();
+for my $range ( split /;/, $ranges ) {
+    my ( $start, $end ) = split /,/, $range;
+    push @ranges, [ $start, $end ];
+}
 
-print join( ' ', @{ halton_sequence( $start, $end, $count ) } ), "\n";
+my $sequence = halton_sequence( \@ranges, $count );
+
+print join( ' ', map { join( ',', @{ $_ } ) } @{ $sequence } ), "\n";

@@ -476,18 +476,27 @@ sub random_sequence
 
 sub halton_sequence
 {
-    my ( $range_start, $range_end, $count ) = @_;
-    my $base = 2;
+    my ( $ranges, $count ) = @_;
+    # HACK: for now 100 parameters should be enough.
+    my $dim = scalar @{ $ranges };
+    my $bases = primes( 0, 100 );
     my @sequence = ();
     for my $i ( 0..$count-1 ) {
-        my $result = 0;
-        my $f = 1 / $base;
-        while( $i > 0 ) {
-            $result += $f * ( $i % $base );
-            $i = int( $i / $base );
-            $f /= $base;
+        my @point = ();
+        foreach( 0..$dim-1 ) {
+            my $base = $bases->[$_];
+            my $range_start = $ranges->[$_][0];
+            my $range_end = $ranges->[$_][1];
+            my $result = 0;
+            my $f = 1 / $base;
+            while( $i > 0 ) {
+                $result += $f * ( $i % $base );
+                $i = int( $i / $base );
+                $f /= $base;
+            }
+            push @point, $range_start + $result * ( $range_end - $range_start );
         }
-        push @sequence, $range_start + $result * ( $range_end - $range_start );
+        push @sequence, \@point;
     }
     return \@sequence;
 }
