@@ -10,6 +10,7 @@ our @EXPORT_OK = qw( halton_sequence
                      sample_bond_parameters_qs_parsing );
 
 use List::Util qw( uniq );
+use Math::Prime::Util qw( primes );
 use POSIX;
 
 use BondParameters qw( alt_bond_parameter_names
