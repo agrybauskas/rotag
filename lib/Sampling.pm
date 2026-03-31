@@ -467,8 +467,7 @@ sub random_sequence
 #
 # Creates and returns Halton sequence in the defined range.
 # Input:
-#     $range_start - range start;
-#     $range_end - range end;
+#     $ranges - array of range starts and ends;
 #     $count - count of required numbers;
 # Output:
 #     @sequence - sequence of random numbers.
