@@ -1557,8 +1557,6 @@ sub default_bond_parameter_values
                                                      {'values'} } ];
                 }
             }
-
-
         }
     }
 
