@@ -5,6 +5,7 @@ sudo apt-get install -y \
      liblist-moreutils-perl \
      liblist-allutils-perl \
      libmath-basecalc-perl \
+     libmath-prime-util-perl \
      libparse-yapp-perl \
      libreadonly-perl \
      libsort-naturally-perl \
