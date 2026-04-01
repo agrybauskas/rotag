@@ -887,8 +887,12 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 keys %bond_parameters;
+
             my @parameter_names_visited =
                 grep { exists $visited_bond_parameters{$_} }
+                @parameter_names_sorted;
+            my @parameter_names_unvisited =
+                grep { ! exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
             my $unique_residue_key =
