@@ -943,7 +943,6 @@ sub calc_favourable_angles
                 #     my $to = $default_allowed_bond_parameters->{'to'};
 
                 #     $visited_bond_parameters{$parameter_name} = 1;
-                #     push @parameter_names_visited, $parameter_name;
                 #     push @ranges, [ $from, $to ];
 
                 #     next if $i < $#parameter_names_sorted;
