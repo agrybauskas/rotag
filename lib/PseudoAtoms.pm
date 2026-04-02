@@ -921,6 +921,10 @@ sub calc_favourable_angles
                     next;
                 }
 
+                if( defined $rand_count ) {
+
+                }
+
                 # Default parameters assigned if non existant.
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
@@ -935,14 +939,6 @@ sub calc_favourable_angles
                                  \%bond_parameters } ) };
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
-
-                if( defined $rand_count && $i < $#parameter_names_sorted ) {
-
-                }
-
-                if( defined $rand_count && $i == $#parameter_names_sorted ) {
-
-                }
 
                 # Bond parameters are for scanning.
                 if( ! $parameter_key_prev ) {
