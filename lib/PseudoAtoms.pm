@@ -64,7 +64,8 @@ use PDBxParser qw( change_unique_residue_key
                    filter_by_unique_residue_key
                    split_by
                    unique_residue_key );
-use Sampling qw( sample_bond_parameters );
+use Sampling qw( random_sequence
+                 sample_bond_parameters );
 use SidechainModels qw( rotation_translation );
 use Version qw( $VERSION );
 
@@ -922,19 +923,39 @@ sub calc_favourable_angles
                     next;
                 }
 
-                # Default parameters assigned if non existant.
-                my @default_allowed_bond_parameters =
-                    @{ default_bond_parameter_values(
-                        $parameters,
-                        $bond_parameters,
-                        $residue_name,
-                        $parameter_name,
-                        $bond_parameter_count,
-                        { 'rand_seed' => $rand_seed,
-                          'rand_count' => $rand_count,
-                          'original_bond_parameters' => \%bond_parameters } ) };
-                my @default_allowed_energies =
-                    map { [ 0.0 ] } @default_allowed_bond_parameters;
+                my @default_allowed_bond_parameters = ();
+                my @default_allowed_energies = ();
+                if( defined $rand_count ) {
+                    # Generates randomised bond parameters if requested.
+                    @default_allowed_bond_parameters =
+                        @{ default_bond_parameter_values(
+                               $parameters,
+                               $bond_parameters,
+                               $residue_name,
+                               $parameter_name,
+                               $bond_parameter_count,
+                               { 'rand_seed' => $rand_seed,
+                                 'rand_count' => $rand_count,
+                                 'original_bond_parameters' =>
+                                     \%bond_parameters } ) };
+                    @default_allowed_energies =
+                        map { [ 0.0 ] } @default_allowed_bond_parameters;
+                } else {
+                    # Default parameters assigned if non existant.
+                    @default_allowed_bond_parameters =
+                        @{ default_bond_parameter_values(
+                               $parameters,
+                               $bond_parameters,
+                               $residue_name,
+                               $parameter_name,
+                               $bond_parameter_count,
+                               { 'rand_seed' => $rand_seed,
+                                 'rand_count' => $rand_count,
+                                 'original_bond_parameters' =>
+                                     \%bond_parameters } ) };
+                    @default_allowed_energies =
+                        map { [ 0.0 ] } @default_allowed_bond_parameters;
+                }
 
                 # Bond parameters are for scanning.
                 if( ! $parameter_key_prev ) {
