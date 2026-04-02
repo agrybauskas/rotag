@@ -938,14 +938,22 @@ sub calc_favourable_angles
                 my @default_allowed_bond_parameters = ();
                 my @default_allowed_energies = ();
 
-                if( defined $rand_count && $i < $#parameter_names_sorted ) {
-                    my $from = $default_allowed_bond_parameters->{'from'};
-                    my $to = $default_allowed_bond_parameters->{'to'};
-                }
+                # if( defined $rand_count ) {
+                #     my $from = $default_allowed_bond_parameters->{'from'};
+                #     my $to = $default_allowed_bond_parameters->{'to'};
+
+                #     $visited_bond_parameters{$parameter_name} = 1;
+                #     push @parameter_names_visited, $parameter_name;
+                #     push @ranges, [ $from, $to ];
+
+                #     next if $i < $#parameter_names_sorted;
+                # }
 
                 if( defined $rand_count ) {
                     @default_allowed_bond_parameters =
                         @{ $default_allowed_bond_parameters->{'values'} } ;
+                    # @default_allowed_bond_parameters =
+                    #     @{ random_sequence( \@ranges, $rand_count ) };
                     @default_allowed_energies =
                         map { [ 0.0 ] } @default_allowed_bond_parameters;
                 } else {
