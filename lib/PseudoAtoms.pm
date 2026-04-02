@@ -935,9 +935,6 @@ sub calc_favourable_angles
                              'original_bond_parameters' =>
                                  \%bond_parameters } );
 
-                my @default_allowed_bond_parameters = ();
-                my @default_allowed_energies = ();
-
                 # if( defined $rand_count ) {
                 #     my $from = $default_allowed_bond_parameters->{'from'};
                 #     my $to = $default_allowed_bond_parameters->{'to'};
@@ -948,6 +945,8 @@ sub calc_favourable_angles
                 #     next if $i < $#parameter_names_sorted;
                 # }
 
+                my @default_allowed_bond_parameters = ();
+                my @default_allowed_energies = ();
                 if( defined $rand_count ) {
                     @default_allowed_bond_parameters =
                         @{ $default_allowed_bond_parameters->{'values'} } ;
