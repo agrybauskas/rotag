@@ -922,6 +922,9 @@ sub calc_favourable_angles
                     next;
                 }
 
+                # Generates randomised bond parameters if requested.
+
+                # Default parameters assigned if non existant.
                 my @default_allowed_bond_parameters =
                     @{ default_bond_parameter_values(
                         $parameters,
@@ -935,6 +938,7 @@ sub calc_favourable_angles
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
+                # Bond parameters are for scanning.
                 if( ! $parameter_key_prev ) {
                     $bond_combinations{$parameter_key} =
                         clone \@default_allowed_bond_parameters;
