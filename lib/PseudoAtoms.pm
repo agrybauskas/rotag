@@ -896,6 +896,7 @@ sub calc_favourable_angles
             my $unique_residue_key =
                 unique_residue_key( $residue_site->{$atom_id} );
             my @ranges = ();  # For random selection.
+            my @bond_parameter_names = ();  # For random selection.
             for my $i ( 0..$#parameter_names_sorted ) {
                 my $parameter_name = $parameter_names_sorted[$i];
                 next if exists $visited_bond_parameters{$parameter_name};
@@ -939,8 +940,8 @@ sub calc_favourable_angles
                 #     my $from = $default_allowed_bond_parameters->{'from'};
                 #     my $to = $default_allowed_bond_parameters->{'to'};
 
-                #     $visited_bond_parameters{$parameter_name} = 1;
                 #     push @ranges, [ $from, $to ];
+                #     push @bond_parameter_names, $parameter_name;
 
                 #     next if $i < $#parameter_names_sorted;
                 # }
@@ -948,6 +949,11 @@ sub calc_favourable_angles
                 my @default_allowed_bond_parameters = ();
                 my @default_allowed_energies = ();
                 if( defined $rand_count ) {
+                    # Previous parameter key has to be updated as some bond
+                    # parameters can be added all at the same time.
+                    # my $parameter_subkey =
+                    #     join ',', @bond_parameter_names[0..$#bond_parameter_names-1];
+                    # $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
                     @default_allowed_bond_parameters =
                         @{ $default_allowed_bond_parameters->{'values'} } ;
                     # @default_allowed_bond_parameters =
