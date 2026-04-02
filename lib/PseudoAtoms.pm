@@ -920,51 +920,20 @@ sub calc_favourable_angles
                     next;
                 }
 
-                my @default_allowed_bond_parameters = ();
-                my @default_allowed_energies = ();
-                if( defined $rand_count ) {
-                    # HACK: check for situations where the component bond
-                    # parameter might be defined.
-                    # Generates randomised bond parameters if requested.
-                    my @parameter_names_unvisited =
-                        ( $parameter_name,
-                          ( grep { ! exists $visited_bond_parameters{$_} }
-                            @parameter_names_sorted ) );
-
-                    for my $parameter_name_unvisited ( @parameter_names_unvisited ) {
-                        $visited_bond_parameters{$parameter_name_unvisited} = 1;
-                        push @parameter_names_visited, $parameter_name_unvisited;
-                    }
-
-                    @default_allowed_bond_parameters =
-                        @{ default_bond_parameter_values(
-                               $parameters,
-                               $bond_parameters,
-                               $residue_name,
-                               $parameter_name,
-                               $bond_parameter_count,
-                               { 'rand_seed' => $rand_seed,
-                                 'rand_count' => $rand_count,
-                                 'original_bond_parameters' =>
-                                     \%bond_parameters } ) };
-                    @default_allowed_energies =
-                        map { [ 0.0 ] } @default_allowed_bond_parameters;
-                } else {
-                    # Default parameters assigned if non existant.
-                    @default_allowed_bond_parameters =
-                        @{ default_bond_parameter_values(
-                               $parameters,
-                               $bond_parameters,
-                               $residue_name,
-                               $parameter_name,
-                               $bond_parameter_count,
-                               { 'rand_seed' => $rand_seed,
-                                 'rand_count' => $rand_count,
-                                 'original_bond_parameters' =>
-                                     \%bond_parameters } ) };
-                    @default_allowed_energies =
-                        map { [ 0.0 ] } @default_allowed_bond_parameters;
-                }
+                # Default parameters assigned if non existant.
+                my @default_allowed_bond_parameters =
+                    @{ default_bond_parameter_values(
+                           $parameters,
+                           $bond_parameters,
+                           $residue_name,
+                           $parameter_name,
+                           $bond_parameter_count,
+                           { 'rand_seed' => $rand_seed,
+                             'rand_count' => $rand_count,
+                             'original_bond_parameters' =>
+                                 \%bond_parameters } ) };
+                my @default_allowed_energies =
+                    map { [ 0.0 ] } @default_allowed_bond_parameters;
 
                 # Bond parameters are for scanning.
                 if( ! $parameter_key_prev ) {
