@@ -895,7 +895,8 @@ sub calc_favourable_angles
 
             my $unique_residue_key =
                 unique_residue_key( $residue_site->{$atom_id} );
-            for my $parameter_name ( @parameter_names_sorted ) {
+            for my $i ( 0..$#parameter_names_sorted ) {
+                my $parameter_name = $parameter_names_sorted[$i];
                 next if exists $visited_bond_parameters{$parameter_name};
 
                 my $parameter_key_prev =
@@ -934,6 +935,14 @@ sub calc_favourable_angles
                                  \%bond_parameters } ) };
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
+
+                if( defined $rand_count && $i < $#parameter_names_sorted ) {
+
+                }
+
+                if( defined $rand_count && $i == $#parameter_names_sorted ) {
+
+                }
 
                 # Bond parameters are for scanning.
                 if( ! $parameter_key_prev ) {
