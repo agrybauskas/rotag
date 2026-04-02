@@ -936,28 +936,29 @@ sub calc_favourable_angles
                              'original_bond_parameters' =>
                                  \%bond_parameters } );
 
-                # if( defined $rand_count ) {
-                #     my $from = $default_allowed_bond_parameters->{'from'};
-                #     my $to = $default_allowed_bond_parameters->{'to'};
+                if( defined $rand_count ) {
+                    my $from = $default_allowed_bond_parameters->{'from'};
+                    my $to = $default_allowed_bond_parameters->{'to'};
+                    my $units = $default_allowed_bond_parameters->{'units'};
 
-                #     push @ranges, [ $from, $to ];
-                #     push @bond_parameter_names, $parameter_name;
+                    push @ranges, [ $from, $to ];
+                    push @bond_parameter_names, $parameter_name;
 
-                #     next if $i < $#parameter_names_sorted;
-                # }
+                    next if $i < $#parameter_names_sorted;
+                }
 
                 my @default_allowed_bond_parameters = ();
                 my @default_allowed_energies = ();
                 if( defined $rand_count ) {
                     # Previous parameter key has to be updated as some bond
                     # parameters can be added all at the same time.
-                    # my $parameter_subkey =
-                    #     join ',', @bond_parameter_names[0..$#bond_parameter_names-1];
-                    # $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
-                    @default_allowed_bond_parameters =
-                        @{ $default_allowed_bond_parameters->{'values'} } ;
+                    my $parameter_subkey =
+                        join ',', @bond_parameter_names[0..$#bond_parameter_names-1];
+                    $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
                     # @default_allowed_bond_parameters =
-                    #     @{ random_sequence( \@ranges, $rand_count ) };
+                    #     @{ $default_allowed_bond_parameters->{'values'} } ;
+                    @default_allowed_bond_parameters =
+                        @{ random_sequence( \@ranges, $rand_count ) };
                     @default_allowed_energies =
                         map { [ 0.0 ] } @default_allowed_bond_parameters;
                 } else {
@@ -1562,6 +1563,9 @@ sub default_bond_parameter_values
                              'to' => $bond_parameters->{$current_residue_name}
                                                          {$current_bond_parameter_name}
                                                          {'to'},
+                             'units' => $bond_parameters->{$current_residue_name}
+                                                          {$current_bond_parameter_name}
+                                                          {'units'},
                              'values' =>
                                  [ map { [ $bond_parameters->{$current_residue_name}
                                                              {$current_bond_parameter_name}
@@ -1584,6 +1588,9 @@ sub default_bond_parameter_values
                          'to' => $bond_parameters->{$current_residue_name}
                                                      {$current_bond_parameter_name}
                                                      {'to'},
+                         'units' => $bond_parameters->{$current_residue_name}
+                                                      {$current_bond_parameter_name}
+                                                      {'units'},
                          'values' =>
                              [ map { [ $bond_parameters->{$current_residue_name}
                                                          {$current_bond_parameter_name}
@@ -1611,6 +1618,9 @@ sub default_bond_parameter_values
                              'to' => $bond_parameters->{$current_residue_name}
                                                          {$current_bond_parameter_name}
                                                          {'to'},
+                             'units' => $bond_parameters->{$current_residue_name}
+                                                          {$current_bond_parameter_name}
+                                                          {'units'},
                              'values' =>
                                  [ [ $original_bond_parameters->{$bond_parameter_name}
                                                                 {'value'} ] ] };
@@ -1623,6 +1633,9 @@ sub default_bond_parameter_values
                              'to' => $bond_parameters->{$current_residue_name}
                                                          {$current_bond_parameter_name}
                                                          {'to'},
+                             'units' => $bond_parameters->{$current_residue_name}
+                                                          {$current_bond_parameter_name}
+                                                          {'units'},
                              'values' =>
                                  [ map { [ $_ ] }
                                       @{ $bond_parameters->{$current_residue_name}
