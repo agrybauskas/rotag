@@ -921,10 +921,6 @@ sub calc_favourable_angles
                     next;
                 }
 
-                if( defined $rand_count ) {
-
-                }
-
                 # Default parameters assigned if non existant.
                 my $default_allowed_bond_parameters =
                     default_bond_parameter_values(
@@ -937,10 +933,21 @@ sub calc_favourable_angles
                              'rand_count' => $rand_count,
                              'original_bond_parameters' =>
                                  \%bond_parameters } );
-                my @default_allowed_bond_parameters =
-                    @{ $default_allowed_bond_parameters->{'values'} } ;
-                my @default_allowed_energies =
-                    map { [ 0.0 ] } @default_allowed_bond_parameters;
+
+                my @default_allowed_bond_parameters = ();
+                my @default_allowed_energies = ();
+
+                if( defined $rand_count ) {
+                    @default_allowed_bond_parameters =
+                        @{ $default_allowed_bond_parameters->{'values'} } ;
+                    @default_allowed_energies =
+                        map { [ 0.0 ] } @default_allowed_bond_parameters;
+                } else {
+                    @default_allowed_bond_parameters =
+                        @{ $default_allowed_bond_parameters->{'values'} } ;
+                    @default_allowed_energies =
+                        map { [ 0.0 ] } @default_allowed_bond_parameters;
+                }
 
                 # Bond parameters are for scanning.
                 if( ! $parameter_key_prev ) {
@@ -1531,6 +1538,12 @@ sub default_bond_parameter_values
                                                 {'values'} } ){
                     return { 'residue' => $current_residue_name,
                              'name' => $bond_parameter_name,
+                             'from' => $bond_parameters->{$current_residue_name}
+                                                         {$current_bond_parameter_name}
+                                                         {'from'},
+                             'to' => $bond_parameters->{$current_residue_name}
+                                                         {$current_bond_parameter_name}
+                                                         {'to'},
                              'values' =>
                                  [ map { [ $bond_parameters->{$current_residue_name}
                                                              {$current_bond_parameter_name}
@@ -1547,6 +1560,12 @@ sub default_bond_parameter_values
 
                 return { 'residue' => $current_residue_name,
                          'name' => $bond_parameter_name,
+                         'from' => $bond_parameters->{$current_residue_name}
+                                                     {$current_bond_parameter_name}
+                                                     {'from'},
+                         'to' => $bond_parameters->{$current_residue_name}
+                                                     {$current_bond_parameter_name}
+                                                     {'to'},
                          'values' =>
                              [ map { [ $bond_parameters->{$current_residue_name}
                                                          {$current_bond_parameter_name}
@@ -1568,12 +1587,24 @@ sub default_bond_parameter_values
                     exists $original_bond_parameters->{$bond_parameter_name} ) {
                     return { 'residue' => $current_residue_name,
                              'name' => $bond_parameter_name,
+                             'from' => $bond_parameters->{$current_residue_name}
+                                                         {$current_bond_parameter_name}
+                                                         {'from'},
+                             'to' => $bond_parameters->{$current_residue_name}
+                                                         {$current_bond_parameter_name}
+                                                         {'to'},
                              'values' =>
                                  [ [ $original_bond_parameters->{$bond_parameter_name}
                                                                 {'value'} ] ] };
                 } else {
                     return { 'residue' => $current_residue_name,
                              'name' => $bond_parameter_name,
+                             'from' => $bond_parameters->{$current_residue_name}
+                                                         {$current_bond_parameter_name}
+                                                         {'from'},
+                             'to' => $bond_parameters->{$current_residue_name}
+                                                         {$current_bond_parameter_name}
+                                                         {'to'},
                              'values' =>
                                  [ map { [ $_ ] }
                                       @{ $bond_parameters->{$current_residue_name}
