@@ -892,9 +892,6 @@ sub calc_favourable_angles
             my @parameter_names_visited =
                 grep { exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
-            my @parameter_names_unvisited =
-                grep { ! exists $visited_bond_parameters{$_} }
-                @parameter_names_sorted;
 
             my $unique_residue_key =
                 unique_residue_key( $residue_site->{$atom_id} );
@@ -926,7 +923,19 @@ sub calc_favourable_angles
                 my @default_allowed_bond_parameters = ();
                 my @default_allowed_energies = ();
                 if( defined $rand_count ) {
+                    # HACK: check for situations where the component bond
+                    # parameter might be defined.
                     # Generates randomised bond parameters if requested.
+                    my @parameter_names_unvisited =
+                        ( $parameter_name,
+                          ( grep { ! exists $visited_bond_parameters{$_} }
+                            @parameter_names_sorted ) );
+
+                    for my $parameter_name_unvisited ( @parameter_names_unvisited ) {
+                        $visited_bond_parameters{$parameter_name_unvisited} = 1;
+                        push @parameter_names_visited, $parameter_name_unvisited;
+                    }
+
                     @default_allowed_bond_parameters =
                         @{ default_bond_parameter_values(
                                $parameters,
