@@ -804,6 +804,7 @@ sub calc_favourable_angles
     $include_hetatoms //= 0;
 
     my $heteroatom_names = $parameters->{'_[local]_heteroatom_names'};
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     my $residue_site = {
         map { %{ filter_by_unique_residue_key( $atom_site, $_, 1 ) } }
@@ -937,9 +938,15 @@ sub calc_favourable_angles
                                  \%bond_parameters } );
 
                 if( defined $rand_count ) {
-                    my $from = $default_allowed_bond_parameters->{'from'};
-                    my $to = $default_allowed_bond_parameters->{'to'};
                     my $units = $default_allowed_bond_parameters->{'units'};
+                    my $from =
+                        $units eq 'degrees' ?
+                        $default_allowed_bond_parameters->{'to'} * $pi / 180.0:
+                        $default_allowed_bond_parameters->{'from'};
+                    my $to =
+                        $units eq 'degrees' ?
+                        $default_allowed_bond_parameters->{'to'} * $pi / 180.0 :
+                        $default_allowed_bond_parameters->{'to'};
 
                     push @ranges, [ $from, $to ];
                     push @bond_parameter_names, $parameter_name;
