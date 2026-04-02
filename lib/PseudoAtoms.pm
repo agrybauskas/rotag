@@ -925,10 +925,9 @@ sub calc_favourable_angles
 
                 }
 
-                # TODO: needs refactoring.
                 # Default parameters assigned if non existant.
-                my @default_allowed_bond_parameters =
-                    @{ default_bond_parameter_values(
+                my $default_allowed_bond_parameters =
+                    default_bond_parameter_values(
                            $parameters,
                            $bond_parameters,
                            $residue_name,
@@ -937,7 +936,9 @@ sub calc_favourable_angles
                            { 'rand_seed' => $rand_seed,
                              'rand_count' => $rand_count,
                              'original_bond_parameters' =>
-                                 \%bond_parameters } )->{'values'} };
+                                 \%bond_parameters } );
+                my @default_allowed_bond_parameters =
+                    @{ $default_allowed_bond_parameters->{'values'} } ;
                 my @default_allowed_energies =
                     map { [ 0.0 ] } @default_allowed_bond_parameters;
 
@@ -1528,7 +1529,9 @@ sub default_bond_parameter_values
                     scalar @{ $bond_parameters->{$current_residue_name}
                                                 {$current_bond_parameter_name}
                                                 {'values'} } ){
-                    return { 'values' =>
+                    return { 'residue' => $current_residue_name,
+                             'name' => $bond_parameter_name,
+                             'values' =>
                                  [ map { [ $bond_parameters->{$current_residue_name}
                                                              {$current_bond_parameter_name}
                                                              {'values'}[$_] ] }
@@ -1542,7 +1545,9 @@ sub default_bond_parameter_values
                                                       {$current_bond_parameter_name}
                                                       {'values'} } );
 
-                return { 'values' =>
+                return { 'residue' => $current_residue_name,
+                         'name' => $bond_parameter_name,
+                         'values' =>
                              [ map { [ $bond_parameters->{$current_residue_name}
                                                          {$current_bond_parameter_name}
                                                          {'values'}[$_] ] }
@@ -1561,11 +1566,15 @@ sub default_bond_parameter_values
                                                 {$current_bond_parameter_name}
                                                 {'values'} } == 0 &&
                     exists $original_bond_parameters->{$bond_parameter_name} ) {
-                    return { 'values' =>
+                    return { 'residue' => $current_residue_name,
+                             'name' => $bond_parameter_name,
+                             'values' =>
                                  [ [ $original_bond_parameters->{$bond_parameter_name}
                                                                 {'value'} ] ] };
                 } else {
-                    return { 'values' =>
+                    return { 'residue' => $current_residue_name,
+                             'name' => $bond_parameter_name,
+                             'values' =>
                                  [ map { [ $_ ] }
                                       @{ $bond_parameters->{$current_residue_name}
                                                            {$current_bond_parameter_name}
