@@ -483,17 +483,16 @@ sub halton_sequence
     for my $i ( 0..$count-1 ) {
         my @point = ();
         foreach( 0..$dim-1 ) {
-            my $base = $bases->[$_];
-            my $range_start = $ranges->[$_][0];
-            my $range_end = $ranges->[$_][1];
-            my $result = 0;
-            my $f = 1 / $base;
+            my $b = $bases->[$_];
+            my $r = 0;
+            my $f = 1 / $b;
             while( $i > 0 ) {
-                $result += $f * ( $i % $base );
-                $i = int( $i / $base );
-                $f /= $base;
+                $r += $f * ( $i % $b );
+                $i = int( $i / $b );
+                $f /= $b;
             }
-            push @point, $range_start + $result * ( $range_end - $range_start );
+            push @point,
+                $ranges->[$_][0] + $r * ( $ranges->[$_][1] - $ranges->[$_][0] );
         }
         push @sequence, \@point;
     }
