@@ -30,7 +30,7 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 0.090346
+1 1 composite 0.125894
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -54,5 +54,5 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 18 XAA A 1 18 A . 4 1 2 3 . . . . 1.000000 chi1 0.000 degrees
+1 1 18 XAA A 1 18 A . 4 1 2 3 . . . . 1.000000 chi1 -168.407 degrees
 #
