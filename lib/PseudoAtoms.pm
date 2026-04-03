@@ -941,7 +941,7 @@ sub calc_favourable_angles
                     my $units = $default_allowed_bond_parameters->{'units'};
                     my $from =
                         $units eq 'degrees' ?
-                        $default_allowed_bond_parameters->{'to'} * $pi / 180.0:
+                        $default_allowed_bond_parameters->{'from'} * $pi / 180.0:
                         $default_allowed_bond_parameters->{'from'};
                     my $to =
                         $units eq 'degrees' ?
