@@ -1,1 +1,207 @@
-# A placeholder for future data.
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1408 N N . ASP A 1 219 33.629 1.247 41.706 A 264 . 1 T
+ATOM 1409 C CA . ASP A 1 219 34.297 2.104 42.669 A 264 . 1 T
+ATOM 1410 C C . ASP A 1 219 34.468 1.397 44.005 A 264 . 1 T
+ATOM 1411 O O . ASP A 1 219 35.468 1.582 44.696 A 264 . 1 T
+ATOM 1412 C CB . ASP A 1 219 33.528 3.419 42.840 A 264 . 1 T
+ATOM 1413 C CG . ASP A 1 219 34.379 4.518 43.459 A 264 . 1 T
+ATOM 1414 O OD1 . ASP A 1 219 35.358 4.940 42.808 A 264 . 1 T
+ATOM 1415 O OD2 . ASP A 1 219 34.073 4.971 44.584 A 264 . 1 T
+ATOM 1416 H H . ASP A 1 219 32.807 1.753 41.376 A 264 . 1 T
+ATOM 1417 H H2 . ASP A 1 219 33.375 0.389 42.196 A 264 . 1 T
+ATOM 1418 H HA . ASP A 1 219 35.271 2.333 42.290 A 264 . 1 T
+ATOM 1419 H HB2 . ASP A 1 219 32.687 3.247 43.479 A 264 . 1 T
+ATOM 1420 H HB3 . ASP A 1 219 33.197 3.753 41.879 A 264 . 1 T
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 11.186837
+2 2 composite 14.133791
+3 3 composite 14.621279
+4 4 composite 12.214519
+5 5 composite 13.368043
+6 6 composite 12.617047
+7 7 composite 13.971631
+8 8 composite 13.134886
+9 9 composite 12.218072
+10 10 composite 13.618053
+11 11 composite 26.874635
+12 12 composite 99.564505
+13 13 composite 39.783909
+14 14 composite 75.524697
+15 15 composite 49.357169
+16 16 composite 92.315647
+17 17 composite 63.340710
+18 18 composite 42.465252
+19 19 composite 78.605191
+20 20 composite 12.824342
+21 21 composite 15.909800
+22 22 composite 16.387745
+23 23 composite 13.678772
+24 24 composite 14.861219
+25 25 composite 14.067180
+26 26 composite 15.746565
+27 27 composite 14.916197
+28 28 composite 14.020583
+29 29 composite 15.393250
+30 30 composite 9.333188
+31 31 composite 12.535399
+32 32 composite 12.967311
+33 33 composite 10.180291
+34 34 composite 11.440372
+35 35 composite 10.592539
+36 36 composite 12.389948
+37 37 composite 11.637244
+38 38 composite 10.777187
+39 39 composite 12.073181
+40 40 composite 11.663225
+41 41 composite 12.073393
+42 42 composite 9.278860
+43 43 composite 10.544745
+44 44 composite 9.694486
+45 45 composite 11.521742
+46 46 composite 10.780273
+47 47 composite 9.917653
+48 48 composite 11.211398
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+2 1 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -78.778 degrees
+3 2 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+4 2 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 14.985 degrees
+5 3 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+6 3 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -0.069 degrees
+7 4 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+8 4 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -52.160 degrees
+9 5 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+10 5 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -32.560 degrees
+11 6 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+12 6 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -44.922 degrees
+13 7 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+14 7 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 17.698 degrees
+15 8 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+16 8 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 29.463 degrees
+17 9 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+18 9 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 42.317 degrees
+19 10 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -135.815 degrees
+20 10 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 22.929 degrees
+21 11 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+22 11 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -78.778 degrees
+23 12 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+24 12 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 14.985 degrees
+25 13 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+26 13 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -52.160 degrees
+27 14 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+28 14 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -32.560 degrees
+29 15 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+30 15 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -44.922 degrees
+31 16 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+32 16 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 17.698 degrees
+33 17 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+34 17 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 29.463 degrees
+35 18 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+36 18 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 42.317 degrees
+37 19 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 136.289 degrees
+38 19 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 22.929 degrees
+39 20 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+40 20 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -78.778 degrees
+41 21 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+42 21 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 14.985 degrees
+43 22 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+44 22 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -0.069 degrees
+45 23 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+46 23 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -52.160 degrees
+47 24 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+48 24 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -32.560 degrees
+49 25 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+50 25 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -44.922 degrees
+51 26 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+52 26 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 17.698 degrees
+53 27 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+54 27 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 29.463 degrees
+55 28 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+56 28 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 42.317 degrees
+57 29 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -120.239 degrees
+58 29 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 22.929 degrees
+59 30 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+60 30 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -78.778 degrees
+61 31 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+62 31 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 14.985 degrees
+63 32 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+64 32 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -0.069 degrees
+65 33 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+66 33 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -52.160 degrees
+67 34 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+68 34 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -32.560 degrees
+69 35 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+70 35 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -44.922 degrees
+71 36 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+72 36 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 17.698 degrees
+73 37 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+74 37 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 29.463 degrees
+75 38 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+76 38 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 42.317 degrees
+77 39 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -96.848 degrees
+78 39 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 22.929 degrees
+79 40 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+80 40 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 14.985 degrees
+81 41 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+82 41 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -0.069 degrees
+83 42 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+84 42 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -52.160 degrees
+85 43 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+86 43 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -32.560 degrees
+87 44 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+88 44 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 -44.922 degrees
+89 45 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+90 45 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 17.698 degrees
+91 46 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+92 46 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 29.463 degrees
+93 47 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+94 47 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 42.317 degrees
+95 48 219 ASP A 1 264 A . 1408 1409 1412 1413 . . . . 0.020833 chi1 -93.563 degrees
+96 48 219 ASP A 1 264 A . 1409 1412 1413 1414 . . . . 0.020833 chi2 22.929 degrees
+#
