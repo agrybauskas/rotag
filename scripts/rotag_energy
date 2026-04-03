@@ -301,7 +301,7 @@ for my $pdbx_file ( @ARGV ) {
                 split /,/, $atom_site_identifier;
             for my $label_seq_id ( sort keys %rotamer_energies ) {
                 for my $calculation_method (
-                    sort keys %{ $rotamer_energies {$label_seq_id} } ) {
+                    sort keys %{ $rotamer_energies{$label_seq_id} } ) {
                     push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
                         { 'id' => $calculation_id,
                           'label_seq_id' => $label_seq_id,
