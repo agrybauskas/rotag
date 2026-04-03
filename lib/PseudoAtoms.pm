@@ -959,9 +959,12 @@ sub calc_favourable_angles
                 if( defined $rand_count ) {
                     # Previous parameter key has to be updated as some bond
                     # parameters can be added all at the same time.
-                    my $parameter_subkey =
-                        join ',', @bond_parameter_names[0..$#bond_parameter_names-1];
-                    $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
+                    if( $parameter_key_prev ) {
+                        my $parameter_subkey =
+                            join ',',
+                            @bond_parameter_names[0..$#bond_parameter_names-1];
+                        $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
+                    }
                     @default_allowed_bond_parameters =
                         @{ random_sequence( \@ranges, $rand_count ) };
                     @default_allowed_energies =
