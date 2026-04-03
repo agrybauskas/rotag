@@ -347,13 +347,15 @@ for my $pdbx_file ( @ARGV ) {
                 }
             }
 
-            my ( $pdbx_PDB_model_num, $label_alt_id, $label_asym_id ) =
-                split /,/, $atom_site_identifier;
             for my $atom_id ( sort keys %atom_energies ) {
                 my $type_symbol = $atom_site->{$atom_id}{'type_symbol'};
                 my $label_atom_id = $atom_site->{$atom_id}{'label_atom_id'};
                 my $label_seq_id = $atom_site->{$atom_id}{'label_seq_id'};
                 my $label_comp_id = $atom_site->{$atom_id}{'label_comp_id'};
+                my $pdbx_PDB_model_num =
+                    $atom_site->{$atom_id}{'pdbx_PDB_model_num'};
+                my $label_alt_id = $atom_site->{$atom_id}{'label_alt_id'};
+                my $label_asym_id = $atom_site->{$atom_id}{'label_asym_id'};
                 for my $calculation_method (
                     sort keys %{ $atom_energies{$atom_id} } ) {
                     push @{ $pdbx_data{'_[local]_energy'}{'data'} },
