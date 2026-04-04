@@ -93,6 +93,7 @@ sub dbscan
     my ( $self, $radius, $options ) = @_;
     my ( $min_points ) = ( $options->{'min_points'} );
     $min_points //= 1;
+
     my $label = 0;
     for my $id ( @{ $self->get_ids() } ) {
         next if defined $self->{$id}{'label'} && $self->{$id}{'label'} > 0;
@@ -115,7 +116,6 @@ sub dbscan
 
             if( $self->{$neighbour_id}{'label'} > 0 ) {
                 $self->{$id}{'label'} = $self->{$neighbour_id}{'label'};
-                $label--;  # Resets the label as it was not used.
             }
         }
     }
