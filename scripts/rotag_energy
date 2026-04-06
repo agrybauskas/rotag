@@ -14,7 +14,8 @@ use Try::Tiny;
 use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
                      is_neighbour
-                     is_second_neighbour );
+                     is_second_neighbour
+                     struct_conn_atom_ids );
 use Measure qw( energy );
 use ForceField::Parameters;
 use Grid qw( grid_box
@@ -206,12 +207,18 @@ for my $pdbx_file ( @ARGV ) {
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        # my $assigned_hetatom_ids =
-        #     assign_hetatoms( $parameters,
-        #                      $current_atom_site,
-        #                      $struct_conn,
-        #                      { 'sidechains_only' => 1,
-        #                        'ref_atom_site' => $atom_site } );
+
+        my $struct_conn_atom_ids =
+            struct_conn_atom_ids( $current_atom_site, $struct_conn );
+
+        # if( @{ $struct_conn_atom_ids } ) {
+        #     my $assigned_hetatom_ids =
+        #         assign_hetatoms( $parameters,
+        #                          $current_atom_site,
+        #                          $struct_conn,
+        #                          { 'sidechains_only' => 1,
+        #                            'ref_atom_site' => $atom_site } );
+        # }
 
         my $target_atom_ids =
             filter( { 'atom_site' => $current_atom_site,
