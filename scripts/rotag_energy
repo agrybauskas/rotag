@@ -11,11 +11,9 @@ use List::MoreUtils qw( any
                         uniq );
 use Try::Tiny;
 
-use ConnectAtoms qw( assign_hetatoms
-                     connect_atoms
+use ConnectAtoms qw( connect_atoms
                      is_neighbour
-                     is_second_neighbour
-                     struct_conn_atom_ids );
+                     is_second_neighbour );
 use Measure qw( energy );
 use ForceField::Parameters;
 use Grid qw( grid_box
@@ -185,7 +183,7 @@ for my $pdbx_file ( @ARGV ) {
     my $atom_site_groups = split_by( { 'atom_site' => $selected_atom_site,
                                        'attributes' => [ 'pdbx_PDB_model_num',
                                                          'label_alt_id',
-                                                         'label_asym_id' ],
+                                                         'auth_alt_id' ],
                                        'append_dot' => 1 } );
 
     my %energies = (); # For calculating energies for the whole sidechains.
@@ -206,19 +204,6 @@ for my $pdbx_file ( @ARGV ) {
 
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
-
-
-        my $struct_conn_atom_ids =
-            struct_conn_atom_ids( $current_atom_site, $struct_conn );
-
-        # if( @{ $struct_conn_atom_ids } ) {
-        #     my $assigned_hetatom_ids =
-        #         assign_hetatoms( $parameters,
-        #                          $current_atom_site,
-        #                          $struct_conn,
-        #                          { 'sidechains_only' => 1,
-        #                            'ref_atom_site' => $atom_site } );
-        # }
 
         my $target_atom_ids =
             filter( { 'atom_site' => $current_atom_site,
@@ -305,30 +290,33 @@ for my $pdbx_file ( @ARGV ) {
                 my $atom = $atom_site->{$atom_id};
                 my $label_seq_id = $atom->{'label_seq_id'};
                 my $calculation_method = $energy->energy_type;
-                if( exists $rotamer_energies{$label_seq_id}{$calculation_method} ){
-                    $rotamer_energies{$label_seq_id}{$calculation_method} +=
+                if( exists $rotamer_energies{$label_seq_id}{'energy'}{$calculation_method} ){
+                    $rotamer_energies{$label_seq_id}{'energy'}{$calculation_method} +=
                         $energy->value;
                 } else {
-                    $rotamer_energies{$label_seq_id}{$calculation_method} =
+                    $rotamer_energies{$label_seq_id}{'atom_id'} = $atom_id;
+                    $rotamer_energies{$label_seq_id}{'energy'}{$calculation_method} =
                         $energy->value;
                 }
             }
 
-            my ( $pdbx_PDB_model_num, $label_alt_id, $label_asym_id ) =
-                split /,/, $atom_site_identifier;
+            my ( undef, $label_alt_id ) = split /,/, $atom_site_identifier;
             for my $label_seq_id ( sort keys %rotamer_energies ) {
+                my $atom_id = $rotamer_energies{$label_seq_id}{'atom_id'};
                 for my $calculation_method (
-                    sort keys %{ $rotamer_energies{$label_seq_id} } ) {
+                    sort keys %{ $rotamer_energies{$label_seq_id}{'energy'} } ) {
                     push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
                         { 'id' => $calculation_id,
-                          'label_seq_id' => $label_seq_id,
-                          'label_asym_id' => $label_asym_id,
-                          'pdbx_PDB_model_num' => $pdbx_PDB_model_num,
+                          'label_seq_id' => $atom_site->{$atom_id}{'label_seq_id'},
+                          'label_asym_id' => $atom_site->{$atom_id}{'label_asym_id'},
+                          'pdbx_PDB_model_num' =>
+                              $atom_site->{$atom_id}{'pdbx_PDB_model_num'},
                           'label_alt_id' => $label_alt_id,
                           'calculation_method' => $calculation_method,
                           'value' =>
                               sprintf( $sig_figs_max,
                                        $rotamer_energies{$label_seq_id}
+                                                        {'energy'}
                                                         {$calculation_method} )};
                     $calculation_id++;
                 }
