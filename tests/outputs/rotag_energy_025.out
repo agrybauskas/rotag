@@ -1,0 +1,46 @@
+data_rotag
+#
+loop_
+_[local]_energy.id
+_[local]_energy.atom_id
+_[local]_energy.type_symbol
+_[local]_energy.label_atom_id
+_[local]_energy.label_seq_id
+_[local]_energy.label_comp_id
+_[local]_energy.label_asym_id
+_[local]_energy.pdbx_PDB_model_num
+_[local]_energy.label_alt_id
+_[local]_energy.calculation_method
+_[local]_energy.value
+1 2004 N N 204 GLU A 1 . composite 7.935162
+2 2005 C CA 204 GLU A 1 . composite -0.210207
+3 2006 C C 204 GLU A 1 . composite 3.399453
+4 2007 O O 204 GLU A 1 . composite 3.509854
+5 2008 C CB 204 GLU A 1 . composite -1.286727
+6 2009 C CG 204 GLU A 1 . composite 3.291264
+7 2010 C CD 204 GLU A 1 . composite 2.680710
+8 2011 O OE1 204 GLU A 1 . composite -2.402902
+9 2012 O OE2 204 GLU A 1 . composite -4.019184
+10 2013 H H 204 GLU A 1 . composite -1.586324
+11 2750 MG MG . MG B 1 . composite -15.224103
+12 2828 H HA 71 GLU A 1 . composite -0.537808
+13 2829 H HB2 71 GLU A 1 . composite 1.509514
+14 2830 H HB3 71 GLU A 1 . composite 1.314247
+15 2831 H HG2 71 GLU A 1 . composite 0.152912
+16 2832 H HG3 71 GLU A 1 . composite 0.337436
+17 2970 H HA 204 GLU A 1 . composite -1.137754
+18 2971 H HB2 204 GLU A 1 . composite 0.155311
+19 2972 H HB3 204 GLU A 1 . composite 0.151996
+20 2973 H HG2 204 GLU A 1 . composite 0.133667
+21 2974 H HG3 204 GLU A 1 . composite 0.212712
+22 665 N N 71 GLU A 1 . composite 8.640545
+23 666 C CA 71 GLU A 1 . composite 0.085453
+24 667 C C 71 GLU A 1 . composite 2.892443
+25 668 O O 71 GLU A 1 . composite 0.283945
+26 669 C CB 71 GLU A 1 . composite 1.358344
+27 670 C CG 71 GLU A 1 . composite 0.957576
+28 671 C CD 71 GLU A 1 . composite 3.490375
+29 672 O OE1 71 GLU A 1 . composite -1.418266
+30 673 O OE2 71 GLU A 1 . composite -2.264191
+31 674 H H 71 GLU A 1 . composite -1.744757
+#
