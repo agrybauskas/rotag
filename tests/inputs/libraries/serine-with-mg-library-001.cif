@@ -13,8 +13,8 @@ _atom_site.label_seq_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
-_atom_site.auth_asym_id
 _atom_site.auth_seq_id
+_atom_site.auth_asym_id
 _atom_site.pdbx_PDB_model_num
 _atom_site.[local]_selection_state
 ATOM 147 N N . SER A 1 18 -55.320 -109.795 -6.452 18 A 1 T
