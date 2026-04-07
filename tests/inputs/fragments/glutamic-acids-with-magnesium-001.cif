@@ -1,0 +1,53 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 665 N N . GLU A 1 71 14.523 12.591 34.025 A 71 . 1 T 1
+ATOM 666 C CA . GLU A 1 71 14.562 13.369 32.795 A 71 . 1 T 1
+ATOM 667 C C . GLU A 1 71 15.448 14.596 32.927 A 71 . 1 T 1
+ATOM 668 O O . GLU A 1 71 16.189 14.902 32.007 A 71 . 1 T 1
+ATOM 669 C CB . GLU A 1 71 13.152 13.793 32.384 A 71 . 1 T 1
+ATOM 670 C CG . GLU A 1 71 12.359 12.664 31.744 A 71 . 1 T 1
+ATOM 671 C CD . GLU A 1 71 10.864 12.917 31.700 A 71 . 1 T 1
+ATOM 672 O OE1 . GLU A 1 71 10.419 14.050 31.966 A 71 . 1 T 1
+ATOM 673 O OE2 . GLU A 1 71 10.114 11.973 31.415 A 71 . 1 T 1
+ATOM 674 H H . GLU A 1 71 13.680 12.543 34.524 A 71 . 1 T 1
+ATOM 2004 N N . GLU A 1 204 3.886 3.844 21.511 A 204 . 1 T 1
+ATOM 2005 C CA . GLU A 1 204 4.290 5.190 21.106 A 204 . 1 T 1
+ATOM 2006 C C . GLU A 1 204 5.289 5.116 19.966 A 204 . 1 T 1
+ATOM 2007 O O . GLU A 1 204 5.223 5.900 19.030 A 204 . 1 T 1
+ATOM 2008 C CB . GLU A 1 204 4.900 5.957 22.302 A 204 . 1 T 1
+ATOM 2009 C CG . GLU A 1 204 5.405 7.372 22.007 A 204 . 1 T 1
+ATOM 2010 C CD . GLU A 1 204 5.908 8.080 23.252 A 204 . 1 T 1
+ATOM 2011 O OE1 . GLU A 1 204 5.088 8.614 24.012 A 204 . 1 T 1
+ATOM 2012 O OE2 . GLU A 1 204 7.122 8.091 23.490 A 204 . 1 T 1
+ATOM 2013 H H . GLU A 1 204 4.140 3.541 22.410 A 204 . 1 T 1
+HETATM 2750 MG MG . MG B 1 . 0.000 0.000 0.000 A 284 . 1 T 1
+ATOM 2828 H HA . GLU A 1 71 14.962 12.746 32.023 A 71 . 1 T 1
+ATOM 2829 H HB2 . GLU A 1 71 12.635 14.124 33.261 A 71 . 1 T 1
+ATOM 2830 H HB3 . GLU A 1 71 13.237 14.596 31.682 A 71 . 1 T 1
+ATOM 2831 H HG2 . GLU A 1 71 12.715 12.542 30.742 A 71 . 1 T 1
+ATOM 2832 H HG3 . GLU A 1 71 12.539 11.776 32.312 A 71 . 1 T 1
+ATOM 2970 H HA . GLU A 1 204 3.424 5.720 20.769 A 204 . 1 T 1
+ATOM 2971 H HB2 . GLU A 1 204 5.738 5.399 22.665 A 204 . 1 T 1
+ATOM 2972 H HB3 . GLU A 1 204 4.149 6.048 23.059 A 204 . 1 T 1
+ATOM 2973 H HG2 . GLU A 1 204 4.602 7.947 21.595 A 204 . 1 T 1
+ATOM 2974 H HG3 . GLU A 1 204 6.211 7.313 21.306 A 204 . 1 T 1
+#
