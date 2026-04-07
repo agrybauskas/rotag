@@ -20,14 +20,14 @@ _[local]_pairwise_energy.pdbx_PDB_model_num_2
 _[local]_pairwise_energy.label_alt_2_id
 _[local]_pairwise_energy.calculation_method
 _[local]_pairwise_energy.value
-1 1926 O OG 18 SER A 1 26 147 N N 18 SER A 1 26 composite 5.758244
-2 1926 O OG 18 SER A 1 26 149 C C 18 SER A 1 26 composite -4.871918
-3 1926 O OG 18 SER A 1 26 150 O O 18 SER A 1 26 composite 7.079306
-4 1926 O OG 18 SER A 1 26 1927 MG MG 18 MG A 1 26 composite -46.617240
-5 1927 MG MG 18 MG A 1 26 147 N N 18 SER A 1 26 composite -15.782448
-6 1927 MG MG 18 MG A 1 26 148 C CA 18 SER A 1 26 composite 5.146239
-7 1927 MG MG 18 MG A 1 26 149 C C 18 SER A 1 26 composite 23.881812
-8 1927 MG MG 18 MG A 1 26 150 O O 18 SER A 1 26 composite -37.788324
-9 1927 MG MG 18 MG A 1 26 151 C CB 18 SER A 1 26 composite 7.233254
-10 1927 MG MG 18 MG A 1 26 1926 O OG 18 SER A 1 26 composite -46.617240
+1 1926 O OG 18 SER A 1 26 147 N N 18 SER A 1 . composite 5.758244
+2 1926 O OG 18 SER A 1 26 149 C C 18 SER A 1 . composite -4.871918
+3 1926 O OG 18 SER A 1 26 150 O O 18 SER A 1 . composite 7.079306
+4 1926 O OG 18 SER A 1 26 1927 MG MG . MG B 1 26 composite -46.617240
+5 1927 MG MG . MG B 1 26 147 N N 18 SER A 1 . composite -15.782448
+6 1927 MG MG . MG B 1 26 148 C CA 18 SER A 1 . composite 5.146239
+7 1927 MG MG . MG B 1 26 149 C C 18 SER A 1 . composite 23.881812
+8 1927 MG MG . MG B 1 26 150 O O 18 SER A 1 . composite -37.788324
+9 1927 MG MG . MG B 1 26 151 C CB 18 SER A 1 . composite 7.233254
+10 1927 MG MG . MG B 1 26 1926 O OG 18 SER A 1 26 composite -46.617240
 #
