@@ -465,6 +465,22 @@ sub random_sequence
 }
 
 #
+# Creates and returns Halton sequence element of defined index and base.
+# Input:
+#     $base - base;
+#     $index - index;
+# Output:
+#     $element - sequence element.
+#
+
+sub halton_element
+{
+    my ( $base, $index ) = @_;
+    my $element = 0;
+    return $element;
+}
+
+#
 # Creates and returns Halton sequence in the defined range.
 # Input:
 #     $ranges - array of range starts and ends;
