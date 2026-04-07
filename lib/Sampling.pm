@@ -467,17 +467,23 @@ sub random_sequence
 #
 # Creates and returns Halton sequence element of defined index and base.
 # Input:
-#     $base - base;
-#     $index - index;
+#     $b - base;
+#     $i - index;
 # Output:
-#     $element - sequence element.
+#     $r - sequence element.
 #
 
 sub halton_element
 {
-    my ( $base, $index ) = @_;
-    my $element = 0;
-    return $element;
+    my ( $b, $i ) = @_;
+    my $r = 0;
+    my $f = 1 / $b;
+    while( $i > 0 ) {
+        $r += $f * ( $i % $b );
+        $i = int( $i / $b );
+        $f /= $b;
+    }
+    return $r;
 }
 
 #
@@ -499,16 +505,10 @@ sub halton_sequence
     for my $i ( 0..$count-1 ) {
         my @point = ();
         foreach( 0..$dim-1 ) {
-            my $b = $bases->[$_];
-            my $r = 0;
-            my $f = 1 / $b;
-            while( $i > 0 ) {
-                $r += $f * ( $i % $b );
-                $i = int( $i / $b );
-                $f /= $b;
-            }
             push @point,
-                $ranges->[$_][0] + $r * ( $ranges->[$_][1] - $ranges->[$_][0] );
+                $ranges->[$_][0] +
+                halton_element( $bases->[$_], $i ) *
+                ( $ranges->[$_][1] - $ranges->[$_][0] );
         }
         push @sequence, \@point;
     }
