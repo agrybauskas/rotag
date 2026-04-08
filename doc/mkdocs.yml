@@ -34,11 +34,8 @@ repo_url: https://github.com/agrybauskas/rotag
 nav:
     - Home: 'index.md'
     - Installation: 'installation.md'
-    - Documentation:
-        - Model:
-            - 'Potentials': 'potentials.md'
-        - Tutorials:
-            - 'Adding hydrogens': 'adding-hydrogens.md'
+    - Tutorials:
+        - 'Adding hydrogens': 'adding-hydrogens.md'
     - License: 'license.md'
     - Citing: 'citing.md'
 
