@@ -889,13 +889,13 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 keys %bond_parameters;
-
             my @parameter_names_visited =
                 grep { exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
             my $unique_residue_key =
                 unique_residue_key( $residue_site->{$atom_id} );
+
             my @ranges = ();  # For random selection.
             my @bond_parameter_names = ();  # For random selection.
             for my $i ( 0..$#parameter_names_sorted ) {
