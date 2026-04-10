@@ -1,5 +1,4 @@
 data_rotag
-11;rgb:2b2b/2b2b/2b2b#
 loop_
 _atom_site.group_PDB
 _atom_site.id
