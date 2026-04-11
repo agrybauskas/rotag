@@ -420,27 +420,30 @@ sub generate_library
         connect_atoms( $parameters, $current_atom_site );
         hybridization( $parameters, $current_atom_site );
 
-        my $assigned_hetatom_ids =
-            assign_hetatoms(
-                $parameters, $current_atom_site, $struct_conn,
-                { 'filter_unique_keys' => $residue_unique_keys,
-                  'heteroatom_depth' => $heteroatom_depth,
-                  'exclude_hetatom_connections' => $exclude_hetatom_connections,
-                  'ref_atom_site' => $atom_site,
-                  'keep_original' => 0 }
-        );
-        # my $assigned_hetatom_mainchain_ids =
-        #     assign_hetatoms_mainchain(
-        #         $parameters, $current_atom_site, $struct_conn,
-        #         { 'filter_unique_keys' => $residue_unique_keys,
-        #           'ref_atom_site' => $ref_atom_site,
-        #           'keep_original' => 0 }
-        # );
-
-        my $related_unique_residue_keys =
-            struct_conn_residue_keys( $parameters,
-                                      $current_atom_site,
-                                      $struct_conn );
+        my $assigned_hetatom_ids = [];
+        my $related_unique_residue_keys = [];
+        if( $include_hetatoms ) {
+            $assigned_hetatom_ids =
+                assign_hetatoms(
+                    $parameters, $current_atom_site, $struct_conn,
+                    { 'filter_unique_keys' => $residue_unique_keys,
+                      'heteroatom_depth' => $heteroatom_depth,
+                      'exclude_hetatom_connections' => $exclude_hetatom_connections,
+                      'ref_atom_site' => $atom_site,
+                      'keep_original' => 0 }
+            );
+            # my $assigned_hetatom_mainchain_ids =
+            #     assign_hetatoms_mainchain(
+            #         $parameters, $current_atom_site, $struct_conn,
+            #         { 'filter_unique_keys' => $residue_unique_keys,
+            #           'ref_atom_site' => $ref_atom_site,
+            #           'keep_original' => 0 }
+            # );
+            $related_unique_residue_keys =
+                struct_conn_residue_keys( $parameters,
+                                          $current_atom_site,
+                                          $struct_conn );
+        }
 
         if( $do_bond_torsion ) {
             rotatable_bonds( $parameters,
@@ -538,11 +541,14 @@ sub generate_library
                     { 'exclude_dot' => 1 }
                 )->[0];
 
-                my $struct_conn_atom_ids =
-                    struct_conn_atom_ids(
-                        $residue_site, $struct_conn,
-                        { 'ref_atom_site' => $current_atom_site }
-                );
+                my $struct_conn_atom_ids = [];
+                if( $include_hetatoms ) {
+                    $struct_conn_atom_ids =
+                        struct_conn_atom_ids(
+                            $residue_site, $struct_conn,
+                            { 'ref_atom_site' => $current_atom_site }
+                        );
+                }
 
                 my @assigned_unique_keys = ();
                 for my $hetatom_id ( sort @{ $assigned_hetatom_ids } ) {
