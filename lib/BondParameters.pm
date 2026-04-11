@@ -992,6 +992,9 @@ sub combine_bond_and_energy
         my $first_atom_id = $bond_parameter_groups->{$rotamer_id}{'atom_ids'}[0];
         my $unique_residue_key =
             unique_residue_key( $bond_parameters->{$first_atom_id} );
+        my $alt_unique_residue_key =
+            unique_residue_key( $bond_parameters->{$first_atom_id},
+                                { 'pdbx_auth_alt_id' => '.' } );
         my @rotamer_names = ();
         my @rotamer_values = ();
         for my $bond_parameter_id (
@@ -1018,6 +1021,20 @@ sub combine_bond_and_energy
                                             {'bond_combinations'} },
                     [ @rotamer_values ];
                 push @{ $combined_parameters{$unique_residue_key}
+                                            {$parameter_comb}
+                                            {'energy_combinations'} },
+                    [ ( defined $bond_energy->{$rotamer_id}{'value'} ?
+                        $bond_energy->{$rotamer_id}{'value'} : 0.0 ) ];
+
+                # HACK: more robust approach than simple addition to the hash
+                # should be found.
+                next if $unique_residue_key eq $alt_unique_residue_key;
+
+                push @{ $combined_parameters{$alt_unique_residue_key}
+                                            {$parameter_comb}
+                                            {'bond_combinations'} },
+                    [ @rotamer_values ];
+                push @{ $combined_parameters{$alt_unique_residue_key}
                                             {$parameter_comb}
                                             {'energy_combinations'} },
                     [ ( defined $bond_energy->{$rotamer_id}{'value'} ?
