@@ -108,6 +108,10 @@ sub combine_permuted_values
         }
     }
 
+    # my $combined_values = [];
+    # for my $parameter_name ( @{ $names } ) {
+    # }
+
     return $combined_values;
 }
 
