@@ -64,6 +64,8 @@ sub combine_permuted_values
     my $combined_values = [];
     for my $parameter_name ( @{ $names } ) {
         if( @{ $combined_values } ) {
+            my $parameter_key = $parameter_longest{$parameter_name};
+            my $parameter_key_prev = $parameter_tree{$parameter_key};
         } else {
             $combined_values =
                 [ map { [ $_ ] }
