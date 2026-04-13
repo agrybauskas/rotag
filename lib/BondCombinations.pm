@@ -51,6 +51,14 @@ sub combine_permuted_values
 
     # # Identifies the longest parameter key for given parameter name.
     # my %parameter_longest = ();
+    # for my $parameter_name ( @{ $names } ) {
+    #     for my $parameter_key ( @parameter_keys_sorted_rev ) {
+    #         if( $parameter_key =~ m/\Q$parameter_name\E$/ ) {
+    #             $parameter_longest{$parameter_name} = $parameter_key;
+    #             last;
+    #         }
+    #     }
+    # }
 
     # Finds unique values for each parameter.
     my %visited_parameters = ();
