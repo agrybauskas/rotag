@@ -44,7 +44,7 @@ sub combine_permuted_values
     #     for my $j ( $i+1..$#parameter_keys_sorted_rev ) {
     #         my $parameter_key_2 = $parameter_keys_sorted_rev[$j];
     #         if( $parameter_key_2 =~ m/^\Q$parameter_key_1\E/ ) {
-    #             $parameter_tree{$parameter_key_1}{$parameter_key_2} = 1;
+    #             $parameter_tree{$parameter_key_2} = $parameter_key_1;
     #         }
     #     }
     # }
