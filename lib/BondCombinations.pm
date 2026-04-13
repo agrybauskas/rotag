@@ -36,6 +36,15 @@ sub combine_permuted_values
                $a cmp $b }
         keys %parameter_keys;
 
+    # # Constructs bond parameter dependency tree.
+    # my %parameter_tree = ();
+    # for my $i ( 0..$#parameter_keys_sorted ) {
+    #     my $parameter_key_1 = $parameter_keys_sorted[$i];
+    #     for my $j ( $i+1..$#parameter_keys_sorted ) {
+    #         my $parameter_key_2 = $parameter_keys_sorted[$j];
+    #     }
+    # }
+
     # Finds unique values for each parameter.
     my %visited_parameters = ();
     my %unique_parameter_values = ();
