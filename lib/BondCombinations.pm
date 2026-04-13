@@ -52,10 +52,9 @@ sub combine_permuted_values
     # Identifies the longest parameter key for given parameter name.
     my %parameter_longest = ();
     for my $parameter_name ( @{ $names } ) {
-        for my $parameter_key ( @parameter_keys_sorted_rev ) {
-            if( $parameter_key =~ m/\Q$parameter_name\E$/ ) {
-                $parameter_longest{$parameter_name} = $parameter_key;
-                last;
+        for my $current_parameter_key ( @parameter_keys_sorted_rev ) {
+            if( $current_parameter_key =~ m/\Q$parameter_name\E$/ ) {
+                $parameter_longest{$parameter_name} = $current_parameter_key;
             }
         }
     }
@@ -64,8 +63,9 @@ sub combine_permuted_values
     my $combined_values = [];
     for my $parameter_name ( @{ $names } ) {
         if( @{ $combined_values } ) {
-            my $parameter_key = $parameter_longest{$parameter_name};
-            my $parameter_key_prev = $parameter_tree{$parameter_key};
+            my $current_parameter_key = $parameter_longest{$parameter_name};
+            my $current_parameter_key_prev =
+                $parameter_tree{$current_parameter_key};
         } else {
             $combined_values =
                 [ map { [ $_ ] }
