@@ -56,7 +56,11 @@ sub combine_permuted_values
     my $combined_values = [];
     for my $parameter_name ( @{ $names } ) {
         if( @{ $combined_values } ) {
-
+            my $current_parameter_key =
+                $parameter_name_pos{$parameter_name}{'parameter_key'};
+            my $parameter_pos = $parameter_name_pos{$parameter_name}{'pos'};
+            my $parameter_values =
+                $permuted_values->{$current_parameter_key}[$parameter_pos];
         } else {
             $combined_values =
                 [ map { [ $_ ] }
