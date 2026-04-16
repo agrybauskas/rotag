@@ -35,9 +35,21 @@ sub combine_permuted_values
                $a cmp $b }
         keys %parameter_keys;
 
+    my %parameter_name_pos = ();
     for my $name ( @{ $names } ) {
         for my $parameter_key ( @parameter_keys_sorted ) {
-
+            if( $parameter_key =~ m/\Q$name\E/ ) {
+                my @parameter_key_components = split /,/, $parameter_key;
+                for my $i ( 0..$#parameter_key_components ) {
+                    if( $name eq $parameter_key_components[$i] ) {
+                        $parameter_name_pos{$name} = {
+                            'pos' => $i,
+                            'parameter_key' => $parameter_key,
+                        }
+                    }
+                }
+                last;
+            }
         }
     }
 
