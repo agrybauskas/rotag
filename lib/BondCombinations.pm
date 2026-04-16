@@ -56,6 +56,8 @@ sub combine_permuted_values
         }
     }
 
+    my $reorder_id = 0;
+    my %reorder_parameter_names = ();
     my %visited_parameter_keys = ();
     my $combined_values = [];
     for my $parameter_name ( @{ $names } ) {
@@ -73,6 +75,8 @@ sub combine_permuted_values
             push @parameter_value_comb,
                 [ map { [ $_->[$parameter_pos] ] }
                      @{ $permuted_values->{$parameter_key} } ];
+            $reorder_parameter_names{$current_parameter_name} = $reorder_id;
+            $reorder_id++;
         }
 
         my @parameter_value_comb_flattened = ();
@@ -107,7 +111,7 @@ sub combine_permuted_values
     my @combined_values_reordered = ();
     for my $name_idx ( 0..$#{ $names } ) {
         my $name = $names->[$name_idx];
-        my $current_pos = $parameter_name_pos{$name};
+        my $current_pos = $reorder_parameter_names{$name};
         for my $i ( 0..$#{ $combined_values } ) {
             if( $name_idx > 0 ) {
                 push @{ $combined_values_reordered[$i] },
