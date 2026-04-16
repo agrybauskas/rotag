@@ -75,11 +75,24 @@ sub combine_permuted_values
                      @{ $permuted_values->{$parameter_key} } ];
         }
 
-        # if( @{ $combined_values } ) {
+        my @parameter_value_comb_flattened = ();
+        for my $param_idx ( 0..$#parameter_value_comb ) {
+            for my $i ( 0..$#{ $parameter_value_comb[$param_idx] } ) {
+                if( $param_idx > 0 ) {
+                    push @{ $parameter_value_comb_flattened[$i] },
+                        @{ $parameter_value_comb[$param_idx][$i] };
+                } else {
+                    push @parameter_value_comb_flattened,
+                        $parameter_value_comb[$param_idx][$i];
+                }
+            }
+        }
 
-        # } else {
-        #     $combined_values = [ map { [ $_ ] } @parameter_values ];
-        # }
+        if( @{ $combined_values } ) {
+
+        } else {
+            $combined_values = [ @parameter_value_comb_flattened ];
+        }
     }
 
     return $combined_values;
