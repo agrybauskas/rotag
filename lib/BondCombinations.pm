@@ -27,7 +27,6 @@ sub combine_permuted_values
     return $permuted_values->{$parameter_key}
         if exists $permuted_values->{$parameter_key};
 
-    # Finds the longest bond parameter chain.
     my %parameter_keys =
         map { $_ => [ split /,/, $_ ]  } keys %{ $permuted_values };
     my @parameter_keys_sorted =
@@ -35,37 +34,17 @@ sub combine_permuted_values
                scalar( @{ $parameter_keys{$a} } ) ||
                $a cmp $b }
         keys %parameter_keys;
-    my @parameter_keys_sorted_rev = reverse @parameter_keys_sorted;
 
-    # Constructs bond parameter one way dependency tree.
-    my %parameter_tree = ();
-    for my $i ( 0..$#parameter_keys_sorted_rev ) {
-        my $parameter_key_1 = $parameter_keys_sorted_rev[$i];
-        for my $j ( $i+1..$#parameter_keys_sorted_rev ) {
-            my $parameter_key_2 = $parameter_keys_sorted_rev[$j];
-            if( $parameter_key_2 =~ m/^\Q$parameter_key_1\E/ ) {
-                $parameter_tree{$parameter_key_2} = $parameter_key_1;
-            }
+    for my $name ( @{ $names } ) {
+        for my $parameter_key ( @parameter_keys_sorted ) {
+
         }
     }
 
-    # Identifies the longest parameter key for given parameter name.
-    my %parameter_longest = ();
-    for my $parameter_name ( @{ $names } ) {
-        for my $current_parameter_key ( @parameter_keys_sorted_rev ) {
-            if( $current_parameter_key =~ m/\Q$parameter_name\E$/ ) {
-                $parameter_longest{$parameter_name} = $current_parameter_key;
-            }
-        }
-    }
-
-    # Generates permuted list from unique parameter values.
     my $combined_values = [];
     for my $parameter_name ( @{ $names } ) {
         if( @{ $combined_values } ) {
-            my $current_parameter_key = $parameter_longest{$parameter_name};
-            my $current_parameter_key_prev =
-                $parameter_tree{$current_parameter_key};
+
         } else {
             $combined_values =
                 [ map { [ $_ ] }
