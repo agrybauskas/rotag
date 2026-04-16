@@ -105,8 +105,18 @@ sub combine_permuted_values
     # Value positions have to be reordered as bond parameter keys might vary
     # positionally.
     my @combined_values_reordered = ();
-    for my $name ( @{ $names } ) {
+    for my $name_idx ( 0..$#{ $names } ) {
+        my $name = $names->[$name_idx];
         my $current_pos = $parameter_name_pos{$name};
+        for my $i ( 0..$#{ $combined_values } ) {
+            if( $name_idx > 0 ) {
+                push @{ $combined_values_reordered[$i] },
+                    $combined_values->[$i][$name_idx];
+            } else {
+                push @combined_values_reordered,
+                    [ $combined_values->[$i][$name_idx] ];
+            }
+        }
     }
 
     return \@combined_values_reordered;
