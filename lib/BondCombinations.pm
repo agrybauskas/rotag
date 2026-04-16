@@ -89,7 +89,14 @@ sub combine_permuted_values
         }
 
         if( @{ $combined_values } ) {
-
+            $combined_values =
+                permutation(
+                    2, [],
+                    [ $combined_values,
+                      \@parameter_value_comb_flattened ], [] );
+            $combined_values =
+                [ map { [ @{ $_->[0] }, @{ $_->[1] } ] }
+                     @{ $combined_values } ];
         } else {
             $combined_values = [ @parameter_value_comb_flattened ];
         }
