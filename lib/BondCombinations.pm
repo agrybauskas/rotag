@@ -102,7 +102,14 @@ sub combine_permuted_values
         }
     }
 
-    return $combined_values;
+    # Value positions have to be reordered as bond parameter keys might vary
+    # positionally.
+    my @combined_values_reordered = ();
+    for my $name ( @{ $names } ) {
+
+    }
+
+    return \@combined_values_reordered;
 }
 
 1;
