@@ -36,6 +36,7 @@ sub combine_permuted_values
         keys %parameter_keys;
 
     my %parameter_name_pos = ();
+    my %parameter_name_groups = ();
     for my $name ( @{ $names } ) {
         for my $parameter_key ( @parameter_keys_sorted ) {
             if( $parameter_key =~ m/\Q$name\E/ ) {
@@ -45,7 +46,9 @@ sub combine_permuted_values
                         $parameter_name_pos{$name} = {
                             'pos' => $i,
                             'parameter_key' => $parameter_key,
-                        }
+                        };
+                        push @{ $parameter_name_groups{$parameter_key} },
+                            $name;
                     }
                 }
                 last;
