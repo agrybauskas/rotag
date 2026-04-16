@@ -56,20 +56,25 @@ sub combine_permuted_values
         }
     }
 
+    my %visited_parameter_keys = ();
     my $combined_values = [];
     for my $parameter_name ( @{ $names } ) {
-        my $current_parameter_key =
+        my $parameter_key =
             $parameter_name_pos{$parameter_name}{'parameter_key'};
-        my $parameter_pos = $parameter_name_pos{$parameter_name}{'pos'};
-        my @parameter_values =
-            map { [ $_->[$parameter_pos] ] }
-               @{ $permuted_values->{$current_parameter_key} };
 
-        if( @{ $combined_values } ) {
+        next if $visited_parameter_keys{$parameter_key};
+        $visited_parameter_keys{$parameter_key} = 1;
 
-        } else {
-            $combined_values = [ map { [ $_ ] } @parameter_values ];
-        }
+        # my $parameter_pos = $parameter_name_pos{$parameter_name}{'pos'};
+        # my @parameter_values =
+        #     map { [ $_->[$parameter_pos] ] }
+        #        @{ $permuted_values->{$current_parameter_key} };
+
+        # if( @{ $combined_values } ) {
+
+        # } else {
+        #     $combined_values = [ map { [ $_ ] } @parameter_values ];
+        # }
     }
 
     return $combined_values;
