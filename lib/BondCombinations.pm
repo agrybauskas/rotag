@@ -106,7 +106,7 @@ sub combine_permuted_values
     # positionally.
     my @combined_values_reordered = ();
     for my $name ( @{ $names } ) {
-
+        my $current_pos = $parameter_name_pos{$name};
     }
 
     return \@combined_values_reordered;
