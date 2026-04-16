@@ -65,13 +65,14 @@ sub combine_permuted_values
         next if $visited_parameter_keys{$parameter_key};
         $visited_parameter_keys{$parameter_key} = 1;
 
-        my @parameter_comb = @{ $parameter_name_groups{$parameter_key} };
-        for my $current_parameter_name ( @parameter_comb ) {
+        my @parameter_name_comb = @{ $parameter_name_groups{$parameter_key} };
+        my @parameter_value_comb = ();
+        for my $current_parameter_name ( @parameter_name_comb ) {
             my $parameter_pos =
                 $parameter_name_pos{$current_parameter_name}{'pos'};
-            my @parameter_values =
-                map { [ $_->[$parameter_pos] ] }
-                   @{ $permuted_values->{$parameter_key} };
+            push @parameter_value_comb,
+                [ map { [ $_->[$parameter_pos] ] }
+                     @{ $permuted_values->{$parameter_key} } ];
         }
 
         # if( @{ $combined_values } ) {
