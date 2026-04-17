@@ -6,7 +6,7 @@ theme:
     name: material
     features:
         - toc.integrate
-    logo: assets/rotag-logo-dark-bg.svg
+    logo: assets/rotag-logo-dark-bg.png
     favicon: assets/favicon.ico
     icon:
         repo: fontawesome/brands/github

@@ -13,3 +13,8 @@
 .md-header__topic {
     visibility:                    hidden;
 }
+
+.md-header__button.md-logo img {
+  height: auto;
+  width: 25%;
+}
