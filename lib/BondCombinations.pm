@@ -39,7 +39,7 @@ sub combine_permuted_values
     my %parameter_name_groups = ();
     for my $name ( @{ $names } ) {
         for my $parameter_key ( @parameter_keys_sorted ) {
-            if( $parameter_key =~ m/\Q$name\E/ ) {
+            if( $parameter_key =~ m/(^\Q$name\E$|^\Q$name\E,|,\Q$name\E$|,\Q$name\E,)/ ) {
                 my @parameter_key_components = split /,/, $parameter_key;
                 for my $i ( 0..$#parameter_key_components ) {
                     if( $name eq $parameter_key_components[$i] ) {
@@ -92,6 +92,9 @@ sub combine_permuted_values
             }
         }
 
+        # HACK: there might be problems when there are alternative interactions
+        # between side-chain atoms and one ligand. The proper bond parameter
+        # join function might be created for this case.
         if( @{ $combined_values } ) {
             $combined_values =
                 permutation(
