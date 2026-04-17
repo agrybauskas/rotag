@@ -783,7 +783,7 @@ sub calc_favourable_angles
     my ( $parameters, $atom_site, $residue_unique_keys, $interaction_site,
          $bond_parameters, $existing_bond_parameters, $include_hetatoms,
          $bond_parameter_count, $non_bonded_potential, $bonded_potential,
-         $min_max_ratio, $top_rank, $threads, $rand_count, $rand_seed,
+         $min_max_ratio, $top_rank, $threads, $rand_step, $rand_seed,
          $program_called_by, $verbose ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
@@ -798,7 +798,7 @@ sub calc_favourable_angles
         $args->{'min_max_ratio'},
         $args->{'top_rank'},
         $args->{'threads'},
-        $args->{'options'}{'rand_count'},
+        $args->{'options'}{'rand_step'},
         $args->{'options'}{'rand_seed'},
         $args->{'options'}{'program_called_by'},
         $args->{'options'}{'verbose'},
@@ -939,11 +939,11 @@ sub calc_favourable_angles
                            $parameter_name,
                            $bond_parameter_count,
                            { 'rand_seed' => $rand_seed,
-                             'rand_count' => $rand_count,
+                             'rand_step' => $rand_step,
                              'original_bond_parameters' =>
                                  \%bond_parameters } );
 
-                if( defined $rand_count ) {
+                if( defined $rand_step ) {
                     my $units = $default_allowed_bond_parameters->{'units'};
                     my $from =
                         $units eq 'degrees' ?
@@ -962,7 +962,7 @@ sub calc_favourable_angles
 
                 my @default_allowed_bond_parameters = ();
                 my @default_allowed_energies = ();
-                if( defined $rand_count ) {
+                if( defined $rand_step ) {
                     # Previous parameter key has to be updated as some bond
                     # parameters can be added all at the same time.
                     if( $parameter_key_prev ) {
@@ -974,7 +974,7 @@ sub calc_favourable_angles
                         # }
                     }
                     @default_allowed_bond_parameters =
-                        @{ random_sequence( \@ranges, $rand_count ) };
+                        @{ random_sequence( \@ranges, $rand_step ) };
                     @default_allowed_energies =
                         map { [ 0.0 ] } @default_allowed_bond_parameters;
                 } else {
@@ -1523,7 +1523,7 @@ sub is_bond_parameter_present
 #     $residue_name - residue_name;
 #     $bond_parameter_name - bond parameter name;
 #     $options{'rand_seed'} - random seed;
-#     $options{'rand_count'} - count of random parameter values;
+#     $options{'rand_step'} - count of random parameter values;
 # Output:
 #     \@values - values of the bond parameters.
 #
@@ -1533,9 +1533,9 @@ sub default_bond_parameter_values
 {
     my ( $parameters, $bond_parameters, $residue_name, $bond_parameter_name,
          $bond_parameter_count, $options ) = @_;
-    my ( $rand_seed, $rand_count, $original_bond_parameters ) =
+    my ( $rand_seed, $rand_step, $original_bond_parameters ) =
         ( $options->{'rand_seed'},
-          $options->{'rand_count'},
+          $options->{'rand_step'},
           $options->{'original_bond_parameters'} );
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
@@ -1562,12 +1562,12 @@ sub default_bond_parameter_values
         for my $current_bond_parameter_name ( @{ $current_bond_parameter_names } ) {
             next if ! defined $current_bond_parameter_name;
 
-            if( defined $rand_count &&
+            if( defined $rand_step &&
                 defined $rand_seed &&
                 exists $bond_parameters->{$current_residue_name} &&
                 exists $bond_parameters->{$current_residue_name}
                                          {$current_bond_parameter_name} ) {
-                if( $rand_count >
+                if( $rand_step >
                     scalar @{ $bond_parameters->{$current_residue_name}
                                                 {$current_bond_parameter_name}
                                                 {'values'} } ){
@@ -1611,7 +1611,7 @@ sub default_bond_parameter_values
                              [ map { [ $bond_parameters->{$current_residue_name}
                                                          {$current_bond_parameter_name}
                                                          {'values'}[$_] ] }
-                               @shuffled_idxs[0..$rand_count-1] ] };
+                               @shuffled_idxs[0..$rand_step-1] ] };
             }
 
             # TODO: optimise here as there are too many conditionals and checks

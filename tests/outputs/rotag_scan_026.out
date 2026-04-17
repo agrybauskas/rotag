@@ -81,8 +81,8 @@ Options:
                         top rotamers according to the value of energies.
     -x, --rand-seed <int>
                         set a seed for random bond parameter selection.
-    -X, --rand-count <int>
-                        number of random bond parameters.
+    -X, --rand-step <int>
+                        number of random bond parameter steps.
     --tags <tag>[,<tag>...]
                         output only specified PDBx categories.
     -F, --format <format>

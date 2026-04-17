@@ -119,8 +119,8 @@ our $VERSION = $VERSION;
 #*                        top rotamers according to the value of energies.
 #*    -x, --rand-seed <int>
 #*                        set a seed for random bond parameter selection.
-#*    -X, --rand-count <int>
-#*                        number of random bond parameters.
+#*    -X, --rand-step <int>
+#*                        number of random bond parameter steps.
 #*    --tags <tag>[,<tag>...]
 #*                        output only specified PDBx categories.
 #*    -F, --format <format>
@@ -150,7 +150,7 @@ my $in_radians = 0;
 my $min_max_ratio;
 my $top_rank;
 my $rand_seed;
-my $rand_count;
+my $rand_step;
 my $threads = 1;
 my $verbose = 0;
 my $tags = '_atom_site,_[local]_rotamer_bond_parameter,_[local]_rotamer_energy';
@@ -183,7 +183,7 @@ GetOptions(
     'bond-parameters|angles|b|a=s' => \$bond_parameters_qs,
     'legacy-grammar' => sub { $legacy_grammar = 1 },
     'rand-seed|x=s' => \$rand_seed,
-    'rand-count|X=s' => \$rand_count,
+    'rand-step|X=s' => \$rand_step,
     'radians|r' => sub { $in_radians = 1 },
     'min-max-ratio|M=s' => \$min_max_ratio,
     'top-rank|limit|t=s' => \$top_rank,
@@ -350,7 +350,7 @@ for my $pdbx_file ( @ARGV ) {
                   'top_rank' => $top_rank,
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
-                                 'rand_count' => $rand_count,
+                                 'rand_step' => $rand_step,
                                  'program_called_by' => $0,
                                  'verbose' => $verbose }
                 } );
