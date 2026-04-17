@@ -114,14 +114,14 @@ sub combine_permuted_values
     my @combined_values_reordered = ();
     for my $name_idx ( 0..$#{ $names } ) {
         my $name = $names->[$name_idx];
-        my $current_pos = $reorder_parameter_names{$name};
+        my $reorder_pos = $reorder_parameter_names{$name};
         for my $i ( 0..$#{ $combined_values } ) {
             if( $name_idx > 0 ) {
                 push @{ $combined_values_reordered[$i] },
-                    $combined_values->[$i][$name_idx];
+                    $combined_values->[$i][$reorder_pos];
             } else {
                 push @combined_values_reordered,
-                    [ $combined_values->[$i][$name_idx] ];
+                    [ $combined_values->[$i][$reorder_pos] ];
             }
         }
     }
