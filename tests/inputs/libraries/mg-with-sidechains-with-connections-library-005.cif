@@ -1,0 +1,151 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 665 N N . GLU A 1 71 14.523 12.591 34.025 A 71 . 1 T 1
+ATOM 666 C CA . GLU A 1 71 14.562 13.369 32.795 A 71 . 1 T 1
+ATOM 667 C C . GLU A 1 71 15.448 14.596 32.927 A 71 . 1 T 1
+ATOM 668 O O . GLU A 1 71 16.189 14.902 32.007 A 71 . 1 T 1
+ATOM 669 C CB . GLU A 1 71 13.152 13.793 32.384 A 71 . 1 T 1
+ATOM 670 C CG . GLU A 1 71 12.359 12.664 31.744 A 71 . 1 T 1
+ATOM 671 C CD . GLU A 1 71 10.864 12.917 31.700 A 71 . 1 T 1
+ATOM 672 O OE1 . GLU A 1 71 10.419 14.050 31.966 A 71 . 1 T 1
+ATOM 673 O OE2 . GLU A 1 71 10.114 11.973 31.415 A 71 . 1 T 1
+ATOM 674 H H . GLU A 1 71 13.680 12.543 34.524 A 71 . 1 T 1
+HETATM 2750 MG MG . MG B 1 . 0.000 0.000 0.000 A 284 . 1 T 1
+ATOM 2828 H HA . GLU A 1 71 14.962 12.746 32.023 A 71 . 1 T 1
+ATOM 2829 H HB2 . GLU A 1 71 12.635 14.124 33.261 A 71 . 1 T 1
+ATOM 2830 H HB3 . GLU A 1 71 13.237 14.596 31.682 A 71 . 1 T 1
+ATOM 2831 H HG2 . GLU A 1 71 12.715 12.542 30.742 A 71 . 1 T 1
+ATOM 2832 H HG3 . GLU A 1 71 12.539 11.776 32.312 A 71 . 1 T 1
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -180.000 degrees
+2 1 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+3 1 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 -90.000 degrees
+4 2 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -180.000 degrees
+5 2 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+6 2 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 -72.000 degrees
+25 9 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -180.000 degrees
+26 9 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+27 9 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 54.000 degrees
+28 10 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -180.000 degrees
+29 10 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+30 10 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 72.000 degrees
+190 64 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -180.000 degrees
+191 64 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 162.000 degrees
+192 64 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 -90.000 degrees
+217 73 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -180.000 degrees
+218 73 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 162.000 degrees
+219 73 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 72.000 degrees
+220 74 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -162.000 degrees
+221 74 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+222 74 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 -90.000 degrees
+241 81 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -162.000 degrees
+242 81 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+243 81 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 36.000 degrees
+244 82 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -162.000 degrees
+245 82 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+246 82 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 54.000 degrees
+247 83 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -162.000 degrees
+248 83 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+249 83 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 72.000 degrees
+1381 461 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -72.000 degrees
+1382 461 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+1383 461 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 -90.000 degrees
+1384 462 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -72.000 degrees
+1385 462 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+1386 462 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 -72.000 degrees
+1405 469 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -72.000 degrees
+1406 469 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+1407 469 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 54.000 degrees
+1408 470 204 GLU A 1 204 A . 2004 2005 2008 2009 . . . . 0.071429 chi1 -72.000 degrees
+1409 470 204 GLU A 1 204 A . 2005 2008 2009 2010 . . . . 0.071429 chi2 -180.000 degrees
+1410 470 204 GLU A 1 204 A . 2008 2009 2010 2011 . . . . 0.071429 chi3 72.000 degrees
+5554 1852 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5555 1852 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5556 1852 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 -90.000 degrees
+5557 1853 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5558 1853 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5559 1853 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 -72.000 degrees
+5560 1854 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5561 1854 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5562 1854 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 -54.000 degrees
+5563 1855 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5564 1855 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5565 1855 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 -36.000 degrees
+5566 1856 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5567 1856 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5568 1856 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 -18.000 degrees
+5569 1857 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5570 1857 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5571 1857 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 0.000 degrees
+5572 1858 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5573 1858 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5574 1858 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 18.000 degrees
+5575 1859 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5576 1859 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5577 1859 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 36.000 degrees
+5578 1860 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5579 1860 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5580 1860 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 54.000 degrees
+5581 1861 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.100000 chi1 -72.000 degrees
+5582 1861 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.100000 chi2 -180.000 degrees
+5583 1861 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.100000 chi3 72.000 degrees
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 71 A . 71 A OE1 . B 284 . A MG
+metalc2 metalc 71 A . 71 A OE2 . B 284 . A MG
+#
