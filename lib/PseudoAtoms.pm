@@ -1560,8 +1560,6 @@ sub default_bond_parameter_values
             alt_bond_parameter_names( $residue_and_bond_name_pair->[1] );
 
         for my $current_bond_parameter_name ( @{ $current_bond_parameter_names } ) {
-            next if ! defined $current_bond_parameter_name;
-
             if( defined $rand_step &&
                 defined $rand_seed &&
                 exists $bond_parameters->{$current_residue_name} &&
