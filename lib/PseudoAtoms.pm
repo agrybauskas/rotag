@@ -1553,9 +1553,6 @@ sub default_bond_parameter_values
 
     for my $residue_and_bond_name_pair ( @{ $residue_and_bond_name_pairs } ) {
         my $current_residue_name = $residue_and_bond_name_pair->[0];
-
-        next if ! defined $current_residue_name;
-
         my $current_bond_parameter_names =
             alt_bond_parameter_names( $residue_and_bond_name_pair->[1] );
 
