@@ -1540,55 +1540,44 @@ sub default_bond_parameter_values
 
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
-    my $residue_and_bond_name_pairs = [
-        # Both residue and parameter names are defined.
-        [ $residue_name, $bond_parameter_name ],
-        # Only residue name is defined.
-        [ $residue_name, '*-*-*-*' ],
-        # Only bond parameter name is defined.
-        [ '*', $bond_parameter_name ],
-        # Neither residue nor parameter names are defined.
-        [ '*', '*-*-*-*' ],
-    ];
+    my ( $bond_parameter_type ) =
+        detect_bond_parameter_type( $bond_parameter_name );
 
-    # my $atom_name_count =
-    #     scalar( grep { $_ ne '.' && $_ ne '-' }
-    #             split /(-|\.)/, $bond_parameter_name );
-    # my $residue_and_bond_name_pairs = {
-    #     2 => [
-    #         # Both residue and parameter names are defined.
-    #         [ $residue_name, $bond_parameter_name ],
-    #         # Only bond parameter name is defined.
-    #         [ '*', $bond_parameter_name ],
-    #         # Only residue name is defined.
-    #         [ $residue_name, '*-*' ],
-    #         # Neither residue nor parameter names are defined.
-    #         [ '*', '*-*' ],
-    #     ],
-    #     3 => [
-    #         # Both residue and parameter names are defined.
-    #         [ $residue_name, $bond_parameter_name ],
-    #         # Only bond parameter name is defined.
-    #         [ '*', $bond_parameter_name ],
-    #         # Only residue name is defined.
-    #         [ $residue_name, '*-*-*' ],
-    #         # Neither residue nor parameter names are defined.
-    #         [ '*', '*-*-*' ],
-    #     ],
-    #     4 => [
-    #         # Both residue and parameter names are defined.
-    #         [ $residue_name, $bond_parameter_name ],
-    #         # Only bond parameter name is defined.
-    #         [ '*', $bond_parameter_name ],
-    #         # Only residue name is defined.
-    #         [ $residue_name, '*-*-*-*' ],
-    #         # Neither residue nor parameter names are defined.
-    #         [ '*', '*-*-*-*' ],
-    #     ]
-    # };
+    my $residue_and_bond_name_pairs = {
+        'bond_length' => [
+            # Both residue and parameter names are defined.
+            [ $residue_name, $bond_parameter_name ],
+            # Only bond parameter name is defined.
+            [ '*', $bond_parameter_name ],
+            # Only residue name is defined.
+            [ $residue_name, '*-*' ],
+            # Neither residue nor parameter names are defined.
+            [ '*', '*-*' ],
+        ],
+        'bond_angle' => [
+            # Both residue and parameter names are defined.
+            [ $residue_name, $bond_parameter_name ],
+            # Only bond parameter name is defined.
+            [ '*', $bond_parameter_name ],
+            # Only residue name is defined.
+            [ $residue_name, '*-*-*' ],
+            # Neither residue nor parameter names are defined.
+            [ '*', '*-*-*' ],
+        ],
+        'dihedral_angle' => [
+            # Both residue and parameter names are defined.
+            [ $residue_name, $bond_parameter_name ],
+            # Only bond parameter name is defined.
+            [ '*', $bond_parameter_name ],
+            # Only residue name is defined.
+            [ $residue_name, '*-*-*-*' ],
+            # Neither residue nor parameter names are defined.
+            [ '*', '*-*-*-*' ],
+        ]
+    };
 
-    for my $residue_and_bond_name_pair ( @{ $residue_and_bond_name_pairs } ) {
-        # @{ $residue_and_bond_name_pairs->{$atom_name_count} } ) {
+    for my $residue_and_bond_name_pair (
+        @{ $residue_and_bond_name_pairs->{$bond_parameter_type} } ) {
         my $current_residue_name = $residue_and_bond_name_pair->[0];
         my $current_bond_parameter_names =
             alt_bond_parameter_names( $residue_and_bond_name_pair->[1] );
@@ -1693,9 +1682,6 @@ sub default_bond_parameter_values
             }
         }
     }
-
-    my ( $bond_parameter_type ) =
-        detect_bond_parameter_type( $bond_parameter_name );
 
     return { 'values' =>
                  [ map { [ $_ ] }
