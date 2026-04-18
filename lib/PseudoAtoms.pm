@@ -1551,7 +1551,44 @@ sub default_bond_parameter_values
         [ '*', '*-*-*-*' ],
     ];
 
+    # my $atom_name_count =
+    #     scalar( grep { $_ ne '.' && $_ ne '-' }
+    #             split /(-|\.)/, $bond_parameter_name );
+    # my $residue_and_bond_name_pairs = {
+    #     2 => [
+    #         # Both residue and parameter names are defined.
+    #         [ $residue_name, $bond_parameter_name ],
+    #         # Only bond parameter name is defined.
+    #         [ '*', $bond_parameter_name ],
+    #         # Only residue name is defined.
+    #         [ $residue_name, '*-*' ],
+    #         # Neither residue nor parameter names are defined.
+    #         [ '*', '*-*' ],
+    #     ],
+    #     3 => [
+    #         # Both residue and parameter names are defined.
+    #         [ $residue_name, $bond_parameter_name ],
+    #         # Only bond parameter name is defined.
+    #         [ '*', $bond_parameter_name ],
+    #         # Only residue name is defined.
+    #         [ $residue_name, '*-*-*' ],
+    #         # Neither residue nor parameter names are defined.
+    #         [ '*', '*-*-*' ],
+    #     ],
+    #     4 => [
+    #         # Both residue and parameter names are defined.
+    #         [ $residue_name, $bond_parameter_name ],
+    #         # Only bond parameter name is defined.
+    #         [ '*', $bond_parameter_name ],
+    #         # Only residue name is defined.
+    #         [ $residue_name, '*-*-*-*' ],
+    #         # Neither residue nor parameter names are defined.
+    #         [ '*', '*-*-*-*' ],
+    #     ]
+    # };
+
     for my $residue_and_bond_name_pair ( @{ $residue_and_bond_name_pairs } ) {
+        # @{ $residue_and_bond_name_pairs->{$atom_name_count} } ) {
         my $current_residue_name = $residue_and_bond_name_pair->[0];
         my $current_bond_parameter_names =
             alt_bond_parameter_names( $residue_and_bond_name_pair->[1] );
