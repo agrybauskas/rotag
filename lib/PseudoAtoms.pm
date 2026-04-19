@@ -969,9 +969,7 @@ sub calc_favourable_angles
                         my $parameter_subkey =
                             join ',',
                             @bond_parameter_names[0..$#bond_parameter_names-1];
-                        # if( $parameter_subkey ) {
-                            $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
-                        # }
+                        $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
                     }
                     @default_allowed_bond_parameters =
                         @{ random_sequence( \@ranges, $rand_step ) };
