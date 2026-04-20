@@ -19,6 +19,14 @@ Options:
     --optimise-ligands
                         clusters ligands using DBScan algorithm, reduces
                         possible positions and checks the ligand coordination.
+    --dbscan-distance
+                        maximum dinstance between atoms that includes
+                        them to the cluster. Works only when
+                        "--optimise-ligands" option is on.
+    --dbscan-min
+                        minimum atom neighbour count for the points to be
+                        considered included in the cluster. Works only when
+                        "--optimise-ligands" option is on.
     -a, --rotamer-angle-file
                         selects rotamer angles from the cif file.
     -j, --rotamer-angle-json-file

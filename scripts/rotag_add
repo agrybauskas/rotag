@@ -69,6 +69,14 @@ our $VERSION = $VERSION;
 #*    --optimise-ligands
 #*                        clusters ligands using DBScan algorithm, reduces
 #*                        possible positions and checks the ligand coordination.
+#*    --dbscan-distance
+#*                        maximum dinstance between atoms that includes
+#*                        them to the cluster. Works only when
+#*                        "--optimise-ligands" option is on.
+#*    --dbscan-min
+#*                        minimum atom neighbour count for the points to be
+#*                        considered included in the cluster. Works only when
+#*                        "--optimise-ligands" option is on.
 #*    -a, --rotamer-angle-file
 #*                        selects rotamer angles from the cif file.
 #*    -j, --rotamer-angle-json-file
@@ -98,6 +106,8 @@ my $add_hydrogens = 0;
 my $ligands = '';
 my $list_ligands = 0;
 my $optimise_ligands = 0;
+my $dbscan_distance = 1.0;
+my $dbscan_min = 1;
 my $rotamer_angle_file = '';
 my $rotamer_angle_json_file = '';
 my $include_selected = 0;
@@ -127,6 +137,8 @@ GetOptions(
     'l|ligands=s' => \$ligands,
     'list-ligands' => sub { $list_ligands = 1 },
     'optimise-ligands' => sub { $optimise_ligands = 1 },
+    'dbscan-distance' => \$dbscan_distance,
+    'dbscan-min' => \$dbscan_min,
     'a|rotamer-angle-cif-file=s' => \$rotamer_angle_file,
     'j|rotamer-angle-json-file=s' => \$rotamer_angle_json_file,
     'selected|s' => sub { $include_selected = 1 },
@@ -738,7 +750,8 @@ for my $pdbx_file ( @ARGV ) {
                     );
                 }
                 # TODO: parametrise the distance.
-                $cluster->dbscan( 1.0 );
+                $cluster->dbscan( $dbscan_distance,
+                                  { 'min_points' => $dbscan_min } );
 
                 # Chooses the most energetically and structurally stable member
                 # of the cluster.
