@@ -57,15 +57,7 @@ sub new
     for my $rotamer_angle ( @{ $rotamer_angles } ) {
         my $rotamer_angle_id = $rotamer_angle->{'id'};
         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
-        my $unique_residue_key =
-            sprintf '%s,%s,%s,%s,%s,%s,%s',
-            $rotamer_angle->{'label_seq_id'},
-            $rotamer_angle->{'label_asym_id'},
-            $rotamer_angle->{'pdbx_PDB_model_num'},
-            $rotamer_angle->{'label_alt_id'},
-            $rotamer_angle->{'auth_seq_id'},
-            $rotamer_angle->{'auth_asym_id'},
-            $rotamer_angle->{'pdbx_auth_alt_id'};
+        my $unique_residue_key = unique_residue_key( $rotamer_angle );
 
         $residue_to_rotamers{$unique_residue_key}{$rotamer_id} = 1;
         $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =
