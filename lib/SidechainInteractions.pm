@@ -57,7 +57,9 @@ sub new
     for my $rotamer_angle ( @{ $rotamer_angles } ) {
         my $rotamer_angle_id = $rotamer_angle->{'id'};
         my $rotamer_id = $rotamer_angle->{'rotamer_id'};
-        my $unique_residue_key = unique_residue_key( $rotamer_angle );
+        my $unique_residue_key =
+            unique_residue_key( $rotamer_angle,
+                                { 'pdbx_auth_alt_id' => '.' } );
 
         $residue_to_rotamers{$unique_residue_key}{$rotamer_id} = 1;
         $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =

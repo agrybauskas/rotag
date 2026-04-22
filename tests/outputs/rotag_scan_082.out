@@ -1,1 +1,245 @@
-# A placeholder for the future data.
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 160 N N . ASP A 1 28 -34.072 -9.821 -1.574 A 21 . 1 T
+ATOM 161 C CA . ASP A 1 28 -35.335 -10.141 -2.222 A 21 . 1 T
+ATOM 162 C C . ASP A 1 28 -35.161 -11.489 -2.909 A 21 . 1 T
+ATOM 163 O O . ASP A 1 28 -34.287 -11.622 -3.763 A 21 . 1 T
+ATOM 164 C CB . ASP A 1 28 -35.699 -9.042 -3.228 A 21 . 1 T
+ATOM 165 C CG . ASP A 1 28 -37.032 -9.268 -3.874 A 21 . 1 T
+ATOM 166 O OD1 . ASP A 1 28 -37.916 -8.405 -3.704 A 21 . 1 T
+ATOM 167 O OD2 . ASP A 1 28 -37.227 -10.302 -4.551 A 21 . 1 T
+ATOM 168 H H . ASP A 1 28 -33.539 -9.354 -2.061 A 21 . 1 T
+ATOM 169 H HA . ASP A 1 28 -36.041 -10.212 -1.561 A 21 . 1 T
+ATOM 170 H HB2 . ASP A 1 28 -35.730 -8.189 -2.766 A 21 . 1 T
+ATOM 171 H HB3 . ASP A 1 28 -35.027 -9.018 -3.927 A 21 . 1 T
+ATOM 193 N N . ASP A 1 30 -36.959 -13.264 -4.992 A 23 . 1 T
+ATOM 194 C CA . ASP A 1 30 -37.258 -13.350 -6.411 A 23 . 1 T
+ATOM 195 C C . ASP A 1 30 -36.213 -12.673 -7.277 A 23 . 1 T
+ATOM 196 O O . ASP A 1 30 -35.837 -13.196 -8.311 A 23 . 1 T
+ATOM 197 C CB . ASP A 1 30 -38.655 -12.824 -6.683 A 23 . 1 T
+ATOM 198 C CG . ASP A 1 30 -39.710 -13.676 -6.025 A 23 . 1 T
+ATOM 199 O OD1 . ASP A 1 30 -39.659 -14.906 -6.201 A 23 . 1 T
+ATOM 200 O OD2 . ASP A 1 30 -40.561 -13.126 -5.309 A 23 . 1 T
+ATOM 201 H H . ASP A 1 30 -37.494 -12.771 -4.540 A 23 . 1 T
+ATOM 202 H HA . ASP A 1 30 -37.260 -14.295 -6.660 A 23 . 1 T
+ATOM 203 H HB2 . ASP A 1 30 -38.730 -11.924 -6.333 A 23 . 1 T
+ATOM 204 H HB3 . ASP A 1 30 -38.816 -12.826 -7.637 A 23 . 1 T
+ATOM 222 N N . ASP A 1 33 -33.293 -14.869 -7.274 A 26 . 1 T
+ATOM 223 C CA . ASP A 1 33 -33.519 -16.046 -8.117 A 26 . 1 T
+ATOM 224 C C . ASP A 1 33 -33.334 -15.700 -9.593 A 26 . 1 T
+ATOM 225 O O . ASP A 1 33 -32.809 -16.511 -10.368 A 26 . 1 T
+ATOM 226 C CB . ASP A 1 33 -34.933 -16.610 -7.903 A 26 . 1 T
+ATOM 227 C CG . ASP A 1 33 -35.139 -17.347 -6.583 A 26 . 1 T
+ATOM 228 O OD1 . ASP A 1 33 -34.179 -17.597 -5.837 A 26 . 1 T
+ATOM 229 O OD2 . ASP A 1 33 -36.314 -17.711 -6.332 A 26 . 1 T
+ATOM 230 H H . ASP A 1 33 -33.997 -14.581 -6.872 A 26 . 1 T
+ATOM 231 H HA . ASP A 1 33 -32.877 -16.736 -7.883 A 26 . 1 T
+ATOM 232 H HB2 . ASP A 1 33 -35.566 -15.875 -7.930 A 26 . 1 T
+ATOM 233 H HB3 . ASP A 1 33 -35.128 -17.234 -8.620 A 26 . 1 T
+ATOM 287 N N . ASN A 1 37 -30.504 -17.609 -11.841 A 30 . 1 T
+ATOM 288 C CA . ASN A 1 37 -30.681 -18.474 -13.011 A 30 . 1 T
+ATOM 289 C C . ASN A 1 37 -30.053 -17.881 -14.268 A 30 . 1 T
+ATOM 290 O O . ASN A 1 37 -29.565 -18.637 -15.118 A 30 . 1 T
+ATOM 291 C CB . ASN A 1 37 -32.154 -18.827 -13.208 A 30 . 1 T
+ATOM 292 C CG . ASN A 1 37 -32.910 -17.826 -14.018 A 30 . 1 T
+ATOM 293 O OD1 . ASN A 1 37 -32.689 -17.658 -15.222 A 30 . 1 T
+ATOM 294 N ND2 . ASN A 1 37 -33.869 -17.188 -13.391 A 30 . 1 T
+ATOM 295 H H . ASN A 1 37 -31.211 -17.226 -11.536 A 30 . 1 T
+ATOM 296 H HA . ASN A 1 37 -30.216 -19.307 -12.835 A 30 . 1 T
+ATOM 297 H HB2 . ASN A 1 37 -32.212 -19.682 -13.663 A 30 . 1 T
+ATOM 298 H HB3 . ASN A 1 37 -32.580 -18.888 -12.338 A 30 . 1 T
+ATOM 299 H HD21 . ASN A 1 37 -34.338 -16.599 -13.807 A 30 . 1 T
+ATOM 300 H HD22 . ASN A 1 37 -34.028 -17.357 -12.563 A 30 . 1 T
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 19.770723
+2 2 composite 20.476655
+3 3 composite 21.583590
+4 4 composite 23.065243
+5 5 composite 24.706147
+6 6 composite 23.334140
+7 7 composite 24.220680
+8 8 composite 25.972056
+9 9 composite 28.917792
+10 10 composite 33.191821
+11 11 composite 16.236060
+12 12 composite -6.448659
+13 13 composite -5.779547
+14 14 composite -4.981224
+15 15 composite -4.236942
+16 16 composite -3.751811
+#
+loop_
+_[local]_pairwise_energy.id
+_[local]_pairwise_energy.rotamer_id_1
+_[local]_pairwise_energy.rotamer_id_2
+_[local]_pairwise_energy.type
+_[local]_pairwise_energy.value
+1 1 6 composite 3.994640
+2 1 7 composite 4.409641
+3 1 8 composite 4.555557
+4 1 9 composite 4.127298
+5 1 10 composite 3.749000
+6 1 11 composite 1.820664
+7 1 12 composite -0.195178
+8 1 13 composite -0.339477
+9 1 14 composite -0.091093
+10 1 15 composite -0.340877
+11 1 16 composite -0.253074
+12 2 6 composite 4.155317
+13 2 7 composite 4.639093
+14 2 8 composite 4.647491
+15 2 9 composite 4.163970
+16 2 10 composite 3.809714
+17 2 11 composite 1.823843
+18 2 12 composite -0.133792
+19 2 13 composite -0.332272
+20 2 14 composite -0.070829
+21 2 15 composite -0.333367
+22 2 16 composite -0.204072
+23 3 6 composite 4.140673
+24 3 7 composite 4.618985
+25 3 8 composite 4.646910
+26 3 9 composite 4.175143
+27 3 10 composite 3.817928
+28 3 11 composite 1.821129
+29 3 12 composite -0.134278
+30 3 13 composite -0.323365
+31 3 14 composite -0.066063
+32 3 15 composite -0.323514
+33 3 16 composite -0.163568
+34 4 6 composite 3.958193
+35 4 7 composite 4.319960
+36 4 8 composite 4.481293
+37 4 9 composite 4.129113
+38 4 10 composite 3.763247
+39 4 11 composite 1.819761
+40 4 12 composite -0.148495
+41 4 13 composite -0.325029
+42 4 14 composite -0.074459
+43 4 15 composite -0.317732
+44 4 16 composite -0.153669
+45 5 6 composite 3.842300
+46 5 7 composite 4.172641
+47 5 8 composite 4.400944
+48 5 9 composite 4.087273
+49 5 10 composite 3.707768
+50 5 11 composite 1.828360
+51 5 12 composite -0.168832
+52 5 13 composite -0.330774
+53 5 14 composite -0.094117
+54 5 15 composite -0.330721
+55 5 16 composite -0.193474
+56 6 11 composite 2.789344
+57 6 12 composite 0.074074
+58 6 13 composite 0.093207
+59 6 14 composite -0.023492
+60 6 15 composite 0.104733
+61 6 16 composite 0.050660
+62 7 11 composite 2.727439
+63 7 12 composite 0.107814
+64 7 13 composite 0.175821
+65 7 14 composite 0.007578
+66 7 15 composite 0.182879
+67 7 16 composite 0.089758
+68 8 11 composite 2.632473
+69 8 12 composite 0.179849
+70 8 13 composite 0.283548
+71 8 14 composite 0.025270
+72 8 15 composite 0.287175
+73 8 16 composite 0.162240
+74 9 11 composite 2.572235
+75 9 12 composite 0.185660
+76 9 13 composite 0.225562
+77 9 14 composite 0.035670
+78 9 15 composite 0.233367
+79 9 16 composite 0.167063
+80 10 11 composite 2.685021
+81 10 12 composite 0.118535
+82 10 13 composite 0.132725
+83 10 14 composite 0.019631
+84 10 15 composite 0.144990
+85 10 16 composite 0.094686
+86 11 12 composite -0.693495
+87 11 13 composite 0.001345
+88 11 14 composite -0.738781
+89 11 15 composite -0.183083
+90 11 16 composite -0.360399
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -180.000 degrees
+2 1 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -90.000 degrees
+3 2 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -180.000 degrees
+4 2 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -80.000 degrees
+5 3 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -180.000 degrees
+6 3 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -70.000 degrees
+7 4 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -180.000 degrees
+8 4 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -60.000 degrees
+9 5 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -180.000 degrees
+10 5 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -50.000 degrees
+11 6 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -180.000 degrees
+12 6 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -90.000 degrees
+13 7 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -180.000 degrees
+14 7 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -80.000 degrees
+15 8 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -180.000 degrees
+16 8 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -70.000 degrees
+17 9 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -180.000 degrees
+18 9 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -60.000 degrees
+19 10 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -180.000 degrees
+20 10 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -50.000 degrees
+21 11 33 ASP A 1 26 A . 222 223 226 227 . . . . 1.000000 chi1 -180.000 degrees
+22 11 33 ASP A 1 26 A . 223 226 227 228 . . . . 1.000000 chi2 -90.000 degrees
+23 12 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 -160.000 degrees
+24 12 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -70.000 degrees
+25 13 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 -160.000 degrees
+26 13 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -60.000 degrees
+27 14 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 -160.000 degrees
+28 14 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -50.000 degrees
+29 15 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 -160.000 degrees
+30 15 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -40.000 degrees
+31 16 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 -160.000 degrees
+32 16 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -30.000 degrees
+#
