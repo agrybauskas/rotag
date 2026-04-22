@@ -485,7 +485,8 @@ for my $pdbx_file ( @ARGV ) {
             $parameters,
             $target_atom_site,
             $rotamer_bond_parameters,
-            $rotamer_energies
+            $rotamer_energies,
+            $struct_conn,
         );
         $sidechain_interactions->predict( {
             'non_bonded_potential' => \&ForceField::NonBonded::general,

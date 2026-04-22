@@ -32,7 +32,7 @@ our $VERSION = $VERSION;
 sub new
 {
     my ( $class, $parameters, $atom_site, $rotamer_angles,
-         $rotamer_energies ) = @_;
+         $rotamer_energies, $struct_conn ) = @_;
 
     if( ! defined $atom_site ) {
         die "atom site is not supplied.\n";
