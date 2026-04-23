@@ -8,7 +8,8 @@ use Exporter qw( import );
 use Clone qw( clone );
 
 use BondProperties qw( hybridization );
-use ConnectAtoms qw( connect_atoms );
+use ConnectAtoms qw( connect_atoms
+                     struct_conn_residue_keys );
 use Logging qw( info );
 use ForceField::Parameters;
 use ForceField::Bonded qw( general );
@@ -65,6 +66,10 @@ sub new
         $self->{'rotamer_angles'}{$rotamer_id}{$rotamer_angle_id} =
             $rotamer_angle;
     }
+
+    # Shows residue relatedness through "_struct_conn" loop.
+    my $related_unique_residue_keys =
+        struct_conn_residue_keys( $parameters, $atom_site, $struct_conn );
 
     # Determining interaction grid.
     my $edge_length_interaction =
