@@ -114,23 +114,31 @@ sub new
                                           $struct_conn );
 
             # TODO: needs refactoring.
-            rotatable_bonds( $parameters, $residue_site,
-                             { ( 'include_hetatoms' =>
-                                 ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
-            stretchable_bonds( $parameters, $residue_site,
-                             { ( 'include_hetatoms' =>
-                                 ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
-            bendable_angles( $parameters, $residue_site,
-                             { ( 'include_hetatoms' =>
-                                 ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+            for my $current_residue_key ( $unique_residue_key,
+                                          keys %$related_unique_residue_keys ) {
+                my $current_residue_site =
+                    filter_by_unique_residue_key( $atom_site,
+                                                  $current_residue_key,
+                                                  1 );
 
-            rotation_translation( $parameters, $residue_site );
+                rotatable_bonds( $parameters, $current_residue_site,
+                                 { ( 'include_hetatoms' =>
+                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+                stretchable_bonds( $parameters, $current_residue_site,
+                                 { ( 'include_hetatoms' =>
+                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+                bendable_angles( $parameters, $current_residue_site,
+                                 { ( 'include_hetatoms' =>
+                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
 
-            $self->{'related_residues'}{$unique_residue_key} =
-                $related_unique_residue_keys->{$unique_residue_key};
+                rotation_translation( $parameters, $current_residue_site );
 
-            $self->{'residue_atom_site'}{$unique_residue_key} =
-                $residue_site;
+                $self->{'related_residues'}{$current_residue_key} =
+                    $related_unique_residue_keys->{$current_residue_key};
+
+                $self->{'residue_atom_site'}{$current_residue_key} =
+                    $current_residue_site;
+            }
 
             my @rotamer_ids =
                 keys %{ $residue_to_rotamers{$unique_residue_key} };
