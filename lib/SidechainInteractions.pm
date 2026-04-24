@@ -8,7 +8,8 @@ use Exporter qw( import );
 use Clone qw( clone );
 
 use BondProperties qw( hybridization );
-use ConnectAtoms qw( connect_atoms
+use ConnectAtoms qw( assign_hetatoms
+                     connect_atoms
                      struct_conn_residue_keys );
 use Logging qw( info );
 use ForceField::Parameters;
@@ -67,13 +68,6 @@ sub new
             $rotamer_angle;
     }
 
-    connect_atoms( $parameters, $atom_site );
-    hybridization( $parameters, $atom_site );
-
-    # Shows residue relatedness through "_struct_conn" loop.
-    my $related_unique_residue_keys =
-        struct_conn_residue_keys( $parameters, $atom_site, $struct_conn );
-
     # Determining interaction grid.
     my $edge_length_interaction =
         $parameters->{'_[local]_constants'}{'edge_length_interaction'};
@@ -101,8 +95,18 @@ sub new
                     filter_by_unique_residue_key( $atom_site,
                                                   $unique_residue_key,
                                                   1 );
+                connect_atoms( $parameters, $residue_site );
+                hybridization( $parameters, $residue_site );
 
                 rotation_translation( $parameters, $residue_site );
+
+                assign_hetatoms( $parameters, $residue_site, $struct_conn,
+                                 { 'ref_atom_site' => $atom_site,
+                                   'keep_original' => 0 } );
+
+                my $related_unique_residue_keys =
+                    struct_conn_residue_keys( $parameters, $residue_site,
+                                              $struct_conn );
 
                 $self->{'residue_atom_site'}{$unique_residue_key} =
                     $residue_site;
