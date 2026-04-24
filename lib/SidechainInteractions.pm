@@ -105,22 +105,24 @@ sub new
                 connect_atoms( $parameters, $residue_site );
                 hybridization( $parameters, $residue_site );
 
+
+                my $assigned_hetatom_ids =
+                    assign_hetatoms( $parameters, $residue_site, $struct_conn,
+                                 { 'ref_atom_site' => $atom_site,
+                                   'keep_original' => 0 } );
+
                 # TODO: needs refactoring. Should be moved separately.
                 rotatable_bonds( $parameters, $residue_site,
                                  { ( 'include_hetatoms' =>
-                                     ( %{ $struct_conn } ? 1 : 0 ) ) } );
+                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
                 stretchable_bonds( $parameters, $residue_site,
                                  { ( 'include_hetatoms' =>
-                                     ( %{ $struct_conn } ? 1 : 0 ) ) } );
+                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
                 bendable_angles( $parameters, $residue_site,
                                  { ( 'include_hetatoms' =>
-                                     ( %{ $struct_conn } ? 1 : 0 ) ) } );
+                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
 
                 rotation_translation( $parameters, $residue_site );
-
-                assign_hetatoms( $parameters, $residue_site, $struct_conn,
-                                 { 'ref_atom_site' => $atom_site,
-                                   'keep_original' => 0 } );
 
                 my $related_unique_residue_keys =
                     struct_conn_residue_keys( $parameters, $residue_site,
