@@ -141,7 +141,21 @@ sub new
 
                     connect_atoms( $parameters, $neighbour_residue_site );
                     hybridization( $parameters, $neighbour_residue_site );
+
                     rotation_translation( $parameters, $neighbour_residue_site );
+
+                    assign_hetatoms( $parameters, $neighbour_residue_site,
+                                     $struct_conn,
+                                     { 'ref_atom_site' => $atom_site,
+                                       'keep_original' => 0 } );
+
+                    my $related_unique_residue_keys =
+                        struct_conn_residue_keys( $parameters,
+                                                  $neighbour_residue_site,
+                                                  $struct_conn );
+
+                    $self->{'related_residues'}{$neighbour_unique_residue_key} =
+                        $related_unique_residue_keys->{$neighbour_unique_residue_key};
 
                     $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
                         $neighbour_residue_site;
