@@ -50,6 +50,7 @@ sub new
     my $self = { 'parameters' => $parameters,
                  'residue_pairs' => undef,
                  'residue_atom_site' => undef,
+                 'related_residues' => undef,
                  'rotamer_pairs' => undef,
                  'rotamer_atom_site' => undef,
                  'rotamer_angles' => undef,
@@ -107,6 +108,9 @@ sub new
                 my $related_unique_residue_keys =
                     struct_conn_residue_keys( $parameters, $residue_site,
                                               $struct_conn );
+
+                $self->{'related_residues'}{$unique_residue_key} =
+                    $related_unique_residue_keys->{$unique_residue_key};
 
                 $self->{'residue_atom_site'}{$unique_residue_key} =
                     $residue_site;
