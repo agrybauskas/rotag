@@ -100,9 +100,6 @@ sub new
                 filter_by_unique_residue_key( $atom_site,
                                               $unique_residue_key,
                                               1 );
-            my $related_unique_residue_keys =
-                struct_conn_residue_keys( $parameters, $residue_site,
-                                          $struct_conn );
 
             connect_atoms( $parameters, $residue_site );
             hybridization( $parameters, $residue_site );
@@ -111,6 +108,10 @@ sub new
                 assign_hetatoms( $parameters, $residue_site, $struct_conn,
                              { 'ref_atom_site' => $atom_site,
                                'keep_original' => 0 } );
+
+            my $related_unique_residue_keys =
+                struct_conn_residue_keys( $parameters, $residue_site,
+                                          $struct_conn );
 
             # TODO: needs refactoring.
             rotatable_bonds( $parameters, $residue_site,
