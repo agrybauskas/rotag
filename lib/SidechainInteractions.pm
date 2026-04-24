@@ -7,6 +7,9 @@ use Exporter qw( import );
 
 use Clone qw( clone );
 
+use BondParameters qw( bendable_angles
+                       stretchable_bonds
+                       rotatable_bonds );
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
@@ -35,6 +38,8 @@ sub new
 {
     my ( $class, $parameters, $atom_site, $rotamer_angles,
          $rotamer_energies, $struct_conn ) = @_;
+
+    $struct_conn //= {};
 
     if( ! defined $atom_site ) {
         die "atom site is not supplied.\n";
@@ -99,6 +104,17 @@ sub new
                                                   1 );
                 connect_atoms( $parameters, $residue_site );
                 hybridization( $parameters, $residue_site );
+
+                # TODO: needs refactoring. Should be moved separately.
+                rotatable_bonds( $parameters, $residue_site,
+                                 { ( 'include_hetatoms' =>
+                                     ( %{ $struct_conn } ? 1 : 0 ) ) } );
+                stretchable_bonds( $parameters, $residue_site,
+                                 { ( 'include_hetatoms' =>
+                                     ( %{ $struct_conn } ? 1 : 0 ) ) } );
+                bendable_angles( $parameters, $residue_site,
+                                 { ( 'include_hetatoms' =>
+                                     ( %{ $struct_conn } ? 1 : 0 ) ) } );
 
                 rotation_translation( $parameters, $residue_site );
 
