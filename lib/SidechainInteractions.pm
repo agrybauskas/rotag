@@ -105,7 +105,6 @@ sub new
                 connect_atoms( $parameters, $residue_site );
                 hybridization( $parameters, $residue_site );
 
-
                 my $assigned_hetatom_ids =
                     assign_hetatoms( $parameters, $residue_site, $struct_conn,
                                  { 'ref_atom_site' => $atom_site,
