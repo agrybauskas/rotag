@@ -67,6 +67,9 @@ sub new
             $rotamer_angle;
     }
 
+    connect_atoms( $parameters, $atom_site );
+    hybridization( $parameters, $atom_site );
+
     # Shows residue relatedness through "_struct_conn" loop.
     my $related_unique_residue_keys =
         struct_conn_residue_keys( $parameters, $atom_site, $struct_conn );
@@ -99,8 +102,6 @@ sub new
                                                   $unique_residue_key,
                                                   1 );
 
-                connect_atoms( $parameters, $residue_site );
-                hybridization( $parameters, $residue_site );
                 rotation_translation( $parameters, $residue_site );
 
                 $self->{'residue_atom_site'}{$unique_residue_key} =
