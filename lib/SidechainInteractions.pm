@@ -200,13 +200,14 @@ sub predict
 {
     my ( $self, $options ) = @_;
     my ( $parameters, $residue_pairs, $rotamer_pairs, $rotamer_angles,
-         $residue_atom_site, $rotamer_atom_site ) =
+         $residue_atom_site, $rotamer_atom_site, $related_residues ) =
         ( $self->{'parameters'},
           $self->{'residue_pairs'},
           $self->{'rotamer_pairs'},
           $self->{'rotamer_angles'},
           $self->{'residue_atom_site'},
-          $self->{'rotamer_atom_site'} );
+          $self->{'rotamer_atom_site'},
+          $self->{'related_residues'} );
 
     my ( $non_bonded_potential, $bonded_potential, $program_called_by,
          $dry_run, $verbose ) =
@@ -261,8 +262,18 @@ sub predict
                         keys %{ $rotamer_angles->{$rotamer_id} };
                     my %rotamer_site =
                         %{ clone( $residue_atom_site->{$unique_residue_key} ) };
+                    if( exists $related_residues->{$unique_residue_key} ) {
+                        for my $residue_key (
+                            sort keys %{ $related_residues->{$unique_residue_key} } ) {
+                            # %rotamer_site = (
+                            #     %rotamer_site,
+                            # );
+                        }
+                    }
+
                     replace_with_rotamer( $parameters, \%rotamer_site,
                                           $unique_residue_key, \%angles );
+
                     $rotamer_atom_site->{$rotamer_id} = { %rotamer_site };
                 }
 
@@ -275,10 +286,20 @@ sub predict
                             keys %{ $rotamer_angles->{$neighbour_rotamer_id} };
                         my %neighbour_rotamer_site =
                             %{ clone( $residue_atom_site->{$neighbour_unique_residue_key} ) };
+                        if( exists $related_residues->{$neighbour_unique_residue_key} ) {
+                            for my $residue_key (
+                                sort keys %{ $related_residues->{$unique_residue_key} } ) {
+                                # %neighbour_rotamer_site = (
+                                #     %neighbour_rotamer_site,
+                                # );
+                            }
+                        }
+
                         replace_with_rotamer( $parameters,
                                               \%neighbour_rotamer_site,
                                               $neighbour_unique_residue_key,
                                               \%neighbour_angles );
+
                         $rotamer_atom_site->{$neighbour_rotamer_id} =
                             { %neighbour_rotamer_site };
                     }
