@@ -111,7 +111,7 @@ sub new
                                  { 'ref_atom_site' => $atom_site,
                                    'keep_original' => 0 } );
 
-                # TODO: needs refactoring. Should be moved separately.
+                # TODO: needs refactoring.
                 rotatable_bonds( $parameters, $residue_site,
                                  { ( 'include_hetatoms' =>
                                      ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
