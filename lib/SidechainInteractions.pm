@@ -105,7 +105,8 @@ sub new
                                  { 'ref_atom_site' => $atom_site,
                                    'keep_original' => 0 } );
 
-            $self->{'residue_atom_site'}{$unique_residue_key} = $residue_site;
+            $self->{'residue_atom_site'}{$unique_residue_key} =
+                clone $residue_site;
 
             my @rotamer_ids =
                 keys %{ $residue_to_rotamers{$unique_residue_key} };
@@ -144,7 +145,7 @@ sub new
                                            'keep_original' => 0 } );
 
                     $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
-                        $neighbour_residue_site;
+                        clone $neighbour_residue_site;
                 }
 
                 my $bond_length = bond_length(
