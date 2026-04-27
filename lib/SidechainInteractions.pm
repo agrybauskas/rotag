@@ -105,6 +105,19 @@ sub new
                                  { 'ref_atom_site' => $atom_site,
                                    'keep_original' => 0 } );
 
+            rotatable_bonds( $parameters, $residue_site,
+                             { 'include_hetatoms' =>
+                                   ( @{ $assigned_hetatom_ids } ? 1 : 0 ) } );
+            stretchable_bonds( $parameters, $residue_site,
+                               { 'include_hetatoms' =>
+                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) } );
+            bendable_angles( $parameters, $residue_site,
+                             { 'include_hetatoms' =>
+                                   ( @{ $assigned_hetatom_ids } ? 1 : 0 ) } );
+
+            rotation_translation( $parameters, $residue_site,
+                                  { 'ref_atom_site' => $atom_site } );
+
             $self->{'residue_atom_site'}{$unique_residue_key} =
                 clone $residue_site;
 
@@ -143,6 +156,19 @@ sub new
                                          $struct_conn,
                                          { 'ref_atom_site' => $atom_site,
                                            'keep_original' => 0 } );
+
+                    rotatable_bonds( $parameters, $neighbour_residue_site,
+                                     { 'include_hetatoms' =>
+                                           ( @{ $neighbour_hetatom_ids } ? 1 : 0 ) } );
+                    stretchable_bonds( $parameters, $neighbour_residue_site,
+                                       { 'include_hetatoms' =>
+                                             ( @{ $neighbour_hetatom_ids } ? 1 : 0 ) } );
+                    bendable_angles( $parameters, $neighbour_residue_site,
+                                     { 'include_hetatoms' =>
+                                           ( @{ $neighbour_hetatom_ids } ? 1 : 0 ) } );
+
+                    rotation_translation( $parameters, $neighbour_residue_site,
+                                          { 'ref_atom_site' => $atom_site } );
 
                     $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
                         clone $neighbour_residue_site;
