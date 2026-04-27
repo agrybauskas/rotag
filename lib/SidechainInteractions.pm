@@ -306,27 +306,10 @@ sub predict
                     my %rotamer_site =
                         %{ clone( $residue_atom_site->{$unique_residue_key} ) };
 
-                    # TODO: refactoring is needed.
-                    my @related_residue_keys = ( $unique_residue_key );
-                    if( exists $related_residues->{$unique_residue_key} ) {
-                        for my $residue_key (
-                            sort keys %{ $related_residues->{$unique_residue_key} } ) {
-                            %rotamer_site = (
-                                %rotamer_site,
-                                %{ filter_by_unique_residue_key(
-                                       $ref_atom_site, $residue_key
-                                ) }
-                            );
-                            push @related_residue_keys, $residue_key;
-                        }
-                    }
+                    replace_with_rotamer( $parameters, \%rotamer_site,
+                                          $unique_residue_key, \%angles );
 
-                    for my $residue_key ( @related_residue_keys ) {
-                        replace_with_rotamer( $parameters, \%rotamer_site,
-                                              $residue_key, \%angles );
-                    }
-
-                    $rotamer_atom_site->{$rotamer_id} = { %rotamer_site };
+                    $rotamer_atom_site->{$rotamer_id} = clone \%rotamer_site;
                 }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
@@ -339,31 +322,13 @@ sub predict
                         my %neighbour_rotamer_site =
                             %{ clone( $residue_atom_site->{$neighbour_unique_residue_key} ) };
 
-                        # TODO: refactoring is needed.
-                        my @related_residue_keys =
-                            ( $neighbour_unique_residue_key );
-                        if( exists $related_residues->{$neighbour_unique_residue_key} ) {
-                            for my $residue_key (
-                                sort keys %{ $related_residues->{$unique_residue_key} } ) {
-                                %neighbour_rotamer_site = (
-                                    %neighbour_rotamer_site,
-                                    %{ filter_by_unique_residue_key(
-                                           $ref_atom_site, $residue_key
-                                    ) }
-                                );
-                                push @related_residue_keys, $residue_key;
-                            }
-                        }
-
-                        for my $residue_key ( @related_residue_keys ) {
-                            replace_with_rotamer( $parameters,
-                                                  \%neighbour_rotamer_site,
-                                                  $residue_key,
-                                                  \%neighbour_angles );
-                        }
+                        replace_with_rotamer( $parameters,
+                                              \%neighbour_rotamer_site,
+                                              $neighbour_unique_residue_key,
+                                              \%neighbour_angles );
 
                         $rotamer_atom_site->{$neighbour_rotamer_id} =
-                            { %neighbour_rotamer_site };
+                            clone \%neighbour_rotamer_site;
                     }
 
                     # Calculate pairwise energy.
