@@ -248,7 +248,7 @@ sub predict
                               $rotamer_angles->{$rotamer_id}{$_}{'value'} }
                         keys %{ $rotamer_angles->{$rotamer_id} };
                     my %rotamer_site =
-                        %{ clone( $residue_atom_site->{$unique_residue_key} ) };
+                        %{ $residue_atom_site->{$unique_residue_key} };
 
                     replace_with_rotamer( $parameters, \%rotamer_site,
                                           $unique_residue_key, \%angles );
@@ -264,7 +264,7 @@ sub predict
                                   $rotamer_angles->{$neighbour_rotamer_id}{$_}{'value'} }
                             keys %{ $rotamer_angles->{$neighbour_rotamer_id} };
                         my %neighbour_rotamer_site =
-                            %{ clone( $residue_atom_site->{$neighbour_unique_residue_key} ) };
+                            %{ $residue_atom_site->{$neighbour_unique_residue_key} };
 
                         replace_with_rotamer( $parameters,
                                               \%neighbour_rotamer_site,
