@@ -102,8 +102,8 @@ sub new
 
             my $assigned_hetatom_ids =
                 assign_hetatoms( $parameters, $residue_site, $struct_conn,
-                             { 'ref_atom_site' => $atom_site,
-                               'keep_original' => 0 } );
+                                 { 'ref_atom_site' => $atom_site,
+                                   'keep_original' => 0 } );
 
             $self->{'residue_atom_site'}{$unique_residue_key} = $residue_site;
 
