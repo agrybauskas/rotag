@@ -172,20 +172,21 @@ sub new
                     connect_atoms( $parameters, $neighbour_residue_site );
                     hybridization( $parameters, $neighbour_residue_site );
 
-                    assign_hetatoms( $parameters, $neighbour_residue_site,
-                                     $struct_conn,
-                                     { 'ref_atom_site' => $atom_site,
-                                       'keep_original' => 0 } );
+                    my $neighbour_hetatom_ids =
+                        assign_hetatoms( $parameters, $neighbour_residue_site,
+                                         $struct_conn,
+                                         { 'ref_atom_site' => $atom_site,
+                                           'keep_original' => 0 } );
 
                     rotatable_bonds( $parameters, $neighbour_residue_site,
                                      { ( 'include_hetatoms' =>
-                                         ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+                                         ( @{ $neighbour_hetatom_ids } ? 1 : 0 ) ) } );
                     stretchable_bonds( $parameters, $neighbour_residue_site,
                                      { ( 'include_hetatoms' =>
-                                         ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+                                         ( @{ $neighbour_hetatom_ids } ? 1 : 0 ) ) } );
                     bendable_angles( $parameters, $neighbour_residue_site,
                                      { ( 'include_hetatoms' =>
-                                         ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+                                         ( @{ $neighbour_hetatom_ids } ? 1 : 0 ) ) } );
 
                     rotation_translation( $parameters, $neighbour_residue_site );
 
