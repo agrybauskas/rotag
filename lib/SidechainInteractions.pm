@@ -128,16 +128,7 @@ sub new
 
             rotation_translation( $parameters, $residue_site );
 
-            # TODO: needs refactoring.
-            for my $current_residue_key ( $unique_residue_key,
-                                          keys %$related_unique_residue_keys ) {
-                my $current_residue_site =
-                    filter_by_unique_residue_key( $residue_site,
-                                                  $current_residue_key,
-                                                  1 );
-                $self->{'residue_atom_site'}{$current_residue_key} =
-                    $residue_site;
-            }
+            $self->{'residue_atom_site'}{$unique_residue_key} = $residue_site;
 
             my @rotamer_ids =
                 keys %{ $residue_to_rotamers{$unique_residue_key} };
