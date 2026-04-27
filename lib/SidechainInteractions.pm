@@ -113,31 +113,30 @@ sub new
                 struct_conn_residue_keys( $parameters, $residue_site,
                                           $struct_conn );
 
+            $self->{'related_residues'}{$unique_residue_key} =
+                $related_unique_residue_keys->{$unique_residue_key};
+
+            rotatable_bonds( $parameters, $residue_site,
+                             { ( 'include_hetatoms' =>
+                                 ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+            stretchable_bonds( $parameters, $residue_site,
+                             { ( 'include_hetatoms' =>
+                                 ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+            bendable_angles( $parameters, $residue_site,
+                             { ( 'include_hetatoms' =>
+                                 ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+
+            rotation_translation( $parameters, $residue_site );
+
             # TODO: needs refactoring.
             for my $current_residue_key ( $unique_residue_key,
                                           keys %$related_unique_residue_keys ) {
                 my $current_residue_site =
-                    filter_by_unique_residue_key( $atom_site,
+                    filter_by_unique_residue_key( $residue_site,
                                                   $current_residue_key,
                                                   1 );
-
-                rotatable_bonds( $parameters, $current_residue_site,
-                                 { ( 'include_hetatoms' =>
-                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
-                stretchable_bonds( $parameters, $current_residue_site,
-                                 { ( 'include_hetatoms' =>
-                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
-                bendable_angles( $parameters, $current_residue_site,
-                                 { ( 'include_hetatoms' =>
-                                     ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
-
-                rotation_translation( $parameters, $current_residue_site );
-
-                $self->{'related_residues'}{$current_residue_key} =
-                    $related_unique_residue_keys->{$current_residue_key};
-
                 $self->{'residue_atom_site'}{$current_residue_key} =
-                    $current_residue_site;
+                    $residue_site;
             }
 
             my @rotamer_ids =
@@ -148,6 +147,13 @@ sub new
                     unique_residue_key( $atom_site->{$neighbour_atom_id} );
 
                 next if $unique_residue_key eq $neighbour_unique_residue_key;
+
+                next if exists $self->{'residue_pairs'}
+                                      {$unique_residue_key}
+                                      {$neighbour_unique_residue_key} ||
+                        exists $self->{'residue_pairs'}
+                                      {$neighbour_unique_residue_key}
+                                      {$unique_residue_key};
 
                 $self->{'residue_pairs'}{$unique_residue_key}
                                         {$neighbour_unique_residue_key} = 1;
@@ -166,12 +172,22 @@ sub new
                     connect_atoms( $parameters, $neighbour_residue_site );
                     hybridization( $parameters, $neighbour_residue_site );
 
-                    rotation_translation( $parameters, $neighbour_residue_site );
-
                     assign_hetatoms( $parameters, $neighbour_residue_site,
                                      $struct_conn,
                                      { 'ref_atom_site' => $atom_site,
                                        'keep_original' => 0 } );
+
+                    rotatable_bonds( $parameters, $neighbour_residue_site,
+                                     { ( 'include_hetatoms' =>
+                                         ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+                    stretchable_bonds( $parameters, $neighbour_residue_site,
+                                     { ( 'include_hetatoms' =>
+                                         ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+                    bendable_angles( $parameters, $neighbour_residue_site,
+                                     { ( 'include_hetatoms' =>
+                                         ( @{ $assigned_hetatom_ids } ? 1 : 0 ) ) } );
+
+                    rotation_translation( $parameters, $neighbour_residue_site );
 
                     my $related_unique_residue_keys =
                         struct_conn_residue_keys( $parameters,
@@ -354,10 +370,10 @@ sub predict
                         $dry_run ?
                         0.0 :
                         pairwise_rotamer_energy(
-                              $parameters,
-                              $rotamer_atom_site->{$rotamer_id},
-                              $rotamer_atom_site->{$neighbour_rotamer_id},
-                              \&ForceField::NonBonded::general ) / 2;
+                            $parameters,
+                            $rotamer_atom_site->{$rotamer_id},
+                            $rotamer_atom_site->{$neighbour_rotamer_id},
+                            \&ForceField::NonBonded::general ) / 2;
 
                     # Under the cutoff limit.
                     if( $pairwise_energy_sum <= $cutoff_atom  ) {
