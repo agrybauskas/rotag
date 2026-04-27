@@ -309,7 +309,7 @@ sub predict
                     replace_with_rotamer( $parameters, \%rotamer_site,
                                           $unique_residue_key, \%angles );
 
-                    $rotamer_atom_site->{$rotamer_id} = clone \%rotamer_site;
+                    $rotamer_atom_site->{$rotamer_id} = \%rotamer_site;
                 }
 
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
@@ -328,7 +328,7 @@ sub predict
                                               \%neighbour_angles );
 
                         $rotamer_atom_site->{$neighbour_rotamer_id} =
-                            clone \%neighbour_rotamer_site;
+                            \%neighbour_rotamer_site;
                     }
 
                     # Calculate pairwise energy.
