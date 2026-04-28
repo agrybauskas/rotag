@@ -260,6 +260,7 @@ sub predict
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
                scalar( keys %{ $rotamer_pairs->{$b} } ) }
+        grep { exists $rotamer_pairs->{$_} }
         keys %{ $residue_pairs };
 
     while( @sorted_unique_residue_keys ) {
@@ -271,6 +272,7 @@ sub predict
             map { $_ }
             sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
                    scalar( keys %{ $rotamer_pairs->{$b} } ) }
+            grep { exists $rotamer_pairs->{$_} }
             keys %{ $residue_pairs->{$unique_residue_key} };
 
         for my $neighbour_unique_residue_key ( @neighbour_unique_residue_keys ){
