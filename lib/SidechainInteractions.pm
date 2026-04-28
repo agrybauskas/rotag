@@ -292,7 +292,7 @@ sub predict
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
-                if( ! exists $rotamer_atom_site->{$rotamer_id} ) {
+                if( ! exists $rotamer_atom_site->{$rotamer_id} && ! $dry_run ) {
                     my %angles =
                         map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
                               $rotamer_angles->{$rotamer_id}{$_}{'value'} }
