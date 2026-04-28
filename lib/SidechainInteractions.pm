@@ -54,6 +54,7 @@ sub new
 
     my $self = { 'parameters' => $parameters,
                  'ref_atom_site' => $atom_site,
+                 'related_residues' => undef,
                  'residue_pairs' => undef,
                  'residue_atom_site' => undef,
                  'rotamer_pairs' => undef,
@@ -104,6 +105,14 @@ sub new
                 assign_hetatoms( $parameters, $residue_site, $struct_conn,
                                  { 'ref_atom_site' => $atom_site,
                                    'keep_original' => 0 } );
+
+            my $related_residue_keys =
+                struct_conn_residue_keys( $parameters,
+                                          $residue_site,
+                                          $struct_conn );
+
+            $self->{'related_residues'}{$unique_residue_key} =
+                $related_residue_keys;
 
             rotatable_bonds( $parameters, $residue_site,
                              { 'include_hetatoms' =>
@@ -156,6 +165,14 @@ sub new
                                          $struct_conn,
                                          { 'ref_atom_site' => $atom_site,
                                            'keep_original' => 0 } );
+
+                    my $related_neighbour_residue_keys =
+                        struct_conn_residue_keys( $parameters,
+                                                  $neighbour_residue_site,
+                                                  $struct_conn );
+
+                    $self->{'related_residues'}{$neighbour_unique_residue_key} =
+                        $related_neighbour_residue_keys;
 
                     rotatable_bonds( $parameters, $neighbour_residue_site,
                                      { 'include_hetatoms' =>
@@ -213,13 +230,15 @@ sub predict
 {
     my ( $self, $options ) = @_;
     my ( $parameters, $residue_pairs, $rotamer_pairs, $rotamer_angles,
-         $residue_atom_site, $rotamer_atom_site, $ref_atom_site ) =
+         $residue_atom_site, $rotamer_atom_site, $related_residues,
+         $ref_atom_site ) =
         ( $self->{'parameters'},
           $self->{'residue_pairs'},
           $self->{'rotamer_pairs'},
           $self->{'rotamer_angles'},
           $self->{'residue_atom_site'},
           $self->{'rotamer_atom_site'},
+          $self->{'related_residues'},
           $self->{'ref_atom_site'} );
 
     my ( $non_bonded_potential, $bonded_potential, $program_called_by,
