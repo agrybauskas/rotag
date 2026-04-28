@@ -264,7 +264,9 @@ sub predict
 
     while( @sorted_unique_residue_keys ) {
         my $unique_residue_key = shift @sorted_unique_residue_keys;
-        my @rotamer_ids = keys %{ $rotamer_pairs->{$unique_residue_key} };
+        my @rotamer_ids =
+            sort { $a <=> $b }
+            keys %{ $rotamer_pairs->{$unique_residue_key} };
         my @neighbour_unique_residue_keys =
             map { $_ }
             sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
@@ -284,6 +286,9 @@ sub predict
 
             my %pairwise_rotamer_count = ();
             my @neighbour_rotamer_ids =
+                map { $_ }
+                sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
+                       scalar( keys %{ $rotamer_pairs->{$b} } ) }
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
