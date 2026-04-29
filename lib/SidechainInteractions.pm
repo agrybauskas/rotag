@@ -261,7 +261,8 @@ sub predict
     my @sorted_unique_residue_keys =
         map { $_ }
         sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
-               scalar( keys %{ $rotamer_pairs->{$b} } ) }
+               scalar( keys %{ $rotamer_pairs->{$b} } ) ||
+               $a cmp $b }
         grep { exists $rotamer_pairs->{$_} }
         keys %{ $residue_pairs };
 
