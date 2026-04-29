@@ -132,6 +132,7 @@ sub new
                 clone $residue_site;
 
             my @rotamer_ids =
+                sort { $a <=> $b }
                 keys %{ $residue_to_rotamers{$unique_residue_key} };
 
             for my $neighbour_atom_id (@{$neighbouring_cells_cas->{$grid_id}}){
