@@ -274,7 +274,8 @@ sub predict
         my @neighbour_unique_residue_keys =
             map { $_ }
             sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
-                   scalar( keys %{ $rotamer_pairs->{$b} } ) }
+                   scalar( keys %{ $rotamer_pairs->{$b} } ) ||
+                   $a cmp $b }
             grep { exists $rotamer_pairs->{$_} }
             keys %{ $residue_pairs->{$unique_residue_key} };
 
@@ -293,7 +294,8 @@ sub predict
             my @neighbour_rotamer_ids =
                 map { $_ }
                 sort { scalar( keys %{ $rotamer_pairs->{$a} } ) <=>
-                       scalar( keys %{ $rotamer_pairs->{$b} } ) }
+                       scalar( keys %{ $rotamer_pairs->{$b} } ) ||
+                       $a cmp $b }
                 keys %{ $rotamer_pairs->{$neighbour_unique_residue_key} };
 
             for my $rotamer_id ( @rotamer_ids ) {
