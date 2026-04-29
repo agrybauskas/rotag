@@ -85,6 +85,7 @@ sub new
         filter_new( $atom_site,
                     { 'include' =>
                       { 'label_atom_id' => [ 'CA' ] } } );
+
     my ( $grid_box_cas, $grid_ca_atom_pos ) =
         grid_box( $parameters, $atom_site_cas, $edge_length_interaction,
                   extract( $atom_site_cas,
@@ -92,7 +93,7 @@ sub new
     my $neighbouring_cells_cas =
         identify_neighbour_cells( $grid_box_cas, $grid_ca_atom_pos );
 
-    for my $grid_id ( keys %{ $grid_ca_atom_pos } ) {
+    for my $grid_id ( sort { $a cmp $b } keys %{ $grid_ca_atom_pos } ) {
         for my $atom_id ( @{ $grid_ca_atom_pos->{$grid_id} } ) {
             my $unique_residue_key =
                 unique_residue_key( $atom_site->{$atom_id} );
