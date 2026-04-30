@@ -322,7 +322,13 @@ sub predict
                     my @related_residue_keys = ( $unique_residue_key );
                     foreach( sort keys %{ $related_residues->{$unique_residue_key} } ) {
                         next if $_ eq $unique_residue_key;
+
                         push @related_residue_keys, $_;
+
+                        # HACK: should be a function that checks it more
+                        # rigorously.
+                        my $current_bond_parameters =
+                            $rotamer_bond_paramters->{$_};
                     }
 
                     foreach( @related_residue_keys ) {
