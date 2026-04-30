@@ -303,6 +303,11 @@ sub predict
 
             for my $rotamer_id ( @rotamer_ids ) {
                 if( ! exists $rotamer_atom_site->{$rotamer_id} && ! $dry_run ) {
+                    my %rotamer_site =
+                        %{ clone( $residue_atom_site->{$unique_residue_key} ) };
+                    my $rotamer_bond_paramters =
+                        collect_bond_parameters( \%rotamer_site );
+
                     my %angles = ();
                     for my $angle_id ( keys %{ $rotamer_angles->{$rotamer_id} } ) {
                         my ( $type, $value, $units ) =
@@ -313,12 +318,6 @@ sub predict
                         }
                         $angles{$type} = $value;
                     }
-
-                    my %rotamer_site =
-                        %{ clone( $residue_atom_site->{$unique_residue_key} ) };
-
-                    my $rotamer_bond_paramters =
-                        collect_bond_parameters( \%rotamer_site );
 
                     my @related_residue_keys = ( $unique_residue_key );
                     foreach( sort keys %{ $related_residues->{$unique_residue_key} } ) {
@@ -337,6 +336,11 @@ sub predict
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                     if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} &&
                         ! $dry_run ) {
+                        my %neighbour_rotamer_site =
+                            %{ clone $residue_atom_site->{$neighbour_unique_residue_key} };
+                        my $neighbour_bond_paramters =
+                            collect_bond_parameters( \%neighbour_rotamer_site );
+
                         my %neighbour_angles = ();
                         for my $angle_id ( keys %{ $rotamer_angles->{$rotamer_id} } ) {
                             my ( $type, $value, $units ) =
@@ -347,12 +351,6 @@ sub predict
                             }
                             $neighbour_angles{$type} = $value;
                         }
-
-                        my %neighbour_rotamer_site =
-                            %{ clone $residue_atom_site->{$neighbour_unique_residue_key} };
-
-                        my $neighbour_bond_paramters =
-                            collect_bond_parameters( \%neighbour_rotamer_site );
 
                         my @related_neighbour_residue_keys =
                             ( $neighbour_unique_residue_key );
