@@ -1717,18 +1717,24 @@ sub pairwise_rotamer_energy
     my @rotamer_atom_ids =
         sort keys %{ filter_new( $rotamer_site,
                                  { 'exclude' =>
-                                       { 'label_atom_id' =>
-                                             $interaction_atom_names } } ) };
+                                   { 'label_atom_id' =>
+                                         $interaction_atom_names } } ) };
+    # TODO: because 'HETATM' are excluded from interacting atom group, it has
+    # to be checked if pairwise interactions are not calculated twice.
     my @interaction_atom_ids =
         sort keys %{ filter_new( $interaction_site,
                                  { 'exclude' =>
-                                       { 'label_atom_id' =>
-                                             $interaction_atom_names } } ) };
+                                   { 'group_PDB' => [ 'HETATM' ],
+                                     'label_atom_id' =>
+                                         $interaction_atom_names } } ) };
+    my %interaction_atom_ids = map { $_ => 1 } @interaction_atom_ids;
 
-    # HACK: make sure that $interaction_site atom ids are updated by
-    # %rotamer_site.
-    my %rotamer_interaction_site =
-        ( %{ $interaction_site }, %{ $rotamer_site } );
+    my %rotamer_interaction_site = (
+        %{ $rotamer_site },
+        ( map { ( $_ => $interaction_site->{$_} ) }
+          grep { exists $interaction_atom_ids{$_} }
+          keys %{ $interaction_site } )
+    );
 
     my $rotamer_energy_sum = 0;
     for my $rotamer_atom_id ( @rotamer_atom_ids ) {
