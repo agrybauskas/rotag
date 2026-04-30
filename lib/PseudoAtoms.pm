@@ -1466,6 +1466,12 @@ sub replace_with_rotamer
     my ( $parameters, $atom_site, $residue_unique_key,
          $bond_parameter_values ) = @_;
 
+    # use Data::Dumper;
+    # $Data::Dumper::Sortkeys = 1;
+    # print STDERR Dumper "Replacing: ";
+    # print STDERR Dumper $residue_unique_key;
+    # print STDERR Dumper $bond_parameter_values;
+
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
     my $residue_site =
         generate_rotamer( { 'parameters' => $parameters,

@@ -313,10 +313,16 @@ sub predict
                         push @related_residue_keys, $_;
                     }
 
+                    # use Data::Dumper;
+                    # $Data::Dumper::Sortkeys = 1;
+                    # print STDERR Dumper "Rotamer: ";
+                    # print STDERR Dumper \%angles;
+                    # print STDERR Dumper $rotamer_site{302}{'Cartn_x'};
                     foreach( @related_residue_keys ) {
                         replace_with_rotamer( $parameters, \%rotamer_site, $_,
                                               \%angles );
                     }
+                    # print STDERR Dumper $rotamer_site{302}{'Cartn_x'};
 
                     $rotamer_atom_site->{$rotamer_id} = \%rotamer_site;
                 }
@@ -338,12 +344,18 @@ sub predict
                             push @related_neighbour_residue_keys, $_;
                         }
 
+                        # use Data::Dumper;
+                        # $Data::Dumper::Sortkeys = 1;
+                        # print STDERR Dumper "Neighbour: ";
+                        # print STDERR Dumper \%neighbour_angles;
+                        # print STDERR Dumper $neighbour_rotamer_site{302}{'Cartn_x'};
                         foreach( @related_neighbour_residue_keys ) {
                             replace_with_rotamer( $parameters,
                                                   \%neighbour_rotamer_site,
                                                   $_,
                                                   \%neighbour_angles );
                         }
+                        # print STDERR Dumper $neighbour_rotamer_site{302}{'Cartn_x'};
 
                         $rotamer_atom_site->{$neighbour_rotamer_id} =
                             \%neighbour_rotamer_site;
