@@ -326,6 +326,7 @@ sub predict
                     }
 
                     foreach( @related_residue_keys ) {
+                        # Renames angles if there are alternative names.
                         replace_with_rotamer( $parameters, \%rotamer_site, $_,
                                               \%angles );
                     }
@@ -360,6 +361,7 @@ sub predict
                         }
 
                         foreach( @related_neighbour_residue_keys ) {
+                            # Renames angles if there are alternative names.
                             replace_with_rotamer( $parameters,
                                                   \%neighbour_rotamer_site,
                                                   $_,
