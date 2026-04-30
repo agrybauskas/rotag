@@ -243,6 +243,8 @@ sub predict
           $self->{'related_residues'},
           $self->{'ref_atom_site'} );
 
+    my $pi = $parameters->{'_[local]_constants'}{'pi'};
+
     my ( $non_bonded_potential, $bonded_potential, $program_called_by,
          $dry_run, $verbose ) =
         ( $options->{'non_bonded_potential'},
@@ -300,10 +302,17 @@ sub predict
 
             for my $rotamer_id ( @rotamer_ids ) {
                 if( ! exists $rotamer_atom_site->{$rotamer_id} && ! $dry_run ) {
-                    my %angles =
-                        map { $rotamer_angles->{$rotamer_id}{$_}{'type'} =>
-                              $rotamer_angles->{$rotamer_id}{$_}{'value'} }
-                        keys %{ $rotamer_angles->{$rotamer_id} };
+                    my %angles = ();
+                    for my $angle_id ( keys %{ $rotamer_angles->{$rotamer_id} } ) {
+                        my ( $type, $value, $units ) =
+                            map { $rotamer_angles->{$rotamer_id}{$angle_id}{$_} }
+                            ( 'type', 'value', 'units' );
+                        if( $units eq 'degrees' ) {
+                            $value = $pi * $value / 180.0
+                        }
+                        $angles{$type} = $value;
+                    }
+
                     my %rotamer_site =
                         %{ clone( $residue_atom_site->{$unique_residue_key} ) };
 
@@ -330,10 +339,17 @@ sub predict
                 for my $neighbour_rotamer_id ( @neighbour_rotamer_ids ) {
                     if( ! exists $rotamer_atom_site->{$neighbour_rotamer_id} &&
                         ! $dry_run ) {
-                        my %neighbour_angles =
-                            map { $rotamer_angles->{$neighbour_rotamer_id}{$_}{'type'} =>
-                                  $rotamer_angles->{$neighbour_rotamer_id}{$_}{'value'} }
-                            keys %{ $rotamer_angles->{$neighbour_rotamer_id} };
+                        my %neighbour_angles = ();
+                        for my $angle_id ( keys %{ $rotamer_angles->{$rotamer_id} } ) {
+                            my ( $type, $value, $units ) =
+                                map { $rotamer_angles->{$rotamer_id}{$angle_id}{$_} }
+                                ( 'type', 'value', 'units' );
+                            if( $units eq 'degrees' ) {
+                                $value = $pi * $value / 180.0
+                            }
+                            $neighbour_angles{$type} = $value;
+                        }
+
                         my %neighbour_rotamer_site =
                             %{ clone $residue_atom_site->{$neighbour_unique_residue_key} };
 
