@@ -305,7 +305,7 @@ sub predict
                               $rotamer_angles->{$rotamer_id}{$_}{'value'} }
                         keys %{ $rotamer_angles->{$rotamer_id} };
                     my %rotamer_site =
-                        %{ $residue_atom_site->{$unique_residue_key} };
+                        %{ clone( $residue_atom_site->{$unique_residue_key} ) };
 
                     my @related_residue_keys = ( $unique_residue_key );
                     foreach( sort keys %{ $related_residues->{$unique_residue_key} } ) {
@@ -329,7 +329,7 @@ sub predict
                                   $rotamer_angles->{$neighbour_rotamer_id}{$_}{'value'} }
                             keys %{ $rotamer_angles->{$neighbour_rotamer_id} };
                         my %neighbour_rotamer_site =
-                            %{ $residue_atom_site->{$neighbour_unique_residue_key} };
+                            %{ clone $residue_atom_site->{$neighbour_unique_residue_key} };
 
                         my @related_neighbour_residue_keys =
                             ( $neighbour_unique_residue_key );
