@@ -292,12 +292,6 @@ sub generate_rotamer
                 }
             }
 
-            # use Data::Dumper;
-            # $Data::Dumper::Sortkeys = 1;
-            # print STDERR Dumper "generate_rotamer(): ";
-            # print STDERR Dumper $residue_unique_key;
-            # print STDERR Dumper \%bond_values;
-
             %rotamer_atom_site =
                 ( %rotamer_atom_site,
                   %{ generate_pseudo( {
@@ -1471,12 +1465,6 @@ sub replace_with_rotamer
 {
     my ( $parameters, $atom_site, $residue_unique_key,
          $bond_parameter_values ) = @_;
-
-    # use Data::Dumper;
-    # $Data::Dumper::Sortkeys = 1;
-    # print STDERR Dumper "replace_with_rotamer(): ";
-    # print STDERR Dumper $residue_unique_key;
-    # print STDERR Dumper $bond_parameter_values;
 
     my ( undef, undef, undef, $alt_group_id ) = split /,/, $residue_unique_key;
     my $residue_site =
