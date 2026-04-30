@@ -8,6 +8,7 @@ use Exporter qw( import );
 use Clone qw( clone );
 
 use BondParameters qw( bendable_angles
+                       collect_bond_parameters
                        stretchable_bonds
                        rotatable_bonds );
 use BondProperties qw( hybridization );
@@ -316,6 +317,9 @@ sub predict
                     my %rotamer_site =
                         %{ clone( $residue_atom_site->{$unique_residue_key} ) };
 
+                    my $rotamer_bond_paramters =
+                        collect_bond_parameters( \%rotamer_site );
+
                     my @related_residue_keys = ( $unique_residue_key );
                     foreach( sort keys %{ $related_residues->{$unique_residue_key} } ) {
                         next if $_ eq $unique_residue_key;
@@ -346,6 +350,9 @@ sub predict
 
                         my %neighbour_rotamer_site =
                             %{ clone $residue_atom_site->{$neighbour_unique_residue_key} };
+
+                        my $neighbour_bond_paramters =
+                            collect_bond_parameters( \%neighbour_rotamer_site );
 
                         my @related_neighbour_residue_keys =
                             ( $neighbour_unique_residue_key );
