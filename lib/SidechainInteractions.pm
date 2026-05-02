@@ -334,6 +334,17 @@ sub predict
                         for my $parameter_name (
                             sort keys %{ $current_bond_parameters } ) {
                             next if exists $angles{$parameter_name};
+
+                            my $alt_parameter_name =
+                                $current_bond_parameters->{$parameter_name}
+                                                          {'alt_name'};
+
+                            next if ! exists $angles{$alt_parameter_name};
+
+                            $angles{$parameter_name} =
+                                clone $angles{$alt_parameter_name};
+
+                            delete $angles{$alt_parameter_name};
                         }
                     }
 
