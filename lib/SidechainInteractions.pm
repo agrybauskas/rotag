@@ -320,19 +320,19 @@ sub predict
                     }
 
                     my @related_residue_keys = ( $unique_residue_key );
-                    foreach( sort keys %{ $related_residues->{$unique_residue_key} } ) {
-                        next if $_ eq $unique_residue_key;
+                    for my $current_residue_key (
+                        sort keys %{ $related_residues->{$unique_residue_key} } ) {
+                        next if $current_residue_key eq $unique_residue_key;
 
-                        push @related_residue_keys, $_;
+                        push @related_residue_keys, $current_residue_key;
 
                         # HACK: should be a function that checks it more
                         # rigorously.
                         my $current_bond_parameters =
-                            $rotamer_bond_paramters->{$_};
+                            $rotamer_bond_paramters->{$current_residue_key};
                     }
 
                     foreach( @related_residue_keys ) {
-                        # Renames angles if there are alternative names.
                         replace_with_rotamer( $parameters, \%rotamer_site, $_,
                                               \%angles );
                     }
@@ -367,7 +367,6 @@ sub predict
                         }
 
                         foreach( @related_neighbour_residue_keys ) {
-                            # Renames angles if there are alternative names.
                             replace_with_rotamer( $parameters,
                                                   \%neighbour_rotamer_site,
                                                   $_,
