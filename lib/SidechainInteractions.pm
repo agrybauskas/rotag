@@ -330,6 +330,11 @@ sub predict
                         # rigorously.
                         my $current_bond_parameters =
                             $rotamer_bond_paramters->{$current_residue_key};
+
+                        for my $parameter_name (
+                            sort keys %{ $current_bond_parameters } ) {
+                            next if exists $angles{$parameter_name};
+                        }
                     }
 
                     foreach( @related_residue_keys ) {
