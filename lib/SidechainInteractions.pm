@@ -377,9 +377,33 @@ sub predict
 
                         my @related_neighbour_residue_keys =
                             ( $neighbour_unique_residue_key );
-                        foreach( sort keys %{ $related_residues->{$neighbour_unique_residue_key} } ) {
-                            next if $_ eq $neighbour_unique_residue_key;
-                            push @related_neighbour_residue_keys, $_;
+                        for my $current_residue_key (
+                            sort keys %{ $related_residues->{$neighbour_unique_residue_key} } ) {
+                            next if $current_residue_key eq $neighbour_unique_residue_key;
+
+                            push @related_neighbour_residue_keys,
+                                $current_residue_key;
+
+                            # HACK: should be a function that checks it more
+                            # rigorously.
+                            my $current_bond_parameters =
+                                $neighbour_bond_paramters->{$current_residue_key};
+
+                            for my $parameter_name (
+                                sort keys %{ $current_bond_parameters } ) {
+                                next if exists $neighbour_angles{$parameter_name};
+
+                                my $alt_parameter_name =
+                                    $current_bond_parameters->{$parameter_name}
+                                                              {'alt_name'};
+
+                                next if ! exists $neighbour_angles{$alt_parameter_name};
+
+                                $neighbour_angles{$parameter_name} =
+                                    clone $neighbour_angles{$alt_parameter_name};
+
+                                delete $neighbour_angles{$alt_parameter_name};
+                            }
                         }
 
                         foreach( @related_neighbour_residue_keys ) {
