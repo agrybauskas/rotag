@@ -1,0 +1,65 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 160 N N . ASP A 1 28 -34.072 -9.821 -1.574 A 21 . 1 T 1
+ATOM 161 C CA . ASP A 1 28 -35.335 -10.141 -2.222 A 21 . 1 T 1
+ATOM 162 C C . ASP A 1 28 -35.161 -11.489 -2.909 A 21 . 1 T 1
+ATOM 163 O O . ASP A 1 28 -34.287 -11.622 -3.763 A 21 . 1 T 1
+ATOM 164 C CB . ASP A 1 28 -35.699 -9.042 -3.228 A 21 . 1 T 1
+ATOM 165 C CG . ASP A 1 28 -37.032 -9.268 -3.874 A 21 . 1 T 1
+ATOM 166 O OD1 . ASP A 1 28 -37.916 -8.405 -3.704 A 21 . 1 T 1
+ATOM 167 O OD2 . ASP A 1 28 -37.227 -10.302 -4.551 A 21 . 1 T 1
+ATOM 168 H H . ASP A 1 28 -33.539 -9.354 -2.061 A 21 . 1 T 1
+ATOM 169 H HA . ASP A 1 28 -36.041 -10.212 -1.561 A 21 . 1 T 1
+ATOM 170 H HB2 . ASP A 1 28 -35.730 -8.189 -2.766 A 21 . 1 T 1
+ATOM 171 H HB3 . ASP A 1 28 -35.027 -9.018 -3.927 A 21 . 1 T 1
+ATOM 193 N N . ASP A 1 30 -36.959 -13.264 -4.992 A 23 . 1 T 1
+ATOM 194 C CA . ASP A 1 30 -37.258 -13.350 -6.411 A 23 . 1 T 1
+ATOM 195 C C . ASP A 1 30 -36.213 -12.673 -7.277 A 23 . 1 T 1
+ATOM 196 O O . ASP A 1 30 -35.837 -13.196 -8.311 A 23 . 1 T 1
+ATOM 197 C CB . ASP A 1 30 -38.655 -12.824 -6.683 A 23 . 1 T 1
+ATOM 198 C CG . ASP A 1 30 -39.710 -13.676 -6.025 A 23 . 1 T 1
+ATOM 199 O OD1 . ASP A 1 30 -39.659 -14.906 -6.201 A 23 . 1 T 1
+ATOM 200 O OD2 . ASP A 1 30 -40.561 -13.126 -5.309 A 23 . 1 T 1
+ATOM 201 H H . ASP A 1 30 -37.494 -12.771 -4.540 A 23 . 1 T 1
+ATOM 202 H HA . ASP A 1 30 -37.260 -14.295 -6.660 A 23 . 1 T 1
+ATOM 203 H HB2 . ASP A 1 30 -38.730 -11.924 -6.333 A 23 . 1 T 1
+ATOM 204 H HB3 . ASP A 1 30 -38.816 -12.826 -7.637 A 23 . 1 T 1
+HETATM 301 MG MG . MG B 1 . 0.000 0.000 0.000 A 31 . 1 T 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc . B . 31 A MG 28 A 21 . A OD1
+metalc2 metalc . B . 31 A MG 30 A 23 . A OD1
+#
