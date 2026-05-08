@@ -365,9 +365,9 @@ sub predict
                             collect_bond_parameters( \%neighbour_rotamer_site );
 
                         my %neighbour_angles = ();
-                        for my $angle_id ( keys %{ $rotamer_angles->{$rotamer_id} } ) {
+                        for my $angle_id ( keys %{ $rotamer_angles->{$neighbour_rotamer_id} } ) {
                             my ( $type, $value, $units ) =
-                                map { $rotamer_angles->{$rotamer_id}{$angle_id}{$_} }
+                                map { $rotamer_angles->{$neighbour_rotamer_id}{$angle_id}{$_} }
                                 ( 'type', 'value', 'units' );
                             if( $units eq 'degrees' ) {
                                 $value = $pi * $value / 180.0
@@ -416,9 +416,6 @@ sub predict
                         $rotamer_atom_site->{$neighbour_rotamer_id} =
                             \%neighbour_rotamer_site;
                     }
-
-                    # use Data::Dumper;
-                    # print STDERR Dumper "${rotamer_id} <-> ${neighbour_rotamer_id}";
 
                     # Calculate pairwise energy.
                     my $pairwise_energy_sum =
