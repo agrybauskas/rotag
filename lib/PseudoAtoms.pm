@@ -1736,7 +1736,6 @@ sub pairwise_rotamer_energy
           keys %{ $interaction_site } )
     );
 
-    # use Data::Dumper;
     my $rotamer_energy_sum = 0;
     for my $rotamer_atom_id ( @rotamer_atom_ids ) {
         for my $neighbour_atom_id ( @interaction_atom_ids ) {
@@ -1747,20 +1746,6 @@ sub pairwise_rotamer_energy
                 ( ! is_second_neighbour( \%rotamer_interaction_site,
                                          $rotamer_atom_id,
                                          $neighbour_atom_id ) ) ){
-                # print STDERR Dumper "Interaction: " .
-                #     $rotamer_interaction_site{$rotamer_atom_id}{'label_atom_id'} . " <-> " .
-                #     $rotamer_interaction_site{$neighbour_atom_id}{'label_atom_id'};
-                # print STDERR Dumper "Atom1: " .
-                #     join( ', ', map { $rotamer_interaction_site{$rotamer_atom_id}{$_} } ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) );
-                # print STDERR Dumper "Atom2: " .
-                #     join( ', ', map { $rotamer_interaction_site{$neighbour_atom_id}{$_} } ( 'Cartn_x', 'Cartn_y', 'Cartn_z' ) );
-                # print STDERR Dumper "Local energy: " .
-                #     $non_bonded_potential->(
-                #         $parameters,
-                #         $rotamer_interaction_site{$rotamer_atom_id},
-                #         $rotamer_interaction_site{$neighbour_atom_id},
-                #         { 'atom_site' => \%rotamer_interaction_site }
-                #     );
                 $rotamer_energy_sum +=
                     $non_bonded_potential->(
                         $parameters,
