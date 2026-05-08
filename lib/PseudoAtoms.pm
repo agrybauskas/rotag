@@ -1737,6 +1737,7 @@ sub pairwise_rotamer_energy
     );
 
     my $rotamer_energy_sum = 0;
+    # use Data::Dumper;
     for my $rotamer_atom_id ( @rotamer_atom_ids ) {
         for my $neighbour_atom_id ( @interaction_atom_ids ) {
             if( ( $rotamer_atom_id ne $neighbour_atom_id ) &&
@@ -1746,6 +1747,26 @@ sub pairwise_rotamer_energy
                 ( ! is_second_neighbour( \%rotamer_interaction_site,
                                          $rotamer_atom_id,
                                          $neighbour_atom_id ) ) ){
+                # print STDERR Dumper "Atom1: " .
+                #     "$rotamer_interaction_site{$rotamer_atom_id}{'auth_seq_id'}: " .
+                #     "$rotamer_interaction_site{$rotamer_atom_id}{'label_atom_id'}: " .
+                #     "$rotamer_interaction_site{$rotamer_atom_id}{'Cartn_x'}, " .
+                #     "$rotamer_interaction_site{$rotamer_atom_id}{'Cartn_y'}, " .
+                #     "$rotamer_interaction_site{$rotamer_atom_id}{'Cartn_z'}";
+                # print STDERR Dumper "Atom2: " .
+                #     "$rotamer_interaction_site{$neighbour_atom_id}{'auth_seq_id'}: " .
+                #     "$rotamer_interaction_site{$neighbour_atom_id}{'label_atom_id'}: " .
+                #     "$rotamer_interaction_site{$neighbour_atom_id}{'Cartn_x'}, " .
+                #     "$rotamer_interaction_site{$neighbour_atom_id}{'Cartn_y'}, " .
+                #     "$rotamer_interaction_site{$neighbour_atom_id}{'Cartn_z'}";
+                # print STDERR Dumper "Local energy: " .
+                #     $non_bonded_potential->(
+                #         $parameters,
+                #         $rotamer_interaction_site{$rotamer_atom_id},
+                #         $rotamer_interaction_site{$neighbour_atom_id},
+                #         { 'atom_site' => \%rotamer_interaction_site }
+                #     );
+                # print STDERR Dumper "---";
                 $rotamer_energy_sum +=
                     $non_bonded_potential->(
                         $parameters,
@@ -1756,6 +1777,8 @@ sub pairwise_rotamer_energy
             }
         }
     }
+    # print STDERR Dumper "Pairwise energy: ${rotamer_energy_sum}";
+    # print STDERR Dumper "===";
 
     return $rotamer_energy_sum;
 }

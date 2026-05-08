@@ -417,6 +417,9 @@ sub predict
                             \%neighbour_rotamer_site;
                     }
 
+                    # use Data::Dumper;
+                    # print STDERR Dumper "${rotamer_id} <-> ${neighbour_rotamer_id}";
+
                     # Calculate pairwise energy.
                     my $pairwise_energy_sum =
                         $dry_run ?
