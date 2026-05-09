@@ -126,8 +126,7 @@ sub new
                              { 'include_hetatoms' =>
                                    ( @{ $assigned_hetatom_ids } ? 1 : 0 ) } );
 
-            rotation_translation( $parameters, $residue_site,
-                                  { 'ref_atom_site' => $atom_site } );
+            rotation_translation( $parameters, $residue_site );
 
             $self->{'residue_atom_site'}{$unique_residue_key} =
                 clone $residue_site;
