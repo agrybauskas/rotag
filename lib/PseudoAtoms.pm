@@ -1077,33 +1077,36 @@ sub calc_favourable_angles
                     my $limit = $top_rank;
                     $limit //= scalar @{ $next_allowed_bond_parameters };
 
-                    if( $limit >= scalar @{ $next_allowed_bond_parameters } ) {
+                    if( scalar @{ $next_allowed_bond_parameters } < $limit ) {
                         $next_allowed_bond_parameters =
                             $next_allowed_bond_parameters;
                         $next_allowed_energies =
                             $next_allowed_energies;
                     } else {
-                        # my $min_max_energy_cutoff =
-                        #     $min_energy_value +
-                        #     ( $max_energy_value - $min_energy_value ) *
-                        #     $min_max_ratio;
+                        # Sorts by energy value.
+                        my @updated_next_allowed_bond_parameters = ();
+                        my @updated_next_allowed_energies = ();
 
-                        # my @updated_next_allowed_bond_parameters = ();
-                        # my @updated_next_allowed_energies = ();
-                        # for my $i ( 0..$#{ $next_allowed_bond_parameters } ) {
-                        #     next if $next_allowed_energies->[$i][0] >=
-                        #         $min_max_energy_cutoff;
+                        # Performs sorting by energies.
+                        my %track_idxs = ();
+                        for my $i ( 0..$#{ $next_allowed_bond_parameters } ) {
+                            $track_idxs{$i} = $next_allowed_energies->[$i];
+                        }
+                        my @sorted_idxs =
+                            sort { $next_allowed_energies->[$b][0] <=>
+                                   $next_allowed_energies->[$a][0] }
+                                 ( 0..$#{ $next_allowed_energies } );
+                        @updated_next_allowed_bond_parameters =
+                            map { $next_allowed_bond_parameters->[$_] }
+                            @sorted_idxs;
+                        @updated_next_allowed_energies =
+                            map { $next_allowed_energies->[$_] }
+                            @sorted_idxs;
 
-                        #     push @updated_next_allowed_bond_parameters,
-                        #         $next_allowed_bond_parameters->[$i];
-                        #     push @updated_next_allowed_energies,
-                        #         $next_allowed_energies->[$i];
-                        # }
-
-                        # $next_allowed_bond_parameters =
-                        #     \@updated_next_allowed_bond_parameters;
-                        # $next_allowed_energies =
-                        #     \@updated_next_allowed_energies;
+                        $next_allowed_bond_parameters =
+                            \@updated_next_allowed_bond_parameters;
+                        $next_allowed_energies =
+                            \@updated_next_allowed_energies;
                     }
                 } else {
                     my $min_max_energy_cutoff =
