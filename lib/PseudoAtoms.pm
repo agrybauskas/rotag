@@ -1125,6 +1125,11 @@ sub calc_favourable_angles
 
                         $count++;
                     }
+
+                    $next_allowed_bond_parameters =
+                        \@updated_next_allowed_bond_parameters;
+                    $next_allowed_energies =
+                        \@updated_next_allowed_energies;
                 }
             }
 
