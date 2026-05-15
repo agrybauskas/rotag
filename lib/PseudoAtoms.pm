@@ -1104,23 +1104,27 @@ sub calc_favourable_angles
 
                     my %track_idxs = ();
                     for my $i ( 0..$#{ $next_allowed_bond_parameters } ) {
-                        $track_idxs{$i} = $next_allowed_energies->[$i];
+                        $track_idxs{$i} = {
+                            'index' => $i,
+                            'energy' => $next_allowed_energies->[$i][0]
+                        };
                     }
                     my @sorted_idxs =
-                        sort { $next_allowed_energies->[$b][0] <=>
-                               $next_allowed_energies->[$a][0] }
-                             ( 0..$#{ $next_allowed_energies } );
-                    @updated_next_allowed_bond_parameters =
-                        map { $next_allowed_bond_parameters->[$_] }
-                        @sorted_idxs;
-                    @updated_next_allowed_energies =
-                        map { $next_allowed_energies->[$_] }
-                        @sorted_idxs;
+                        ( sort { $track_idxs{$a}{'energy'} <=>
+                                 $track_idxs{$b}{'energy'} }
+                          keys %track_idxs );
 
-                    $next_allowed_bond_parameters =
-                        [ @updated_next_allowed_bond_parameters[0..$top_rank-1] ];
-                    $next_allowed_energies =
-                        [ @updated_next_allowed_energies[0..$top_rank-1] ];
+                    my $count = 0;
+                    for my $i ( @sorted_idxs ) {
+                        last if $count >= $top_rank;
+
+                        push @updated_next_allowed_bond_parameters,
+                            $next_allowed_bond_parameters->[$i];
+                        push @updated_next_allowed_energies,
+                            $next_allowed_energies->[$i];
+
+                        $count++;
+                    }
                 }
             }
 
