@@ -1104,9 +1104,9 @@ sub calc_favourable_angles
                             @sorted_idxs;
 
                         $next_allowed_bond_parameters =
-                            \@updated_next_allowed_bond_parameters;
+                            [ @updated_next_allowed_bond_parameters[0..$limit-1] ];
                         $next_allowed_energies =
-                            \@updated_next_allowed_energies;
+                            [ @updated_next_allowed_energies[0..$limit-1] ];
                     }
                 } else {
                     my $min_max_energy_cutoff =
