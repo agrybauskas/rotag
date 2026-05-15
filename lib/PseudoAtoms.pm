@@ -1083,8 +1083,27 @@ sub calc_favourable_angles
                         $next_allowed_energies =
                             $next_allowed_energies;
                     } else {
-                        my @updated_next_allowed_bond_parameters = ();
-                        my @updated_next_allowed_energies = ();
+                        # my $min_max_energy_cutoff =
+                        #     $min_energy_value +
+                        #     ( $max_energy_value - $min_energy_value ) *
+                        #     $min_max_ratio;
+
+                        # my @updated_next_allowed_bond_parameters = ();
+                        # my @updated_next_allowed_energies = ();
+                        # for my $i ( 0..$#{ $next_allowed_bond_parameters } ) {
+                        #     next if $next_allowed_energies->[$i][0] >=
+                        #         $min_max_energy_cutoff;
+
+                        #     push @updated_next_allowed_bond_parameters,
+                        #         $next_allowed_bond_parameters->[$i];
+                        #     push @updated_next_allowed_energies,
+                        #         $next_allowed_energies->[$i];
+                        # }
+
+                        # $next_allowed_bond_parameters =
+                        #     \@updated_next_allowed_bond_parameters;
+                        # $next_allowed_energies =
+                        #     \@updated_next_allowed_energies;
                     }
                 } else {
                     my $min_max_energy_cutoff =
