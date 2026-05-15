@@ -1059,6 +1059,8 @@ sub calc_favourable_angles
             #            [ $bond_combinations{$parameter_key_sorted},
             #              $energy_combinations{$parameter_key_sorted} ] ) };
 
+            # TODO: all the parameter threshold handling should be carefully
+            # re-checked.
             if( defined $min_max_ratio &&
                 @{ $next_allowed_bond_parameters } &&
                 ! exists $existing_bond_parameters->{$unique_residue_key}
@@ -1069,8 +1071,18 @@ sub calc_favourable_angles
                 my $min_energy_value = $energy_values_sorted[0][0];
                 my $max_energy_value = $energy_values_sorted[-1][0];
 
+                # TODO: refactoring is needed.
                 if( $min_max_ratio < 0 ) {
+                    my $updated_min_max_ratio = $min_max_ratio;
+                    my $limit = $top_rank;
+                    $limit //= scalar @{ $next_allowed_bond_parameters };
+                    my @updated_next_allowed_bond_parameters = ();
+                    my @updated_next_allowed_energies = ();
 
+                    $next_allowed_bond_parameters =
+                        \@updated_next_allowed_bond_parameters;
+                    $next_allowed_energies =
+                        \@updated_next_allowed_energies;
                 } else {
                     my $min_max_energy_cutoff =
                         $min_energy_value +
