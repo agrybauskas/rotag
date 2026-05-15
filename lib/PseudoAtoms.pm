@@ -1076,13 +1076,16 @@ sub calc_favourable_angles
                     my $updated_min_max_ratio = $min_max_ratio;
                     my $limit = $top_rank;
                     $limit //= scalar @{ $next_allowed_bond_parameters };
-                    my @updated_next_allowed_bond_parameters = ();
-                    my @updated_next_allowed_energies = ();
 
-                    $next_allowed_bond_parameters =
-                        \@updated_next_allowed_bond_parameters;
-                    $next_allowed_energies =
-                        \@updated_next_allowed_energies;
+                    if( $limit >= scalar @{ $next_allowed_bond_parameters } ) {
+                        $next_allowed_bond_parameters =
+                            $next_allowed_bond_parameters;
+                        $next_allowed_energies =
+                            $next_allowed_energies;
+                    } else {
+                        my @updated_next_allowed_bond_parameters = ();
+                        my @updated_next_allowed_energies = ();
+                    }
                 } else {
                     my $min_max_energy_cutoff =
                         $min_energy_value +
