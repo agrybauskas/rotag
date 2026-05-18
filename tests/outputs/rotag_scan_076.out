@@ -30,16 +30,16 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite 7.965631
-2 2 composite 7.618757
-3 3 composite 7.355259
-4 4 composite 7.147254
-5 5 composite 7.000018
-6 6 composite 6.917665
-7 7 composite 6.899176
-8 8 composite 6.942167
-9 9 composite 7.046452
-10 10 composite 7.215915
+1 1 composite 7.618757
+2 2 composite 7.355259
+3 3 composite 7.147254
+4 4 composite 7.000018
+5 5 composite 6.917665
+6 6 composite 6.899176
+7 7 composite 6.942167
+8 8 composite 7.046452
+9 9 composite 7.215915
+10 10 composite 7.459214
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -63,14 +63,14 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -180.000 degrees
-2 2 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -170.000 degrees
-3 3 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -160.000 degrees
-4 4 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -150.000 degrees
-5 5 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -140.000 degrees
-6 6 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -130.000 degrees
-7 7 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -120.000 degrees
-8 8 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -110.000 degrees
-9 9 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -100.000 degrees
-10 10 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -90.000 degrees
+1 1 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -170.000 degrees
+2 2 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -160.000 degrees
+3 3 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -150.000 degrees
+4 4 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -140.000 degrees
+5 5 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -130.000 degrees
+6 6 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -120.000 degrees
+7 7 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -110.000 degrees
+8 8 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -100.000 degrees
+9 9 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -90.000 degrees
+10 10 18 SER A 1 18 A . 147 148 151 152 . . . . 0.100000 chi1 -80.000 degrees
 #
