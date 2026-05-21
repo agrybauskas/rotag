@@ -791,7 +791,6 @@ for my $pdbx_file ( @ARGV ) {
                    'add_attributes' =>
                        { '_atom_site' =>
                              [ ( $add_B_iso ? ( 'B_iso_or_equiv' ) : () ),
-                               'pdbx_auth_alt_id',
                                '[local]_selection_state' ] } } );
     } elsif( $add_hydrogens ) {
         # Selects all atoms if no specific atoms are selected.
