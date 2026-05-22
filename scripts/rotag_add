@@ -290,8 +290,9 @@ for my $pdbx_file ( @ARGV ) {
                    exists $rotamer_angle->{$rotamer_ids[0]}{'auth_asym_id'} &&
                    exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
                    exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'} ) ) {
+            # TODO: 'atom_site' should be changed to 'loop_site' in the future.
+            # TODO: also check if 'pdbx_auth_alt_id' should not be added.
             $rotamer_angle_split_groups =
-                # TODO: 'atom_site' should be changed to 'loop_site' in the future.
                 split_by( { 'atom_site' => $rotamer_angle } );
         } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'phi_min'} &&
                  exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
