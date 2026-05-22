@@ -598,8 +598,7 @@ for my $pdbx_file ( @ARGV ) {
             if( $include_hetatoms && $residue_label_seq_id eq '.' ) {
                 $changed_residue_unique_key =
                     change_unique_residue_key( $changed_residue_unique_key,
-                                               { 'label_alt_id' => '.',
-                                                 'pdbx_auth_alt_id' => '?' } );
+                                               { 'label_alt_id' => '.' } );
             }
 
             my %related_residue_unique_keys = ();
@@ -614,8 +613,7 @@ for my $pdbx_file ( @ARGV ) {
                     if( $include_hetatoms && $related_label_seq_id eq '.' ) {
                         $changed_related_unique_residue_key =
                             change_unique_residue_key( $changed_related_unique_residue_key,
-                                                       { 'label_alt_id' => '.',
-                                                         'pdbx_auth_alt_id' => '?' } );
+                                                       { 'label_alt_id' => '.' } );
                     }
 
                     $related_residue_unique_keys{$changed_related_unique_residue_key} = 1;
@@ -632,8 +630,7 @@ for my $pdbx_file ( @ARGV ) {
                         if( $include_hetatoms && $reverse_label_seq_id eq '.' ) {
                             $changed_reverse_unique_residue_key =
                                 change_unique_residue_key( $changed_reverse_unique_residue_key,
-                                                           { 'label_alt_id' => '.',
-                                                             'pdbx_auth_alt_id' => '?' } );
+                                                           { 'label_alt_id' => '.' } );
                         }
 
                         $related_residue_unique_keys{$changed_reverse_unique_residue_key} = 1;
