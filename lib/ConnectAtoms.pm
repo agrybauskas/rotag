@@ -474,7 +474,7 @@ sub assign_hetatoms
 
                     $tracked_atom_ids{$connection_related_atom_id} = $last_atom_id;
 
-                    $atom_site->{$last_atom_id}{'label_alt_id'} =
+                    $atom_site->{$last_atom_id}{'pdbx_auth_alt_id'} =
                         $tracked_alt_ids->{$connection_unique_key};
                     $atom_site->{$last_atom_id}{'origin_atom_id'} =
                         $connection_related_atom_id;
