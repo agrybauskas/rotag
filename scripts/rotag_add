@@ -584,10 +584,10 @@ for my $pdbx_file ( @ARGV ) {
         for my $atom_id ( sort { $target_atom_site_only->{$a}{'id'} <=>
                                  $target_atom_site_only->{$b}{'id'} }
                           keys %{ $target_atom_site_only } ) {
+            my $group_PDB = $target_atom_site_only->{$atom_id}{'group_PDB'};
+
             my $residue_unique_key =
                 unique_residue_key( $selected_atom_site->{$atom_id} );
-            my ( $residue_label_seq_id ) =
-                split /,/, $residue_unique_key;
 
             my $bond_parameters = collect_bond_parameters(
                 { $atom_id => $selected_atom_site->{$atom_id} }
@@ -595,7 +595,7 @@ for my $pdbx_file ( @ARGV ) {
 
             # TODO: has to be refactored.
             my $changed_residue_unique_key = $residue_unique_key;
-            if( $include_hetatoms && $residue_label_seq_id eq '.' ) {
+            if( $include_hetatoms && $group_PDB eq 'HETATM' ) {
                 $changed_residue_unique_key =
                     change_unique_residue_key( $changed_residue_unique_key,
                                                { 'label_alt_id' => '.' } );
@@ -610,7 +610,7 @@ for my $pdbx_file ( @ARGV ) {
 
                     my $changed_related_unique_residue_key =
                         $related_unique_residue_key;
-                    if( $include_hetatoms && $related_label_seq_id eq '.' ) {
+                    if( $include_hetatoms && $group_PDB eq 'HETATM' ) {
                         $changed_related_unique_residue_key =
                             change_unique_residue_key( $changed_related_unique_residue_key,
                                                        { 'label_alt_id' => '.' } );
@@ -627,7 +627,7 @@ for my $pdbx_file ( @ARGV ) {
 
                         my $changed_reverse_unique_residue_key =
                             $reverse_unique_residue_key;
-                        if( $include_hetatoms && $reverse_label_seq_id eq '.' ) {
+                        if( $include_hetatoms && $group_PDB eq 'HETATM' ) {
                             $changed_reverse_unique_residue_key =
                                 change_unique_residue_key( $changed_reverse_unique_residue_key,
                                                            { 'label_alt_id' => '.' } );
