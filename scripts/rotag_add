@@ -551,12 +551,29 @@ for my $pdbx_file ( @ARGV ) {
                          @{ $rotamer_angle_split_groups->{$residue_angle_key}
                                                          {'atom_ids'} } ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
+                my $label_seq_id = $rotamer_angle->{$id}{'label_seq_id'};
                 my $angle_name = $rotamer_angle->{$id}{'type'};
                 my $origin_atom_ids_key =
                     join ',',
                     map { defined $_ ? $_ : '?' }
                     map { $rotamer_angle->{$id}{$_} }
                     ( 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id' );
+
+                # TODO: refactor or just move to separate module that deals with
+                # retracting proper bond parameters.
+                my $changed_residue_unique_key = $residue_unique_key;
+                if( $include_hetatoms && $label_seq_id eq '.' ) {
+                    # my ( $site_id ) =
+                    #     grep { $_ ne '.' }
+                    #     map { $rotamer_angle->{$id}{$_} }
+                    #     grep { exists $rotamer_angle->{$id}{$_} }
+                    #         ( 'site_1_id', 'site_2_id', 'site_3_id', 'site_4_id' );
+                    # $site_id //= '1';
+                    # $changed_residue_unique_key =
+                    #     change_unique_residue_key( $changed_residue_unique_key,
+                    #                                { 'pdbx_auth_alt_id' => $site_id } );
+                }
+
                 my $angle_value;
                 if( defined $rotamer_angle->{$id}{'units'} &&
                     $rotamer_angle->{$id}{'units'} eq 'degrees' ) {
@@ -565,9 +582,9 @@ for my $pdbx_file ( @ARGV ) {
                     $angle_value = $rotamer_angle->{$id}{'value'};
                 }
 
-                $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name} =
+                $rotamer_angles{$changed_residue_unique_key}{"$rotamer_id"}{$angle_name} =
                     [ $angle_value ];
-                $rotamer_angles_atom_ids_tbl{$residue_unique_key}
+                $rotamer_angles_atom_ids_tbl{$changed_residue_unique_key}
                                             {"$rotamer_id"}
                                             {$angle_name} = $origin_atom_ids_key;
             }
