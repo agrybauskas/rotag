@@ -382,7 +382,7 @@ for my $pdbx_file ( @ARGV ) {
                                      $residue_site,
                                      $struct_conn,
                                      { 'sidechains_only' => 1,
-                                       'ref_atom_site' => $atom_site,
+                                       'ref_atom_site' => $selected_atom_site,
                                        'keep_original' => $keep_original,
                                        'tracked_alt_ids' => \%tracked_alt_ids,
                                        'last_atom_id' => $last_atom_id
