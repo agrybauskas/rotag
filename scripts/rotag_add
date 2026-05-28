@@ -599,9 +599,7 @@ for my $pdbx_file ( @ARGV ) {
 
         my %rotamer_atom_site;
         $last_atom_id = max( keys %{ $atom_site } ); # Resets id for printing.
-        for my $atom_id ( sort { $target_atom_site_only->{$a}{'id'} <=>
-                                 $target_atom_site_only->{$b}{'id'} }
-                          keys %{ $target_atom_site_only } ) {
+        for my $atom_id ( sort { $a <=> $b } keys %{ $target_atom_site_only } ) {
             my $group_PDB = $target_atom_site_only->{$atom_id}{'group_PDB'};
 
             my $residue_unique_key =
