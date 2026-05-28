@@ -361,7 +361,6 @@ sub stretchable_bonds
     # Naming the stretchable bonds and calculating their values.
     my %bond_lengths_cache = ();
     for my $atom_id ( keys %stretchable_bonds ) {
-        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $stretchable_bonds{$atom_id} } ) {
             my ( $stretchable_bond_name ) =
                 ( bond_parameter_name_key( $atom_site,
@@ -512,7 +511,6 @@ sub bendable_angles
     # Naming the bendable angles and calculating their values.
     my %bond_angles_cache = ();
     for my $atom_id ( keys %bendable_angles ) {
-        my $residue_name = $atom_site->{$atom_id}{'label_comp_id'};
         for my $bond_atom_ids ( @{ $bendable_angles{$atom_id} } ) {
             my ( $bendable_angle_name ) =
                 ( bond_parameter_name_key( $atom_site,
