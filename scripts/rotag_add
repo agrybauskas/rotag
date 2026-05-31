@@ -433,6 +433,10 @@ for my $pdbx_file ( @ARGV ) {
                 delete $target_atom_site_only->{$origin_atom_id};
                 delete $selected_atom_site->{$origin_atom_id};
                 delete $residue_site->{$origin_atom_id};
+
+                delete $selected_atom_site->{$atom_id}{'bendable_angles'};
+                delete $selected_atom_site->{$atom_id}{'rotatable_bonds'};
+                delete $selected_atom_site->{$atom_id}{'stretchable_bonds'};
             }
 
             if( $do_rotable_bonds ) {
