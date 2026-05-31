@@ -341,14 +341,13 @@ sub assign_hetatoms
 {
     my ( $parameters, $atom_site, $struct_conn, $options ) = @_;
     my ( $sidechains_only, $heteroatom_depth_limit, $exclude_hetatom_connections,
-         $ref_atom_site, $filter_unique_keys, $tracked_alt_ids,
-         $tracked_auth_alt_ids, $last_atom_id, $keep_original ) =
+         $ref_atom_site, $filter_unique_keys, $tracked_auth_alt_ids,
+         $last_atom_id, $keep_original ) =
         ( $options->{'sidechains_only'},
           $options->{'heteroatom_depth'},
           $options->{'exclude_hetatom_connections'},
           $options->{'ref_atom_site'},
           $options->{'filter_unique_keys'},
-          $options->{'tracked_alt_ids'},
           $options->{'tracked_auth_alt_ids'},
           $options->{'last_atom_id'},
           $options->{'keep_original'} );
@@ -359,7 +358,6 @@ sub assign_hetatoms
     $exclude_hetatom_connections //= {};
     $ref_atom_site //= $atom_site;
     $filter_unique_keys //= [];
-    $tracked_alt_ids //= {};
     $tracked_auth_alt_ids //= {};
     $last_atom_id //= max( keys %{ $ref_atom_site } );
     $last_atom_id++;
@@ -452,7 +450,8 @@ sub assign_hetatoms
                 if( ! exists $tracked_auth_alt_ids->{$connection_unique_key} ) {
                     ( $tracked_auth_alt_ids->{$connection_unique_key} ) =
                         max( grep { $_ ne '.' }
-                             map { $ref_atom_site->{$_}{'label_alt_id'} }
+                             map { $ref_atom_site->{$_}{'pdbx_auth_alt_id'} }
+                             grep { exists $ref_atom_site->{$_}{'pdbx_auth_alt_id'} }
                              keys %{ filter_by_unique_residue_key( $ref_atom_site,
                                                                    $connection_unique_key ) } );
                     $tracked_auth_alt_ids->{$connection_unique_key} //= 1;

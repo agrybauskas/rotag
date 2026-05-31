@@ -342,7 +342,6 @@ for my $pdbx_file ( @ARGV ) {
         my %rotamer_angles;
         my %rotamer_angles_atom_ids_tbl = ();
         my %related_unique_residue_keys = ();
-        my %tracked_alt_ids = ();
         my %tracked_auth_alt_ids = ();
         my %delete_original = ();
         my $last_atom_id = max( keys %{ $atom_site } );
@@ -385,8 +384,6 @@ for my $pdbx_file ( @ARGV ) {
                                      { 'sidechains_only' => 1,
                                        'ref_atom_site' => $selected_atom_site,
                                        'keep_original' => $keep_original,
-                                       'tracked_alt_ids' =>
-                                           \%tracked_alt_ids,
                                        'tracked_auth_alt_ids' =>
                                            \%tracked_auth_alt_ids,
                                        'last_atom_id' => $last_atom_id
