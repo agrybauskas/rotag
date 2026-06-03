@@ -335,32 +335,21 @@ for my $pdbx_file ( @ARGV ) {
         my $do_bendable_angles =
             any { $_->[0] eq 'bond_angle' } @bond_parameter_types;
 
-        my $atom_site_split_groups =
-            split_by( { 'atom_site' => $target_atom_site,
-                        'append_dot' => 1 } );
-
-        my %rotamer_angles;
-        my %rotamer_angles_atom_ids_tbl = ();
-        my %related_unique_residue_keys = ();
+        my %rotamer_atom_site;
         my %tracked_auth_alt_ids = ();
         my %delete_original = ();
         my $last_atom_id = max( keys %{ $atom_site } );
-        for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
-            my $current_target_atom_site =
-                filter( { 'atom_site' => $atom_site,
-                          'include' =>
-                          { 'id' =>
-                                $atom_site_split_groups->{$residue_unique_key}
-                                                         {'atom_ids'} } } );
-            my $residue_site =
-                filter_by_unique_residue_key(
-                    $current_target_atom_site,
-                    $residue_unique_key,
-                    1
-            );
+        for my $residue_unique_key ( sort keys %{ $rotamer_angle_split_groups } ) {
+            my ( $label_seq_id ) = split /,/, $residue_unique_key;
 
-            hybridization( $parameters, $residue_site );
-            connect_atoms( $parameters, $residue_site );
+            # Rotamer can only be started from ATOM.
+            next if $label_seq_id eq '.';
+
+            my $residue_site = filter_by_unique_residue_key(
+                $target_atom_site,
+                $residue_unique_key,
+                1
+            );
 
             # TODO: check if the overwriting the global variable is not
             # dangerous.
@@ -376,6 +365,7 @@ for my $pdbx_file ( @ARGV ) {
             my $struct_conn_atom_ids =
                 struct_conn_atom_ids( $residue_site, $struct_conn );
 
+            my $related_unique_residue_keys = {};
             if( @{ $struct_conn_atom_ids } ) {
                 my $assigned_hetatom_ids =
                     assign_hetatoms( $parameters,
@@ -393,28 +383,51 @@ for my $pdbx_file ( @ARGV ) {
 
                     $last_atom_id = $assigned_hetatom_id;
                 }
-            }
 
-            # Tracking the relatedness of the residues.
-            my $unique_residue_keys =
-                struct_conn_residue_keys( $parameters,
-                                          $residue_site,
-                                          $struct_conn );
-            for my $unique_residue_key (
-                keys %{ $unique_residue_keys } ) {
-                for my $related_unique_residue_key (
-                    keys %{ $unique_residue_keys->{$unique_residue_key} } ) {
-                    $related_unique_residue_keys{$unique_residue_key}
-                                                {$related_unique_residue_key} = 1;
-                    $related_unique_residue_keys{$related_unique_residue_key}
-                                                {$unique_residue_key} = 1;
+                for my $assigned_hetatom_id ( @{ $assigned_hetatom_ids } ) {
+                    my $related_unique_residue_key =
+                        unique_residue_key( $residue_site->{$assigned_hetatom_id} );
+
+                    $related_unique_residue_keys->{$residue_unique_key}
+                                                  {$related_unique_residue_key} = 1;
                 }
             }
 
-            # Updating the target's atom site as there more duplicated pseudo
-            # atoms.
-            # HACK: the copying should be done by function and not depend on
-            # sorting order.
+            hybridization( $parameters, $residue_site );
+            connect_atoms( $parameters, $residue_site );
+
+            # Retrieves bond parameter values.
+            my @rotamer_angle_ids =
+                @{ $rotamer_angle_split_groups->{$residue_unique_key}
+                                                {'atom_ids'} };
+            for my $related_residue_unique_key (
+                sort keys %{ $related_unique_residue_keys->{$residue_unique_key} } ) {
+                next if ! exists $rotamer_angle_split_groups->{$related_residue_unique_key};
+
+                push @rotamer_angle_ids,
+                    @{ $rotamer_angle_split_groups->{$related_residue_unique_key}
+                                                    {'atom_ids'} };
+            }
+            @rotamer_angle_ids = sort { $a <=> $b } @rotamer_angle_ids;
+
+            my %rotamer_angles = ();
+            for my $id ( @rotamer_angle_ids ) {
+                my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
+                my $angle_name = $rotamer_angle->{$id}{'type'};
+
+                my $angle_value;
+                if( defined $rotamer_angle->{$id}{'units'} &&
+                    $rotamer_angle->{$id}{'units'} eq 'degrees' ) {
+                    $angle_value = $pi * $rotamer_angle->{$id}{'value'} / 180.0;
+                } else {
+                    $angle_value = $rotamer_angle->{$id}{'value'};
+                }
+
+                $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name} =
+                    [ $angle_value ];
+            }
+
+            # Updating the atom site as there more duplicated pseudo atoms.
             for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
                 my $origin_atom_id =
                     $residue_site->{$atom_id}{'origin_atom_id'};
@@ -422,21 +435,11 @@ for my $pdbx_file ( @ARGV ) {
                 next if ! defined $origin_atom_id ||
                     ! exists $target_atom_site->{$origin_atom_id};
 
-                $target_atom_site->{$atom_id} = $residue_site->{$atom_id};
-                $target_atom_site_only->{$atom_id} = $residue_site->{$atom_id};
-                $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
-
                 if( ! $keep_original ) {
                     $delete_original{$origin_atom_id} = 1;
                 }
 
-                delete $target_atom_site_only->{$origin_atom_id};
-                delete $selected_atom_site->{$origin_atom_id};
                 delete $residue_site->{$origin_atom_id};
-
-                delete $selected_atom_site->{$atom_id}{'bendable_angles'};
-                delete $selected_atom_site->{$atom_id}{'rotatable_bonds'};
-                delete $selected_atom_site->{$atom_id}{'stretchable_bonds'};
             }
 
             if( $do_rotable_bonds ) {
@@ -464,130 +467,45 @@ for my $pdbx_file ( @ARGV ) {
             # Generates rotational model.
             rotation_translation( $parameters, $residue_site );
 
-            # Determines the key that will connect 'atom_site' and
-            # '_[local]_rotamer_bond_parameter' data.
-            my $residue_angle_key;
-            if( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
-                exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
-                exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
-                exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'}){
-                $residue_angle_key = $residue_unique_key;
-                # HACK: check if all values in 'phi_min' and 'psi_min' has length
-                # to 'phi_max' and 'psi_max' of 10 accordingly.
-            } elsif( ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
-                       exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
-                       exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) ||
-                     ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
-                       exists $rotamer_angle->{$rotamer_ids[0]}{'phi_min'} &&
-                       exists $rotamer_angle->{$rotamer_ids[0]}{'psi_min'} &&
-                       exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
-                       exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
-                rotatable_bonds( $parameters, $residue_site,
-                                 { 'include_mainchain' => 1 } );
-                my $dihedral_angles = collect_dihedral_angles( $residue_site );
+            for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
+                my $residue_unique_key =
+                    unique_residue_key( $residue_site->{$atom_id} );
+                my $group_PDB = $residue_site->{$atom_id}{'group_PDB'};
 
-                # Calculates phi and psi angles.
-                my $phi;
-                my $psi;
-                if( %{ $dihedral_angles } ) {
-                    if( defined $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} &&
-                        defined $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} ) {
-                        $phi =
-                            180.00 *
-                            $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} /
-                            $pi;
-                        $psi =
-                            180.00 *
-                            $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} /
-                            $pi;
-                    } else {
-                        die 'phi and psi angles cannot be determined due to ' .
-                            "the lack of required main-chain atoms.\n";
+                for my $rotamer_id ( sort { $a <=> $b }
+                                     keys %{ $rotamer_angles{$residue_unique_key} } ) {
+                    my $rotamer_angles =
+                        $rotamer_angles{$residue_unique_key}{$rotamer_id};
+
+                    my $bond_parameters = collect_bond_parameters(
+                        { $atom_id => $residue_site->{$atom_id} }
+                    )->{$residue_unique_key};
+
+                    next if ! %{ $bond_parameters };
+
+                    %rotamer_atom_site =
+                        ( %rotamer_atom_site,
+                          %{ generate_pseudo(
+                                 { 'parameters' => $parameters,
+                                   'atom_site' => $selected_atom_site,
+                                   'atom_specifier' => { 'id' => [ $atom_id ] },
+                                   'bond_parameter_values' => $rotamer_angles,
+                                   'last_atom_id' => $last_atom_id,
+                                    # TODO: check if it is a good idea to have
+                                    # $rotamer_id as 'label_alt_id'.
+                                   'alt_group_id' => $rotamer_id,
+                                   'auth_alt_group_id' =>
+                                       ( ( $include_hetatoms &&
+                                           $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) ?
+                                         $selected_atom_site->{$atom_id}{'pdbx_auth_alt_id'} :
+                                         $selected_atom_site->{$atom_id}{'label_alt_id'} ),
+                                   'selection_state' => 'T' } ) } );
+                    $last_atom_id++;
+
+                    if( ! $keep_original || $group_PDB eq 'HETATM' ) {
+                        delete $target_atom_site->{$atom_id};
                     }
                 }
-
-                # Checks the closest candidate for existing backbone dihedral
-                # angle combination.
-                my $residue_name = extract( $residue_site,
-                                            { 'data' => [ 'label_comp_id' ],
-                                              'is_list' => 1 } )->[0];
-                my $closest_key_candidate;
-                for my $rotamer_unique_key (keys %{$rotamer_angle_split_groups}){
-                    # TODO: there is a room for optimization here by generating
-                    # hash table.
-                    my ( $angle_residue_name, $angle_phi, $angle_psi ) =
-                        split /,/, $rotamer_unique_key;
-
-                    next if $residue_name ne $angle_residue_name;
-
-                    if( $phi >= $angle_phi && $phi < $angle_phi + 10.0 &&
-                        $psi >= $angle_psi && $psi < $angle_psi + 10.0 ) {
-                        $closest_key_candidate =
-                            "$angle_residue_name,$angle_phi,$angle_psi";
-                        last;
-                    }
-                }
-                $residue_angle_key = $closest_key_candidate;
-            } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
-                $residue_angle_key = extract( $residue_site,
-                                              { 'data' => [ 'label_comp_id' ],
-                                                'is_list' => 1 } )->[0];
-            }
-
-            next if ! defined $residue_angle_key;
-
-            # HACK: more robust check should be implemented.
-            if( ! defined $rotamer_angle_split_groups->{$residue_angle_key} ) {
-                my @key_parts = split /,/, $residue_angle_key;
-                $key_parts[$#key_parts] =
-                    $key_parts[$#key_parts] eq '.' ?
-                    '?' : $key_parts[$#key_parts];
-                $residue_angle_key = join ',', @key_parts;
-            }
-
-            next if ! defined $rotamer_angle_split_groups->{$residue_angle_key};
-
-            for my $id ( sort { $a <=> $b }
-                         @{ $rotamer_angle_split_groups->{$residue_angle_key}
-                                                         {'atom_ids'} } ) {
-                my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
-                my $label_seq_id = $rotamer_angle->{$id}{'label_seq_id'};
-                my $angle_name = $rotamer_angle->{$id}{'type'};
-                my $origin_atom_ids_key =
-                    join ',',
-                    map { defined $_ ? $_ : '?' }
-                    map { $rotamer_angle->{$id}{$_} }
-                    ( 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id' );
-
-                # TODO: refactor or just move to separate module that deals with
-                # retracting proper bond parameters.
-                my $changed_residue_unique_key = $residue_unique_key;
-                if( $include_hetatoms && $label_seq_id eq '.' ) {
-                    my ( $site_id ) =
-                        grep { $_ ne '.' }
-                        reverse
-                        map { $rotamer_angle->{$id}{$_} }
-                        grep { exists $rotamer_angle->{$id}{$_} }
-                            ( 'site_1_id', 'site_2_id', 'site_3_id', 'site_4_id' );
-                    $site_id //= '1';
-                    $changed_residue_unique_key =
-                        change_unique_residue_key( $changed_residue_unique_key,
-                                                   { 'pdbx_auth_alt_id' => $site_id } );
-                }
-
-                my $angle_value;
-                if( defined $rotamer_angle->{$id}{'units'} &&
-                    $rotamer_angle->{$id}{'units'} eq 'degrees' ) {
-                    $angle_value = $pi * $rotamer_angle->{$id}{'value'} / 180.0;
-                } else {
-                    $angle_value = $rotamer_angle->{$id}{'value'};
-                }
-
-                $rotamer_angles{$changed_residue_unique_key}{"$rotamer_id"}{$angle_name} =
-                    [ $angle_value ];
-                $rotamer_angles_atom_ids_tbl{$changed_residue_unique_key}
-                                            {"$rotamer_id"}
-                                            {$angle_name} = $origin_atom_ids_key;
             }
         }
 
@@ -597,113 +515,375 @@ for my $pdbx_file ( @ARGV ) {
             }
         }
 
-        my %rotamer_atom_site;
-        $last_atom_id = max( keys %{ $atom_site } ); # Resets id for printing.
-        for my $atom_id ( sort { $a <=> $b } keys %{ $target_atom_site_only } ) {
-            my $group_PDB = $target_atom_site_only->{$atom_id}{'group_PDB'};
+        # my $atom_site_split_groups =
+        #     split_by( { 'atom_site' => $target_atom_site,
+        #                 'append_dot' => 1 } );
 
-            my $residue_unique_key =
-                unique_residue_key( $selected_atom_site->{$atom_id} );
+        # my %rotamer_angles;
+        # my %rotamer_angles_atom_ids_tbl = ();
+        # my %related_unique_residue_keys = ();
+        # my %tracked_auth_alt_ids = ();
+        # my %delete_original = ();
+        # my $last_atom_id = max( keys %{ $atom_site } );
+        # for my $residue_unique_key ( sort keys %{ $atom_site_split_groups } ) {
+        #     my $current_target_atom_site =
+        #         filter( { 'atom_site' => $atom_site,
+        #                   'include' =>
+        #                   { 'id' =>
+        #                         $atom_site_split_groups->{$residue_unique_key}
+        #                                                  {'atom_ids'} } } );
+        #     my $residue_site =
+        #         filter_by_unique_residue_key(
+        #             $current_target_atom_site,
+        #             $residue_unique_key,
+        #             1
+        #     );
 
-            my $bond_parameters = collect_bond_parameters(
-                { $atom_id => $selected_atom_site->{$atom_id} }
-            )->{$residue_unique_key};
+        #     hybridization( $parameters, $residue_site );
+        #     connect_atoms( $parameters, $residue_site );
 
-            my %related_residue_unique_keys = ();
-            if( exists $related_unique_residue_keys{$residue_unique_key} ) {
-                for my $related_unique_residue_key (
-                    keys %{ $related_unique_residue_keys{$residue_unique_key} } ) {
-                    $related_residue_unique_keys{$related_unique_residue_key} = 1;
+        #     # TODO: check if the overwriting the global variable is not
+        #     # dangerous.
+        #     my $additional_struct_conn =
+        #         struct_conn_from_connections( $parameters,
+        #                                       $residue_site,
+        #                                       $struct_conn );
+        #     $struct_conn = {
+        #         ( defined $struct_conn ? %{ $struct_conn } : () ),
+        #         %{ $additional_struct_conn }
+        #     };
 
-                    next if ! exists $related_unique_residue_keys{$related_unique_residue_key};
+        #     my $struct_conn_atom_ids =
+        #         struct_conn_atom_ids( $residue_site, $struct_conn );
 
-                    for my $reverse_unique_residue_key (
-                        keys %{ $related_unique_residue_keys{$related_unique_residue_key} } ) {
-                        $related_residue_unique_keys{$reverse_unique_residue_key} = 1;
-                    }
-                }
-            }
+        #     if( @{ $struct_conn_atom_ids } ) {
+        #         my $assigned_hetatom_ids =
+        #             assign_hetatoms( $parameters,
+        #                              $residue_site,
+        #                              $struct_conn,
+        #                              { 'sidechains_only' => 1,
+        #                                'ref_atom_site' => $selected_atom_site,
+        #                                'keep_original' => $keep_original,
+        #                                'tracked_auth_alt_ids' =>
+        #                                    \%tracked_auth_alt_ids,
+        #                                'last_atom_id' => $last_atom_id
+        #                              } );
+        #         for my $assigned_hetatom_id ( @{ $assigned_hetatom_ids } ) {
+        #             next if $last_atom_id > $assigned_hetatom_id;
 
-            # TODO: refactoring is needed.
-            if( ! exists $rotamer_angles{$residue_unique_key} &&
-                $target_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM'  ) {
-                delete $target_atom_site->{$atom_id};
-            }
+        #             $last_atom_id = $assigned_hetatom_id;
+        #         }
+        #     }
 
-            next if ! exists $rotamer_angles{$residue_unique_key};
+        #     # Tracking the relatedness of the residues.
+        #     my $unique_residue_keys =
+        #         struct_conn_residue_keys( $parameters,
+        #                                   $residue_site,
+        #                                   $struct_conn );
+        #     for my $unique_residue_key (
+        #         keys %{ $unique_residue_keys } ) {
+        #         for my $related_unique_residue_key (
+        #             keys %{ $unique_residue_keys->{$unique_residue_key} } ) {
+        #             $related_unique_residue_keys{$unique_residue_key}
+        #                                         {$related_unique_residue_key} = 1;
+        #             $related_unique_residue_keys{$related_unique_residue_key}
+        #                                         {$unique_residue_key} = 1;
+        #         }
+        #     }
 
-            for my $rotamer_id ( sort { $a <=> $b }
-                                 keys %{ $rotamer_angles{$residue_unique_key} } ) {
-                my $rotamer_angles =
-                    $rotamer_angles{$residue_unique_key}{$rotamer_id};
+        #     # Updating the target's atom site as there more duplicated pseudo
+        #     # atoms.
+        #     # HACK: the copying should be done by function and not depend on
+        #     # sorting order.
+        #     for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
+        #         my $origin_atom_id =
+        #             $residue_site->{$atom_id}{'origin_atom_id'};
 
-                # Adds missing rotamer angles.
-                my %include_rotamers = ();
-                for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
-                    # TODO: refactoring is needed as the naming convention is
-                    # very similar to other variables.
-                    my $bond_parameter_atom_ids_tbl =
-                        $rotamer_angles_atom_ids_tbl{$related_unique_residue_key}
-                                                    {$rotamer_id};
+        #         next if ! defined $origin_atom_id ||
+        #             ! exists $target_atom_site->{$origin_atom_id};
 
-                    next if ! defined $bond_parameter_atom_ids_tbl;
+        #         $target_atom_site->{$atom_id} = $residue_site->{$atom_id};
+        #         $target_atom_site_only->{$atom_id} = $residue_site->{$atom_id};
+        #         $selected_atom_site->{$atom_id} = $residue_site->{$atom_id};
 
-                    # TODO: think about situations where there are defined
-                    # bond parameters that do not include all the atoms.
-                    for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
-                        my $origin_atom_ids_key =
-                            $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
+        #         if( ! $keep_original ) {
+        #             $delete_original{$origin_atom_id} = 1;
+        #         }
 
-                        next if ! exists $bond_parameters->{$bond_parameter_name};
+        #         delete $target_atom_site_only->{$origin_atom_id};
+        #         delete $selected_atom_site->{$origin_atom_id};
+        #         delete $residue_site->{$origin_atom_id};
 
-                        next if $origin_atom_ids_key ne '?,?,?,?' &&
-                            $origin_atom_ids_key ne $bond_parameters->{$bond_parameter_name}
-                                                                      {'origin_atom_ids_key'};
+        #         delete $selected_atom_site->{$atom_id}{'bendable_angles'};
+        #         delete $selected_atom_site->{$atom_id}{'rotatable_bonds'};
+        #         delete $selected_atom_site->{$atom_id}{'stretchable_bonds'};
+        #     }
 
-                        $include_rotamers{$related_unique_residue_key} = 1;
-                    }
-                }
+        #     if( $do_rotable_bonds ) {
+        #         rotatable_bonds( $parameters,
+        #                          $residue_site,
+        #                          { ( 'include_hetatoms' =>
+        #                              ( %{ $struct_conn } &&
+        #                                $include_hetatoms ? 1 : 0 ) ) } );
+        #     }
+        #     if( $do_stretchable_bonds ) {
+        #         stretchable_bonds( $parameters,
+        #                            $residue_site,
+        #                            { ( 'include_hetatoms' =>
+        #                                ( %{ $struct_conn } &&
+        #                                  $include_hetatoms ? 1 : 0 ) ) } );
+        #     }
+        #     if( $do_bendable_angles ) {
+        #         bendable_angles( $parameters,
+        #                          $residue_site,
+        #                          { ( 'include_hetatoms' =>
+        #                                  ( %{ $struct_conn } &&
+        #                                    $include_hetatoms ? 1 : 0 ) ) } );
+        #     }
 
-                for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
-                    next if ! exists $rotamer_angles{$related_unique_residue_key} ||
-                            ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ||
-                            ! exists $include_rotamers{$related_unique_residue_key};
+        #     # Generates rotational model.
+        #     rotation_translation( $parameters, $residue_site );
 
-                    $rotamer_angles = {
-                        %{ $rotamer_angles },
-                        %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
-                    };
-                }
+        #     # Determines the key that will connect 'atom_site' and
+        #     # '_[local]_rotamer_bond_parameter' data.
+        #     my $residue_angle_key;
+        #     if( exists $rotamer_angle->{$rotamer_ids[0]}{'label_seq_id'} &&
+        #         exists $rotamer_angle->{$rotamer_ids[0]}{'label_asym_id'} &&
+        #         exists $rotamer_angle->{$rotamer_ids[0]}{'label_alt_id'} &&
+        #         exists $rotamer_angle->{$rotamer_ids[0]}{'pdbx_PDB_model_num'}){
+        #         $residue_angle_key = $residue_unique_key;
+        #         # HACK: check if all values in 'phi_min' and 'psi_min' has length
+        #         # to 'phi_max' and 'psi_max' of 10 accordingly.
+        #     } elsif( ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
+        #                exists $rotamer_angle->{$rotamer_ids[0]}{'phi'} &&
+        #                exists $rotamer_angle->{$rotamer_ids[0]}{'psi'} ) ||
+        #              ( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} &&
+        #                exists $rotamer_angle->{$rotamer_ids[0]}{'phi_min'} &&
+        #                exists $rotamer_angle->{$rotamer_ids[0]}{'psi_min'} &&
+        #                exists $rotamer_angle->{$rotamer_ids[0]}{'phi_max'} &&
+        #                exists $rotamer_angle->{$rotamer_ids[0]}{'psi_max'} ) ) {
+        #         rotatable_bonds( $parameters, $residue_site,
+        #                          { 'include_mainchain' => 1 } );
+        #         my $dihedral_angles = collect_dihedral_angles( $residue_site );
 
-                next if ! exists $include_rotamers{$residue_unique_key} &&
-                    $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
+        #         # Calculates phi and psi angles.
+        #         my $phi;
+        #         my $psi;
+        #         if( %{ $dihedral_angles } ) {
+        #             if( defined $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} &&
+        #                 defined $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} ) {
+        #                 $phi =
+        #                     180.00 *
+        #                     $dihedral_angles->{$residue_unique_key}{'phi'}{'value'} /
+        #                     $pi;
+        #                 $psi =
+        #                     180.00 *
+        #                     $dihedral_angles->{$residue_unique_key}{'psi'}{'value'} /
+        #                     $pi;
+        #             } else {
+        #                 die 'phi and psi angles cannot be determined due to ' .
+        #                     "the lack of required main-chain atoms.\n";
+        #             }
+        #         }
 
-                %rotamer_atom_site =
-                    ( %rotamer_atom_site,
-                      %{ generate_pseudo(
-                             { 'parameters' => $parameters,
-                               'atom_site' => $selected_atom_site,
-                               'atom_specifier' => { 'id' => [ $atom_id ] },
-                               'bond_parameter_values' => $rotamer_angles,
-                               'last_atom_id' => $last_atom_id,
-                                # TODO: check if it is a good idea to have
-                                # $rotamer_id as 'label_alt_id'.
-                               'alt_group_id' => $rotamer_id,
-                               'auth_alt_group_id' =>
-                                   ( ( $include_hetatoms &&
-                                       $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) ?
-                                     $selected_atom_site->{$atom_id}{'pdbx_auth_alt_id'} :
-                                     $selected_atom_site->{$atom_id}{'label_alt_id'} ),
-                               'selection_state' => 'T' } ) } );
+        #         # Checks the closest candidate for existing backbone dihedral
+        #         # angle combination.
+        #         my $residue_name = extract( $residue_site,
+        #                                     { 'data' => [ 'label_comp_id' ],
+        #                                       'is_list' => 1 } )->[0];
+        #         my $closest_key_candidate;
+        #         for my $rotamer_unique_key (keys %{$rotamer_angle_split_groups}){
+        #             # TODO: there is a room for optimization here by generating
+        #             # hash table.
+        #             my ( $angle_residue_name, $angle_phi, $angle_psi ) =
+        #                 split /,/, $rotamer_unique_key;
 
-                $last_atom_id++;
-            }
+        #             next if $residue_name ne $angle_residue_name;
 
-            if( ! $keep_original ||
-                $target_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
-                delete $target_atom_site->{$atom_id};
-            }
-        }
+        #             if( $phi >= $angle_phi && $phi < $angle_phi + 10.0 &&
+        #                 $psi >= $angle_psi && $psi < $angle_psi + 10.0 ) {
+        #                 $closest_key_candidate =
+        #                     "$angle_residue_name,$angle_phi,$angle_psi";
+        #                 last;
+        #             }
+        #         }
+        #         $residue_angle_key = $closest_key_candidate;
+        #     } elsif( exists $rotamer_angle->{$rotamer_ids[0]}{'label_comp_id'} ){
+        #         $residue_angle_key = extract( $residue_site,
+        #                                       { 'data' => [ 'label_comp_id' ],
+        #                                         'is_list' => 1 } )->[0];
+        #     }
+
+        #     next if ! defined $residue_angle_key;
+
+        #     # HACK: more robust check should be implemented.
+        #     if( ! defined $rotamer_angle_split_groups->{$residue_angle_key} ) {
+        #         my @key_parts = split /,/, $residue_angle_key;
+        #         $key_parts[$#key_parts] =
+        #             $key_parts[$#key_parts] eq '.' ?
+        #             '?' : $key_parts[$#key_parts];
+        #         $residue_angle_key = join ',', @key_parts;
+        #     }
+
+        #     next if ! defined $rotamer_angle_split_groups->{$residue_angle_key};
+
+        #     for my $id ( sort { $a <=> $b }
+        #                  @{ $rotamer_angle_split_groups->{$residue_angle_key}
+        #                                                  {'atom_ids'} } ) {
+        #         my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
+        #         my $label_seq_id = $rotamer_angle->{$id}{'label_seq_id'};
+        #         my $angle_name = $rotamer_angle->{$id}{'type'};
+        #         my $origin_atom_ids_key =
+        #             join ',',
+        #             map { defined $_ ? $_ : '?' }
+        #             map { $rotamer_angle->{$id}{$_} }
+        #             ( 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id' );
+
+        #         # TODO: refactor or just move to separate module that deals with
+        #         # retracting proper bond parameters.
+        #         my $changed_residue_unique_key = $residue_unique_key;
+        #         if( $include_hetatoms && $label_seq_id eq '.' ) {
+        #             my ( $site_id ) =
+        #                 grep { $_ ne '.' }
+        #                 reverse
+        #                 map { $rotamer_angle->{$id}{$_} }
+        #                 grep { exists $rotamer_angle->{$id}{$_} }
+        #                     ( 'site_1_id', 'site_2_id', 'site_3_id', 'site_4_id' );
+        #             $site_id //= '1';
+        #             $changed_residue_unique_key =
+        #                 change_unique_residue_key( $changed_residue_unique_key,
+        #                                            { 'pdbx_auth_alt_id' => $site_id } );
+        #         }
+
+        #         my $angle_value;
+        #         if( defined $rotamer_angle->{$id}{'units'} &&
+        #             $rotamer_angle->{$id}{'units'} eq 'degrees' ) {
+        #             $angle_value = $pi * $rotamer_angle->{$id}{'value'} / 180.0;
+        #         } else {
+        #             $angle_value = $rotamer_angle->{$id}{'value'};
+        #         }
+
+        #         $rotamer_angles{$changed_residue_unique_key}{"$rotamer_id"}{$angle_name} =
+        #             [ $angle_value ];
+        #         $rotamer_angles_atom_ids_tbl{$changed_residue_unique_key}
+        #                                     {"$rotamer_id"}
+        #                                     {$angle_name} = $origin_atom_ids_key;
+        #     }
+        # }
+
+        # if( ! $keep_original ) {
+        #     for my $origin_atom_id ( sort keys %delete_original ) {
+        #         delete $target_atom_site->{$origin_atom_id};
+        #     }
+        # }
+
+        # my %rotamer_atom_site;
+        # $last_atom_id = max( keys %{ $atom_site } ); # Resets id for printing.
+        # for my $atom_id ( sort { $a <=> $b } keys %{ $target_atom_site_only } ) {
+        #     my $group_PDB = $target_atom_site_only->{$atom_id}{'group_PDB'};
+
+        #     my $residue_unique_key =
+        #         unique_residue_key( $selected_atom_site->{$atom_id} );
+
+        #     my $bond_parameters = collect_bond_parameters(
+        #         { $atom_id => $selected_atom_site->{$atom_id} }
+        #     )->{$residue_unique_key};
+
+        #     my %related_residue_unique_keys = ();
+        #     if( exists $related_unique_residue_keys{$residue_unique_key} ) {
+        #         for my $related_unique_residue_key (
+        #             keys %{ $related_unique_residue_keys{$residue_unique_key} } ) {
+        #             $related_residue_unique_keys{$related_unique_residue_key} = 1;
+
+        #             next if ! exists $related_unique_residue_keys{$related_unique_residue_key};
+
+        #             for my $reverse_unique_residue_key (
+        #                 keys %{ $related_unique_residue_keys{$related_unique_residue_key} } ) {
+        #                 $related_residue_unique_keys{$reverse_unique_residue_key} = 1;
+        #             }
+        #         }
+        #     }
+
+        #     # TODO: refactoring is needed.
+        #     if( ! exists $rotamer_angles{$residue_unique_key} &&
+        #         $target_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM'  ) {
+        #         delete $target_atom_site->{$atom_id};
+        #     }
+
+        #     next if ! exists $rotamer_angles{$residue_unique_key};
+
+        #     for my $rotamer_id ( sort { $a <=> $b }
+        #                          keys %{ $rotamer_angles{$residue_unique_key} } ) {
+        #         my $rotamer_angles =
+        #             $rotamer_angles{$residue_unique_key}{$rotamer_id};
+
+        #         # Adds missing rotamer angles.
+        #         my %include_rotamers = ();
+        #         for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
+        #             # TODO: refactoring is needed as the naming convention is
+        #             # very similar to other variables.
+        #             my $bond_parameter_atom_ids_tbl =
+        #                 $rotamer_angles_atom_ids_tbl{$related_unique_residue_key}
+        #                                             {$rotamer_id};
+
+        #             next if ! defined $bond_parameter_atom_ids_tbl;
+
+        #             # TODO: think about situations where there are defined
+        #             # bond parameters that do not include all the atoms.
+        #             for my $bond_parameter_name ( sort keys %{ $bond_parameter_atom_ids_tbl } ) {
+        #                 my $origin_atom_ids_key =
+        #                     $bond_parameter_atom_ids_tbl->{$bond_parameter_name};
+
+        #                 next if ! exists $bond_parameters->{$bond_parameter_name};
+
+        #                 next if $origin_atom_ids_key ne '?,?,?,?' &&
+        #                     $origin_atom_ids_key ne $bond_parameters->{$bond_parameter_name}
+        #                                                               {'origin_atom_ids_key'};
+
+        #                 $include_rotamers{$related_unique_residue_key} = 1;
+        #             }
+        #         }
+
+        #         for my $related_unique_residue_key ( sort keys %related_residue_unique_keys ) {
+        #             next if ! exists $rotamer_angles{$related_unique_residue_key} ||
+        #                     ! exists $rotamer_angles{$related_unique_residue_key}{$rotamer_id} ||
+        #                     ! exists $include_rotamers{$related_unique_residue_key};
+
+        #             $rotamer_angles = {
+        #                 %{ $rotamer_angles },
+        #                 %{ $rotamer_angles{$related_unique_residue_key}{$rotamer_id} }
+        #             };
+        #         }
+
+        #         next if ! exists $include_rotamers{$residue_unique_key} &&
+        #             $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM';
+
+        #         %rotamer_atom_site =
+        #             ( %rotamer_atom_site,
+        #               %{ generate_pseudo(
+        #                      { 'parameters' => $parameters,
+        #                        'atom_site' => $selected_atom_site,
+        #                        'atom_specifier' => { 'id' => [ $atom_id ] },
+        #                        'bond_parameter_values' => $rotamer_angles,
+        #                        'last_atom_id' => $last_atom_id,
+        #                         # TODO: check if it is a good idea to have
+        #                         # $rotamer_id as 'label_alt_id'.
+        #                        'alt_group_id' => $rotamer_id,
+        #                        'auth_alt_group_id' =>
+        #                            ( ( $include_hetatoms &&
+        #                                $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) ?
+        #                              $selected_atom_site->{$atom_id}{'pdbx_auth_alt_id'} :
+        #                              $selected_atom_site->{$atom_id}{'label_alt_id'} ),
+        #                        'selection_state' => 'T' } ) } );
+
+        #         $last_atom_id++;
+        #     }
+
+        #     if( ! $keep_original ||
+        #         $target_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) {
+        #         delete $target_atom_site->{$atom_id};
+        #     }
+        # }
 
         if( $optimise_ligands ) {
             my $ligand_groups =
