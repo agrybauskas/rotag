@@ -477,6 +477,8 @@ for my $pdbx_file ( @ARGV ) {
                     my $rotamer_angles =
                         $rotamer_angles{$residue_unique_key}{$rotamer_id};
 
+                    # Only checks if any bond parameters are present. If no, it
+                    # should be ignored.
                     my $bond_parameters = collect_bond_parameters(
                         { $atom_id => $residue_site->{$atom_id} }
                     )->{$residue_unique_key};
