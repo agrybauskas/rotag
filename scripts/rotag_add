@@ -402,6 +402,13 @@ for my $pdbx_file ( @ARGV ) {
                                                 {'atom_ids'} };
             for my $related_residue_unique_key (
                 sort keys %{ $related_unique_residue_keys->{$residue_unique_key} } ) {
+                my ( $label_seq_id ) = split /,/, $related_residue_unique_key;
+                if( $include_hetatoms && $label_seq_id eq '.' ) {
+                    $related_residue_unique_key =
+                        change_unique_residue_key( $related_residue_unique_key,
+                                                   { 'pdbx_auth_alt_id' => '?' } );
+                }
+
                 next if ! exists $rotamer_angle_split_groups->{$related_residue_unique_key};
 
                 push @rotamer_angle_ids,
