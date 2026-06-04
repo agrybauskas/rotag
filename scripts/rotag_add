@@ -365,8 +365,6 @@ for my $pdbx_file ( @ARGV ) {
             my $struct_conn_atom_ids =
                 struct_conn_atom_ids( $residue_site, $struct_conn );
 
-            my $related_unique_residue_keys = {};
-            my $back_related_unique_residue_keys = {};
             if( @{ $struct_conn_atom_ids } ) {
                 my $assigned_hetatom_ids =
                     assign_hetatoms( $parameters,
@@ -384,27 +382,23 @@ for my $pdbx_file ( @ARGV ) {
 
                     $last_atom_id = $assigned_hetatom_id;
                 }
-
-                for my $assigned_hetatom_id ( @{ $assigned_hetatom_ids } ) {
-                    my $related_unique_residue_key =
-                        unique_residue_key( $residue_site->{$assigned_hetatom_id} );
-
-                    $related_unique_residue_keys->{$residue_unique_key}
-                                                  {$related_unique_residue_key} = 1;
-                    $back_related_unique_residue_keys->{$related_unique_residue_key}
-                                                       {$residue_unique_key} = 1;
-                }
             }
 
             hybridization( $parameters, $residue_site );
             connect_atoms( $parameters, $residue_site );
+
+            # Tracking the relatedness of the residues.
+            my $related_residue_unique_keys =
+                struct_conn_residue_keys( $parameters,
+                                          $residue_site,
+                                          $struct_conn );
 
             # Retrieves bond parameter values.
             my @rotamer_angle_ids =
                 @{ $rotamer_angle_split_groups->{$residue_unique_key}
                                                 {'atom_ids'} };
             for my $related_residue_unique_key (
-                sort keys %{ $related_unique_residue_keys->{$residue_unique_key} } ) {
+                sort keys %{ $related_residue_unique_keys->{$residue_unique_key} } ) {
                 my ( $label_seq_id ) = split /,/, $related_residue_unique_key;
                 if( $include_hetatoms && $label_seq_id eq '.' ) {
                     $related_residue_unique_key =
@@ -497,7 +491,7 @@ for my $pdbx_file ( @ARGV ) {
                     my $rotamer_angles =
                         $rotamer_angles{$changed_residue_unique_key}{$rotamer_id};
                     for my $related_residue_unique_key (
-                        sort keys %{ $back_related_unique_residue_keys->{$residue_unique_key} } ) {
+                        sort keys %{ $related_residue_unique_keys->{$residue_unique_key} } ) {
                         next if ! exists $rotamer_angles{$related_residue_unique_key};
 
                         $rotamer_angles = {
