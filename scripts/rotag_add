@@ -400,8 +400,6 @@ for my $pdbx_file ( @ARGV ) {
             connect_atoms( $parameters, $residue_site );
 
             # Retrieves bond parameter values.
-            # my %rotamer_atom_ids = ();
-            # $rotamer_atom_ids{$residue_unique_key};
             my @rotamer_angle_ids =
                 @{ $rotamer_angle_split_groups->{$residue_unique_key}
                                                 {'atom_ids'} };
