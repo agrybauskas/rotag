@@ -481,6 +481,8 @@ for my $pdbx_file ( @ARGV ) {
             # Generates rotational model.
             rotation_translation( $parameters, $residue_site );
 
+            my $last_atom_id =
+                max( keys %{ $atom_site } ); # Resets for CIF printing.
             for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
                 my $residue_unique_key =
                     unique_residue_key( $residue_site->{$atom_id} );
@@ -518,7 +520,7 @@ for my $pdbx_file ( @ARGV ) {
                         ( %rotamer_atom_site,
                           %{ generate_pseudo(
                                  { 'parameters' => $parameters,
-                                   'atom_site' => $selected_atom_site,
+                                   'atom_site' => $residue_site,
                                    'atom_specifier' => { 'id' => [ $atom_id ] },
                                    'bond_parameter_values' => $rotamer_angles,
                                    'last_atom_id' => $last_atom_id,
@@ -526,10 +528,9 @@ for my $pdbx_file ( @ARGV ) {
                                     # $rotamer_id as 'label_alt_id'.
                                    'alt_group_id' => $rotamer_id,
                                    'auth_alt_group_id' =>
-                                       ( ( $include_hetatoms &&
-                                           $selected_atom_site->{$atom_id}{'group_PDB'} eq 'HETATM' ) ?
-                                         $selected_atom_site->{$atom_id}{'pdbx_auth_alt_id'} :
-                                         $selected_atom_site->{$atom_id}{'label_alt_id'} ),
+                                       ( ( $include_hetatoms && $group_PDB eq 'HETATM' ) ?
+                                         $residue_site->{$atom_id}{'pdbx_auth_alt_id'} :
+                                         $residue_site->{$atom_id}{'label_alt_id'} ),
                                    'selection_state' => 'T' } ) } );
                     $last_atom_id++;
 
