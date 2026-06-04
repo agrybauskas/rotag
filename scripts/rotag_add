@@ -397,6 +397,8 @@ for my $pdbx_file ( @ARGV ) {
             connect_atoms( $parameters, $residue_site );
 
             # Retrieves bond parameter values.
+            # my %rotamer_atom_ids = ();
+            # $rotamer_atom_ids{$residue_unique_key};
             my @rotamer_angle_ids =
                 @{ $rotamer_angle_split_groups->{$residue_unique_key}
                                                 {'atom_ids'} };
@@ -415,12 +417,13 @@ for my $pdbx_file ( @ARGV ) {
                     @{ $rotamer_angle_split_groups->{$related_residue_unique_key}
                                                     {'atom_ids'} };
             }
-            @rotamer_angle_ids = sort { $a <=> $b } @rotamer_angle_ids;
 
             my %rotamer_angles = ();
-            for my $id ( @rotamer_angle_ids ) {
+            for my $id ( sort { $a <=> $b } @rotamer_angle_ids ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
                 my $angle_name = $rotamer_angle->{$id}{'type'};
+                my $current_residue_unique_key =
+                    unique_residue_key( $rotamer_angle->{$id} );
 
                 my $angle_value;
                 if( defined $rotamer_angle->{$id}{'units'} &&
@@ -430,7 +433,8 @@ for my $pdbx_file ( @ARGV ) {
                     $angle_value = $rotamer_angle->{$id}{'value'};
                 }
 
-                $rotamer_angles{$residue_unique_key}{"$rotamer_id"}{$angle_name} =
+                $rotamer_angles{$current_residue_unique_key}{"$rotamer_id"}
+                               {$angle_name} =
                     [ $angle_value ];
             }
 
