@@ -450,6 +450,7 @@ sub assign_hetatoms
                 if( ! exists $tracked_auth_alt_ids->{$connection_unique_key} ) {
                     ( $tracked_auth_alt_ids->{$connection_unique_key} ) =
                         max( grep { $_ ne '.' }
+                             grep { $_ ne '?' }
                              map { $ref_atom_site->{$_}{'pdbx_auth_alt_id'} }
                              grep { exists $ref_atom_site->{$_}{'pdbx_auth_alt_id'} }
                              keys %{ filter_by_unique_residue_key( $ref_atom_site,
