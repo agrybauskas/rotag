@@ -844,6 +844,8 @@ sub struct_conn_residue_keys
             next if $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
+            my $atom_unique_residue_key =
+                unique_residue_key( $atom_site->{$atom_id} );
             my $atom_group = $atom_site->{$atom_id}{'group_PDB'};
             my $atom_name = $atom_site->{$atom_id}{'label_atom_id'};
 
@@ -875,12 +877,17 @@ sub struct_conn_residue_keys
                     ( $is_atom_mainchain || $is_related_atom_mainchain ) ? 1 : 0;
 
                 # Dealing with possible renaming of unique residue keys.
+                my $renamed_atom_unique_residue_key =
+                    $atom_unique_residue_key;
                 my $renamed_unique_residue_key =
                     $unique_residue_key;
                 my $renamed_related_unique_residue_key =
                     $related_unique_residue_key;
 
                 if( %{ $change_unique_residue_key } ) {
+                    $renamed_unique_residue_key =
+                        change_unique_residue_key( $atom_unique_residue_key,
+                                                   $change_unique_residue_key );
                     $renamed_unique_residue_key =
                         change_unique_residue_key( $unique_residue_key,
                                                    $change_unique_residue_key );
