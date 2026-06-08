@@ -494,12 +494,12 @@ for my $pdbx_file ( @ARGV ) {
                 next if $group_PDB eq 'ATOM' &&
                     exists $exclude_atom_names{$atom_name};
 
-                my $residue_unique_key =
+                my $current_residue_unique_key =
                     unique_residue_key( $residue_site->{$atom_id} );
-                my $changed_residue_unique_key = $residue_unique_key;
+                my $changed_residue_unique_key = $current_residue_unique_key;
                 if( $include_hetatoms && $group_PDB eq 'HETATM' ) {
                     $changed_residue_unique_key =
-                        change_unique_residue_key( $residue_unique_key,
+                        change_unique_residue_key( $current_residue_unique_key,
                                                    { 'pdbx_auth_alt_id' => '?' } );
                 }
 
@@ -509,7 +509,7 @@ for my $pdbx_file ( @ARGV ) {
                     # should be ignored.
                     my $bond_parameters = collect_bond_parameters(
                         { $atom_id => $residue_site->{$atom_id} }
-                    )->{$residue_unique_key};
+                    )->{$current_residue_unique_key};
 
                     next if ! defined $bond_parameters || ! %{ $bond_parameters };
 
