@@ -332,6 +332,15 @@ for my $pdbx_file ( @ARGV ) {
                             'attributes' => [ 'label_comp_id' ] } );
         }
 
+        # Maps bond parameter ids to rotamer ids bidirectionally.
+        my %bond_parameter_to_rotamer_tbl = ();
+        my %rotamer_to_bond_parameter_tbl = ();
+        for my $bond_parameter_id ( keys %{ $rotamer_angle } ) {
+            my $rotamer_id = $rotamer_angle->{$bond_parameter_id}{'rotamer_id'};
+            $bond_parameter_to_rotamer_tbl{$bond_parameter_id} = $rotamer_id;
+            $rotamer_to_bond_parameter_tbl{$rotamer_id}{$bond_parameter_id} = 1;
+        }
+
         my @bond_parameter_types =
             map { [ detect_bond_parameter_type( $_ ) ] }
             uniq sort
