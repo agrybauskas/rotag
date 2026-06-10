@@ -9,6 +9,7 @@ our @EXPORT_OK = qw( assign_hetatoms
                      assign_hetatoms_mainchain
                      connect_atoms
                      connect_atoms_explicitly
+                     connections_from_struct_conn
                      create_hetatom_struct_conn
                      filter_struct_conn
                      is_connected

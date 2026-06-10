@@ -20,6 +20,7 @@ use BondParameters qw( bendable_angles
 use BondProperties qw( hybridization );
 use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
+                     connections_from_struct_conn
                      struct_conn_atom_ids
                      struct_conn_from_connections
                      struct_conn_residue_keys );
@@ -331,6 +332,9 @@ for my $pdbx_file ( @ARGV ) {
                 split_by( { 'atom_site' => $rotamer_angle,
                             'attributes' => [ 'label_comp_id' ] } );
         }
+
+        my $struct_conn_connections =
+            connections_from_struct_conn( $atom_site, $struct_conn );
 
         # Maps bond parameter ids to rotamer ids bidirectionally.
         my %bond_parameter_to_rotamer_tbl = ();
