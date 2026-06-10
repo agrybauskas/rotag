@@ -334,7 +334,7 @@ for my $pdbx_file ( @ARGV ) {
         }
 
         my $struct_conn_connections =
-            connections_from_struct_conn( $atom_site, $struct_conn );
+            connections_from_struct_conn( $target_atom_site, $struct_conn );
 
         # Maps bond parameter ids to rotamer ids bidirectionally.
         my %bond_parameter_to_rotamer_tbl = ();
@@ -371,9 +371,28 @@ for my $pdbx_file ( @ARGV ) {
                 1
             );
 
+            # Rotamer can only be started from ATOM. Otherwise, HETATM
+            # searches for connections until ATOM is found.
             my ( $label_seq_id ) = split /,/, $residue_unique_key;
+            if( $label_seq_id eq '.' ) {
+                my @related_residue_unique_keys =
+                    uniq sort
+                    map { unique_residue_key( $target_atom_site->{$_} ) }
+                    grep { $target_atom_site->{$_}{'group_PDB'} eq 'ATOM'  }
+                    map { keys %{ $struct_conn_connections->{$_} } }
+                    keys %{ $residue_site };
 
-            # Rotamer can only be started from ATOM.
+                next if ! @related_residue_unique_keys;
+
+                ( $residue_unique_key ) = @related_residue_unique_keys;
+
+                $residue_site = filter_by_unique_residue_key(
+                    $target_atom_site,
+                    $residue_unique_key,
+                    1
+                );
+            }
+
             next if $label_seq_id eq '.';
 
             # TODO: check if the overwriting the global variable is not
