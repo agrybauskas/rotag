@@ -384,6 +384,8 @@ for my $pdbx_file ( @ARGV ) {
 
                 next if ! @related_residue_unique_keys;
 
+                my $old_residue_unique_key = $residue_unique_key;
+
                 ( $residue_unique_key ) = @related_residue_unique_keys;
 
                 $residue_site = filter_by_unique_residue_key(
@@ -391,6 +393,13 @@ for my $pdbx_file ( @ARGV ) {
                     $residue_unique_key,
                     1
                 );
+
+                # $rotamer_angle_split_groups->{$residue_unique_key} =
+                #     clone $rotamer_angle_split_groups->{$old_residue_unique_key};
+
+                # delete $rotamer_angle_split_groups->{$old_residue_unique_key};
+
+                # $label_seq_id = split /,/, $residue_unique_key;
             }
 
             next if $label_seq_id eq '.';
