@@ -187,7 +187,6 @@ if( $list_ligands ) {
 
 my @add_ligands = grep { $_ ne '' } split /,/, $ligands;
 
-# NOTE: the whole script needs thorough refactoring.
 # TODO: rename rotamer angle to rotamer bond parameters.
 # TODO: keep '_[local]_rotamer_angle'.
 for my $pdbx_file ( @ARGV ) {
@@ -230,13 +229,6 @@ for my $pdbx_file ( @ARGV ) {
                                    [ 'T', 'S' ] : [ 'T' ] ) } } );
 
     my %exclude_atom_names = map { $_ => 1 } @{ $interaction_atom_names };
-
-    # # TODO: seek for refactoring as it is a bit messy.
-    # my $target_atom_site_only =
-    #     filter( { 'atom_site' => $target_atom_site,
-    #               'include' => { '[local]_selection_state' => [ 'T' ] },
-    #               'exclude' => { 'label_atom_id' =>
-    #                                  $interaction_atom_names } } );
 
     my $rotamer_angle_data_json;
     if( $rotamer_angle_json_file ) {
@@ -394,15 +386,13 @@ for my $pdbx_file ( @ARGV ) {
                     1
                 );
 
-                # $rotamer_angle_split_groups->{$residue_unique_key} =
-                #     clone $rotamer_angle_split_groups->{$old_residue_unique_key};
+                $rotamer_angle_split_groups->{$residue_unique_key} =
+                    clone $rotamer_angle_split_groups->{$old_residue_unique_key};
 
-                # delete $rotamer_angle_split_groups->{$old_residue_unique_key};
+                delete $rotamer_angle_split_groups->{$old_residue_unique_key};
 
-                # $label_seq_id = split /,/, $residue_unique_key;
+                $label_seq_id = split /,/, $residue_unique_key;
             }
-
-            next if $label_seq_id eq '.';
 
             # TODO: check if the overwriting the global variable is not
             # dangerous.
