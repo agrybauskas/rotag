@@ -389,10 +389,6 @@ for my $pdbx_file ( @ARGV ) {
 
                 $rotamer_angle_split_groups->{$residue_unique_key} =
                     clone $rotamer_angle_split_groups->{$old_residue_unique_key};
-
-                delete $rotamer_angle_split_groups->{$old_residue_unique_key};
-
-                $label_seq_id = split /,/, $residue_unique_key;
             }
 
             next if exists $visited_residue_keys{$residue_unique_key};
