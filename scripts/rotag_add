@@ -366,6 +366,8 @@ for my $pdbx_file ( @ARGV ) {
 
             # Rotamer can only be started from ATOM. Otherwise, HETATM
             # searches for connections until ATOM is found.
+            # TODO: should be refactored as related residue key search is quite
+            # messy.
             my ( $label_seq_id ) = split /,/, $residue_unique_key;
             if( $label_seq_id eq '.' ) {
                 my @related_residue_unique_keys =
@@ -380,6 +382,8 @@ for my $pdbx_file ( @ARGV ) {
                 my $old_residue_unique_key = $residue_unique_key;
 
                 ( $residue_unique_key ) = @related_residue_unique_keys;
+
+                next if exists $rotamer_angle_split_groups->{$residue_unique_key};
 
                 $residue_site = filter_by_unique_residue_key(
                     $target_atom_site,
