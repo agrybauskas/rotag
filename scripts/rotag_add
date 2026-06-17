@@ -543,8 +543,8 @@ for my $pdbx_file ( @ARGV ) {
                     )->{$current_residue_unique_key};
 
                     next if ! defined $bond_parameters || ! %{ $bond_parameters };
-                    # next if $group_PDB eq 'HETATM' &&
-                    #     ! exists $rotamer_angles_atom_ids_tbl{$rotamer_id}{$atom_id};
+                    next if ! any { exists $bond_parameters->{$_} }
+                              keys %{ $rotamer_angles };
 
                     %rotamer_atom_site =
                         ( %rotamer_atom_site,
