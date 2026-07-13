@@ -440,7 +440,6 @@ for my $pdbx_file ( @ARGV ) {
             };
 
             my %rotamer_angles = ();
-            my %rotamer_angles_atom_ids_tbl = ();
             for my $id ( @rotamer_angle_ids ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
 
