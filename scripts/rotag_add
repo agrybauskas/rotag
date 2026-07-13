@@ -440,6 +440,7 @@ for my $pdbx_file ( @ARGV ) {
             };
 
             my %rotamer_angles = ();
+            my %rotamer_angles_atom_ids_tbl = ();
             for my $id ( @rotamer_angle_ids ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
 
@@ -456,9 +457,11 @@ for my $pdbx_file ( @ARGV ) {
                         map { $rotamer_angle->{$related_id}{$_} }
                         grep { exists $rotamer_angle->{$related_id}{$_} }
                         ( 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id' );
-                    my %origin_atom_ids =
+                    $rotamer_angles_atom_ids_tbl{$related_id} = {
                         map { $origin_atom_ids[$_] => $_ }
-                        0..$#origin_atom_ids;
+                        grep { $origin_atom_ids[$_] ne '.' }
+                        0..$#origin_atom_ids
+                    };
 
                     my @site_ids =
                         map { $rotamer_angle->{$related_id}{$_} }
