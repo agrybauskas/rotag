@@ -446,6 +446,22 @@ for my $pdbx_file ( @ARGV ) {
 
                 next if exists $rotamer_angles{$rotamer_id};
 
+                my @origin_atom_ids =
+                    map { $rotamer_angle->{$id}{$_} }
+                    grep { exists $rotamer_angle->{$id}{$_} }
+                    ( 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id' );
+                my %origin_atom_ids =
+                    map { $origin_atom_ids[$_] => $_ }
+                    0..$#origin_atom_ids;
+
+                my @site_ids =
+                    map { $rotamer_angle->{$id}{$_} }
+                    grep { exists $rotamer_angle->{$id}{$_} }
+                        ( 'site_1_id', 'site_2_id', 'site_3_id', 'site_4_id' );
+                my %site_ids =
+                    map { $site_ids[$_] => $_ }
+                    0..$#site_ids;
+
                 my @related_ids =
                     keys %{ $rotamer_to_bond_parameter_tbl{$rotamer_id} };
                 for my $related_id ( @related_ids ) {
@@ -465,22 +481,6 @@ for my $pdbx_file ( @ARGV ) {
                     $rotamer_angles{"$rotamer_id"}{$angle_name} =
                         [ $angle_value ];
                 }
-
-                my @origin_atom_ids =
-                    map { $rotamer_angle->{$id}{$_} }
-                    grep { exists $rotamer_angle->{$id}{$_} }
-                    ( 'atom_1_id', 'atom_2_id', 'atom_3_id', 'atom_4_id' );
-                my $pos = 0;
-                for my $origin_atom_id ( @origin_atom_ids ) {
-                    $rotamer_angles_atom_ids_tbl{"$rotamer_id"}
-                                                {$origin_atom_id} = $pos;
-                    $pos++;
-                }
-
-                my @site_ids =
-                    map { $rotamer_angle->{$id}{$_} }
-                    grep { exists $rotamer_angle->{$id}{$_} }
-                        ( 'site_1_id', 'site_2_id', 'site_3_id', 'site_4_id' );
             }
 
             # Updating the atom site as there more duplicated pseudo atoms.
