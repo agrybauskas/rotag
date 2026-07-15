@@ -372,6 +372,7 @@ for my $pdbx_file ( @ARGV ) {
             if( $label_seq_id eq '.' ) {
                 my @related_residue_unique_keys =
                     uniq sort
+                    grep { ! exists $visited_residue_keys{$residue_unique_key} }
                     map { unique_residue_key( $target_atom_site->{$_} ) }
                     grep { $target_atom_site->{$_}{'group_PDB'} eq 'ATOM'  }
                     map { keys %{ $struct_conn_connections->{$_} } }
