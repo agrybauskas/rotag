@@ -455,8 +455,6 @@ for my $pdbx_file ( @ARGV ) {
                     my $current_residue_unique_key =
                         unique_residue_key( $rotamer_angle->{$related_id} );
 
-                    $rotamer_angles_residue_keys{$current_residue_unique_key} = 1;
-
                     my @origin_atom_ids =
                         map { $rotamer_angle->{$related_id}{$_} }
                         grep { exists $rotamer_angle->{$related_id}{$_} }
@@ -475,6 +473,8 @@ for my $pdbx_file ( @ARGV ) {
                     my %site_ids =
                         map { $site_ids[$_] => $_ }
                         0..$#site_ids;
+
+                    $rotamer_angles_residue_keys{$current_residue_unique_key} = 1;
 
                     my $angle_value;
                     if( defined $rotamer_angle->{$related_id}{'units'} &&
@@ -539,13 +539,6 @@ for my $pdbx_file ( @ARGV ) {
 
                 my $current_residue_unique_key =
                     unique_residue_key( $residue_site->{$atom_id} );
-
-                my $changed_residue_unique_key = $current_residue_unique_key;
-                if( $include_hetatoms && $group_PDB eq 'HETATM' ) {
-                    $changed_residue_unique_key =
-                        change_unique_residue_key( $current_residue_unique_key,
-                                                   { 'pdbx_auth_alt_id' => '?' } );
-                }
 
                 for my $rotamer_id ( sort { $a <=> $b } keys %rotamer_angles ) {
                     my $rotamer_angles = $rotamer_angles{$rotamer_id};
