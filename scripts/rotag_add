@@ -451,10 +451,7 @@ for my $pdbx_file ( @ARGV ) {
                 my @related_ids =
                     keys %{ $rotamer_to_bond_parameter_tbl{$rotamer_id} };
                 for my $related_id ( @related_ids ) {
-                    my $angle_name = $rotamer_angle->{$related_id}{'type'};
-                    my $current_residue_unique_key =
-                        unique_residue_key( $rotamer_angle->{$related_id} );
-
+                    # Marks origin atoms.
                     my @origin_atom_ids =
                         map { $rotamer_angle->{$related_id}{$_} }
                         grep { exists $rotamer_angle->{$related_id}{$_} }
@@ -466,6 +463,7 @@ for my $pdbx_file ( @ARGV ) {
                                                     {$origin_atom_id} = 1;
                     }
 
+                    # Retrieves site ids and applies to residue unique keys.
                     my @site_ids =
                         map { $rotamer_angle->{$related_id}{$_} }
                         grep { exists $rotamer_angle->{$related_id}{$_} }
@@ -474,8 +472,13 @@ for my $pdbx_file ( @ARGV ) {
                         map { $site_ids[$_] => $_ }
                         0..$#site_ids;
 
+                    my $current_residue_unique_key =
+                        unique_residue_key( $rotamer_angle->{$related_id} );
+
                     $rotamer_angles_residue_keys{$current_residue_unique_key} = 1;
 
+                    # Stores angle values.
+                    my $angle_name = $rotamer_angle->{$related_id}{'type'};
                     my $angle_value;
                     if( defined $rotamer_angle->{$related_id}{'units'} &&
                         $rotamer_angle->{$related_id}{'units'} eq 'degrees' ) {
