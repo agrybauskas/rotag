@@ -1107,41 +1107,7 @@ sub search_unique_residue_key
     my ( $similar ) = ( $options->{'similar'} );
     $similar //= 0;
 
-    my $filtered_atom_site =
-        filter_by_unique_residue_key( $atom_site, $unique_residue_key );
-    my ( $found_unique_residue_key ) =
-        map { unique_residue_key( $filtered_atom_site->{$_} ) }
-        sort { $a <=> $b }
-        keys %{ $filtered_atom_site };
-
-    return $found_unique_residue_key
-        if defined $found_unique_residue_key || ! $similar;
-
-    $unique_residue_key =
-        change_unique_residue_key( $unique_residue_key,
-                                   { 'pdbx_auth_alt_id' => '?' } );
-
-    $filtered_atom_site =
-        filter_by_unique_residue_key( $atom_site, $unique_residue_key );
-    ( $found_unique_residue_key ) =
-        map { unique_residue_key( $filtered_atom_site->{$_} ) }
-        sort { $a <=> $b }
-        keys %{ $filtered_atom_site };
-
-    return $found_unique_residue_key if defined $found_unique_residue_key;
-
-    $unique_residue_key =
-        change_unique_residue_key( $unique_residue_key,
-                                   { 'pdbx_auth_alt_id' => '.' } );
-
-    $filtered_atom_site =
-        filter_by_unique_residue_key( $atom_site, $unique_residue_key );
-    ( $found_unique_residue_key ) =
-        map { unique_residue_key( $filtered_atom_site->{$_} ) }
-        sort { $a <=> $b }
-        keys %{ $filtered_atom_site };
-
-    return $found_unique_residue_key;
+    my @unique_residue_keys = unique_residue_keys( $atom_site );
 }
 
 sub unique_residue_keys
