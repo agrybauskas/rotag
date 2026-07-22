@@ -1099,6 +1099,13 @@ sub filter_connected
                          'return_data' => 'id' } );
 }
 
+sub search_unique_residue_key
+{
+    my ( $atom_site, $unique_residue_key, $options ) = @_;
+    my ( $similar ) = ( $options->{'similar'} );
+    $similar //= 1;
+}
+
 sub unique_residue_keys
 {
     my ( $atom_site, $default_values ) = @_;
