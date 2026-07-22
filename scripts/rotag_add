@@ -38,6 +38,7 @@ use PDBxParser qw( change_unique_residue_key
                    mark_selection
                    obtain_pdbx_data
                    raw2indexed
+                   search_unique_residue_key
                    split_by
                    to_pdbx
                    unique_residue_key );

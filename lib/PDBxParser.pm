@@ -34,6 +34,7 @@ our @EXPORT_OK = qw( change_unique_residue_key
                      record2raw
                      replace_atom_site_ids
                      related_category_data
+                     search_unique_residue_key
                      split_by
                      to_csv
                      to_pdbx
@@ -1102,8 +1103,19 @@ sub filter_connected
 sub search_unique_residue_key
 {
     my ( $atom_site, $unique_residue_key, $options ) = @_;
+
     my ( $similar ) = ( $options->{'similar'} );
-    $similar //= 1;
+    $similar //= 0;
+
+    my $filtered_atom_site =
+        filter_by_unique_residue_key( $atom_site, $unique_residue_key );
+    my ( $found_unique_residue_key ) =
+        map { unique_residue_key( $filtered_atom_site->{$_} ) }
+        sort { $a <=> $b }
+        keys %{ $filtered_atom_site };
+
+    return $found_unique_residue_key
+        if defined $found_unique_residue_key || ! $similar;
 }
 
 sub unique_residue_keys
