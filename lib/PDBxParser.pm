@@ -1107,7 +1107,20 @@ sub search_unique_residue_key
     my ( $similar ) = ( $options->{'similar'} );
     $similar //= 0;
 
+    my @matched_residue_keys = ();
+
     my @unique_residue_keys = unique_residue_keys( $atom_site );
+
+    # Checks exact match.
+    foreach( @unique_residue_keys ) {
+        if( $_ =~ m/^\Q${unique_residue_key}\E$/ ) {
+            push @matched_residue_keys, $_;
+        }
+    }
+
+    return \@matched_residue_keys if @matched_residue_keys;
+
+    return \@matched_residue_keys;
 }
 
 sub unique_residue_keys
