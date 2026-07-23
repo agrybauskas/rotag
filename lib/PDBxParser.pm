@@ -1120,6 +1120,20 @@ sub search_unique_residue_key
 
     return \@matched_residue_keys if @matched_residue_keys;
 
+    # TODO: needs refactoring by making unique residue key an object.
+    my @unique_residue_key_parts = split /,/, $unique_residue_key;
+    my $pdbx_auth_alt_id = $unique_residue_key_parts[$#unique_residue_key_parts];
+
+    if( $pdbx_auth_alt_id eq '?' ) {
+        $unique_residue_key_parts[$#unique_residue_key_parts] = '(\.|\d+)';
+        $unique_residue_key = join ',', @unique_residue_key_parts;
+        foreach( @unique_residue_keys ) {
+            if( $_ =~ m/^${unique_residue_key}$/ ) {
+                push @matched_residue_keys, $_;
+            }
+        }
+    }
+
     return \@matched_residue_keys;
 }
 
