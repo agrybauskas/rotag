@@ -1132,6 +1132,14 @@ sub search_unique_residue_key
                 push @matched_residue_keys, $_;
             }
         }
+    } else {
+        $unique_residue_key_parts[$#unique_residue_key_parts] = '?';
+        $unique_residue_key = join ',', @unique_residue_key_parts;
+        foreach( @unique_residue_keys ) {
+            if( $_ =~ m/^\Q${unique_residue_key}\E$/ ) {
+                push @matched_residue_keys, $_;
+            }
+        }
     }
 
     return \@matched_residue_keys;
