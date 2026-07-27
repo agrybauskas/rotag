@@ -1118,7 +1118,7 @@ sub search_unique_residue_key
         }
     }
 
-    return \@matched_residue_keys if @matched_residue_keys;
+    return $matched_residue_keys[0] if @matched_residue_keys;
 
     # TODO: needs refactoring by making unique residue key an object.
     my @unique_residue_key_parts = split /,/, $unique_residue_key;
@@ -1142,7 +1142,9 @@ sub search_unique_residue_key
         }
     }
 
-    return \@matched_residue_keys;
+    return $unique_residue_key if ! @matched_residue_keys;
+
+    return $matched_residue_keys[0];
 }
 
 sub unique_residue_keys
