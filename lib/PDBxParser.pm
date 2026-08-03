@@ -1125,18 +1125,20 @@ sub search_unique_residue_key
     my $pdbx_auth_alt_id = $unique_residue_key_parts[$#unique_residue_key_parts];
 
     if( $pdbx_auth_alt_id eq '?' ) {
-        $unique_residue_key_parts[$#unique_residue_key_parts] = '(\.|\d+)';
-        $unique_residue_key = join ',', @unique_residue_key_parts;
+        my @regex_residue_key_parts = @unique_residue_key_parts;
+        $regex_residue_key_parts[$#regex_residue_key_parts] = '(\.|\d+)';
+        my $regex_residue_key = join ',', @unique_residue_key_parts;
         foreach( @unique_residue_keys ) {
-            if( $_ =~ m/^${unique_residue_key}$/ ) {
+            if( $_ =~ m/^${regex_residue_key}$/ ) {
                 push @matched_residue_keys, $_;
             }
         }
     } else {
-        $unique_residue_key_parts[$#unique_residue_key_parts] = '?';
-        $unique_residue_key = join ',', @unique_residue_key_parts;
+        my @regex_residue_key_parts = @unique_residue_key_parts;
+        $regex_residue_key_parts[$#unique_residue_key_parts] = '?';
+        my $regex_residue_key = join ',', @unique_residue_key_parts;
         foreach( @unique_residue_keys ) {
-            if( $_ =~ m/^\Q${unique_residue_key}\E$/ ) {
+            if( $_ =~ m/^\Q${regex_residue_key}\E$/ ) {
                 push @matched_residue_keys, $_;
             }
         }
