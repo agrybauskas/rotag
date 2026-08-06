@@ -1102,27 +1102,25 @@ sub filter_connected
 
 sub search_unique_residue_key
 {
-    my ( $atom_site, $unique_residue_key, $options ) = @_;
-
-    my ( $similar ) = ( $options->{'similar'} );
-    $similar //= 0;
-
-    my @matched_residue_keys = ();
-
-    my @unique_residue_keys = unique_residue_keys( $atom_site );
-
-    # Checks exact match.
-    foreach( @unique_residue_keys ) {
-        if( $_ =~ m/^\Q${unique_residue_key}\E$/ ) {
-            push @matched_residue_keys, $_;
-        }
-    }
-
-    return $matched_residue_keys[0] if @matched_residue_keys;
+    my ( $atom_site, $unique_residue_key ) = @_;
 
     # TODO: needs refactoring by making unique residue key an object.
     my @unique_residue_key_parts = split /,/, $unique_residue_key;
     my $pdbx_auth_alt_id = $unique_residue_key_parts[$#unique_residue_key_parts];
+
+    my @matched_residue_keys = ();
+    my @unique_residue_keys = unique_residue_keys( $atom_site );
+
+    # Checks exact match.
+    if( $pdbx_auth_alt_id ne '?' ) {
+        foreach( @unique_residue_keys ) {
+            if( $_ =~ m/^\Q${unique_residue_key}\E$/ ) {
+                push @matched_residue_keys, $_;
+            }
+        }
+    }
+
+    return $matched_residue_keys[0] if @matched_residue_keys;
 
     if( $pdbx_auth_alt_id eq '?' ) {
         my @regex_residue_key_parts = @unique_residue_key_parts;
@@ -1144,6 +1142,7 @@ sub search_unique_residue_key
         }
     }
 
+    # NOTE: if not found, return the query.
     return $unique_residue_key if ! @matched_residue_keys;
 
     return $matched_residue_keys[0];
