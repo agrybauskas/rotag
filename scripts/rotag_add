@@ -491,9 +491,36 @@ for my $pdbx_file ( @ARGV ) {
                     # Stores angle values.
                     my $angle_name = $rotamer_angle->{$related_id}{'type'};
 
-                    # Applies site ids to bond parameter names.
-                    my @angle_name_parts = split /(-|\.)/, $angle_name;
-                    $angle_name = join "", @angle_name_parts;
+                    # # Applies site ids to bond parameter names.
+                    # # TODO: should be dedicated function or method to change
+                    # # bond parameter name and add site id.
+                    # my @angle_name_all_parts = split /(-|\.)/, $angle_name;
+                    # my @angle_name_parts =
+                    #     map  { $angle_name_all_parts[$_] }
+                    #     grep { $_ % 2 == 0 }
+                    #          ( 0..$#angle_name_all_parts );
+                    # my @angle_name_delimiters =
+                    #     map  { $angle_name_all_parts[$_] }
+                    #     grep { $_ % 2 > 0 }
+                    #          ( 0..$#angle_name_all_parts );
+                    # my @updated_angle_name_all_parts = ();
+                    # for my $i ( 0..$#angle_name_parts ) {
+                    #     my $site_id = $site_ids[$i];
+
+                    #     if( defined $site_id && $site_id ne '.' ) {
+                    #         push @updated_angle_name_all_parts,
+                    #             $angle_name_parts[$i] . '{' . $site_id  . '}';
+                    #     } else {
+                    #         push @updated_angle_name_all_parts,
+                    #             $angle_name_parts[$i];
+                    #     }
+
+                    #     if( $i < $#angle_name_parts ) {
+                    #         push @updated_angle_name_all_parts,
+                    #             $angle_name_delimiters[$i];
+                    #     }
+                    # }
+                    # $angle_name = join "", @updated_angle_name_all_parts;
 
                     my $angle_value;
                     if( defined $rotamer_angle->{$related_id}{'units'} &&
