@@ -490,6 +490,11 @@ for my $pdbx_file ( @ARGV ) {
 
                     # Stores angle values.
                     my $angle_name = $rotamer_angle->{$related_id}{'type'};
+
+                    # Applies site ids to bond parameter names.
+                    my @angle_name_parts = split /(-|\.)/, $angle_name;
+                    $angle_name = join "", @angle_name_parts;
+
                     my $angle_value;
                     if( defined $rotamer_angle->{$related_id}{'units'} &&
                         $rotamer_angle->{$related_id}{'units'} eq 'degrees' ) {
