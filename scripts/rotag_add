@@ -576,24 +576,22 @@ for my $pdbx_file ( @ARGV ) {
             # Generates rotational model.
             rotation_translation( $parameters, $residue_site );
 
-            for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
-                my $origin_atom_id =
-                    ( exists $residue_site->{$atom_id}{'origin_atom_id'} ?
-                      $residue_site->{$atom_id}{'origin_atom_id'} :
-                      $atom_id );
-                my $atom_name = $residue_site->{$atom_id}{'label_atom_id'};
-                my $group_PDB = $residue_site->{$atom_id}{'group_PDB'};
+            for my $rotamer_id ( sort { $a <=> $b } keys %rotamer_angles ) {
+                my $rotamer_angles = $rotamer_angles{$rotamer_id};
 
-                next if $group_PDB eq 'ATOM' &&
-                    exists $exclude_atom_names{$atom_name};
+                for my $atom_id ( sort { $a <=> $b } keys %{ $residue_site } ) {
+                    my $origin_atom_id =
+                        ( exists $residue_site->{$atom_id}{'origin_atom_id'} ?
+                          $residue_site->{$atom_id}{'origin_atom_id'} :
+                          $atom_id );
+                    my $atom_name = $residue_site->{$atom_id}{'label_atom_id'};
+                    my $group_PDB = $residue_site->{$atom_id}{'group_PDB'};
 
-                my $current_residue_unique_key =
-                    unique_residue_key( $residue_site->{$atom_id} );
+                    next if $group_PDB eq 'ATOM' &&
+                        exists $exclude_atom_names{$atom_name};
 
-                # next if ! exists $rotamer_angles_residue_keys{$current_residue_unique_key};
-
-                for my $rotamer_id ( sort { $a <=> $b } keys %rotamer_angles ) {
-                    my $rotamer_angles = $rotamer_angles{$rotamer_id};
+                    my $current_residue_unique_key =
+                        unique_residue_key( $residue_site->{$atom_id} );
 
                     # Only checks if any bond parameters are present. If no, it
                     # should be ignored.
@@ -604,7 +602,8 @@ for my $pdbx_file ( @ARGV ) {
                     next if ! defined $bond_parameters || ! %{ $bond_parameters };
                     next if ! any { exists $bond_parameters->{$_} }
                               keys %{ $rotamer_angles };
-                    # next if ! exists $rotamer_angles_atom_ids_tbl{$rotamer_id}{$origin_atom_id};
+                    # next if ! exists $rotamer_angles_atom_ids_tbl{$rotamer_id}
+                    #                                              {$origin_atom_id};
 
                     %rotamer_atom_site =
                         ( %rotamer_atom_site,
