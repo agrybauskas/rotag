@@ -590,6 +590,8 @@ for my $pdbx_file ( @ARGV ) {
                 my $current_residue_unique_key =
                     unique_residue_key( $residue_site->{$atom_id} );
 
+                # next if ! exists $rotamer_angles_residue_keys{$current_residue_unique_key};
+
                 for my $rotamer_id ( sort { $a <=> $b } keys %rotamer_angles ) {
                     my $rotamer_angles = $rotamer_angles{$rotamer_id};
 
