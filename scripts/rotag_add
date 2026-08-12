@@ -13,7 +13,6 @@ use Try::Tiny;
 
 use BondParameters qw( bendable_angles
                        collect_bond_parameters
-                       collect_dihedral_angles
                        detect_bond_parameter_type
                        stretchable_bonds
                        rotatable_bonds );
