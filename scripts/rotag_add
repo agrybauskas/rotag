@@ -29,6 +29,7 @@ use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
 use PDBxParser qw( change_unique_residue_key
+                   determine_ligand_sites
                    extract
                    filter
                    filter_new
@@ -227,6 +228,8 @@ for my $pdbx_file ( @ARGV ) {
                   'include' => { '[local]_selection_state' =>
                                  ( $include_selected ?
                                    [ 'T', 'S' ] : [ 'T' ] ) } } );
+
+    # determine_ligand_sites( $target_atom_site, $struct_conn );
 
     my %exclude_atom_names = map { $_ => 1 } @{ $interaction_atom_names };
 
