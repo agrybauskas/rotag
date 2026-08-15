@@ -674,6 +674,18 @@ for my $pdbx_file ( @ARGV ) {
                 # of the cluster.
                 for my $label ( @{ $cluster->get_labels() } ) {
                     my $atom_ids = $cluster->get_ids_by_label( $label );
+
+                    if( ! map { $rotamer_energy->{$_} }
+                         grep { exists $rotamer_energy->{$_} }
+                             @{ $atom_ids } ) {
+                        error( { 'program' => $0,
+                                 'filename' => $pdbx_file,
+                                 'message' =>
+                                     "rotamer energy values in " .
+                                     "'_[local]_rotamer_energy' are missing to " .
+                                     "optimise the ligands.\n" } );
+                    }
+
                     my ( $lowest_energy_member ) =
                         sort { $a->{'value'} <=> $b->{'value'} }
                         map { $rotamer_energy->{$_} }
