@@ -144,7 +144,8 @@ sub generate_pseudo
                 push @bond_parameter_values,
                     [ map { $_ - $bond_parameters{"$bond_parameter_name"}{'value'} }
                           @{ $bond_parameter_values->{"$bond_parameter_name"} } ];
-            } elsif( exists $bond_parameter_values->{"$alt_bond_parameter_name"} ) {
+            } elsif( defined $alt_bond_parameter_name &&
+                     exists $bond_parameter_values->{"$alt_bond_parameter_name"} ) {
                 push @bond_parameter_values,
                     [ map { $_ - $bond_parameters{"$bond_parameter_name"}{'value'} }
                           @{ $bond_parameter_values->{"$alt_bond_parameter_name"} } ];
