@@ -1485,6 +1485,8 @@ sub split_by
     $append_dot //= 0;
     $default_empty_values //= {};
 
+    my $append = ( $append_dot ? [ { 'label_alt_id' => '.' } ] : [] );
+
     my %split_groups;
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
         # Creates group determining key that is used to sort atoms.
@@ -1506,14 +1508,17 @@ sub split_by
         push @{ $split_groups{$group_key}{'atom_ids'} }, $atom_id;
     }
 
-    if( $append_dot ) {
+    for my $append_attribute ( @{ $append } ) {
+        my ( $append_name ) = keys %{ $append_attribute };
+        my $append_value = $append_attribute->{$append_name};
+
         # Pre-determines position of attribute in unique key.
         # HACK: might not work when the 'label_alt_id' does not align between
         # ATOM and HETATM.
-        my $alt_id_pos;
+        my $append_pos;
         for my $i ( 0..$#{ $attributes } ) {
-            if( $attributes->[$i] eq 'label_alt_id' ) {
-                $alt_id_pos = $i;
+            if( $attributes->[$i] eq $append_name ) {
+                $append_pos = $i;
                 last;
             }
         }
@@ -1523,8 +1528,8 @@ sub split_by
         my @origin_keys;
         for my $unique_key ( keys %split_groups ) {
             my @unique_key_attributes = split /,/sxm, $unique_key;
-            if( $unique_key_attributes[$alt_id_pos] ne q{.} ) {
-                $unique_key_attributes[$alt_id_pos] = '.';
+            if( $unique_key_attributes[$append_pos] ne $append_value ) {
+                $unique_key_attributes[$append_pos] = $append_value;
 
                 my $origin_key = join ',', @unique_key_attributes;
                 push @origin_keys, $origin_key;
