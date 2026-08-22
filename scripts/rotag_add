@@ -676,8 +676,9 @@ for my $pdbx_file ( @ARGV ) {
                     my $atom_ids = $cluster->get_ids_by_label( $label );
 
                     if( ! map { $rotamer_energy->{$_} }
-                         grep { exists $rotamer_energy->{$_} }
-                             @{ $atom_ids } ) {
+                        grep { exists $rotamer_energy->{$_} }
+                        uniq map { $rotamer_atom_site{$_}{'label_alt_id'} }
+                        @{ $atom_ids } ) {
                         error( { 'program' => $0,
                                  'filename' => $pdbx_file,
                                  'message' =>
