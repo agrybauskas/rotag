@@ -1461,31 +1461,33 @@ sub extract
 # Input:
 #     $args->{atom_site} - atom site data structure;
 #     $args->{attributes} - list of attributes that atom site will be split by;
-#     $args->{append_dot} - atoms that has 'label_alt_id' eq '.' to
-#     corresponding groups.
+#     $args->{append} - appending atoms that have specified tags equal to the
+#     specified value to corresponding groups;
+#     $args->{append_dot} - appending $args->{append_dot} - atoms that has
+#     'label_alt_id' eq '.' to corresponding groups.
 # Output:
 #     %split_groups - hash of atom site data structures.
 #     Data structure example:
 #     { '12,A,1,.' => {
-#           { 'attributes' => [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num',
-#                               'label_alt_id' ],
+#           { 'attributes' => [ 'label_seq_id', 'label_asym_id',
+#                               'pdbx_PDB_model_num', 'label_alt_id' ],
 #             'ids' => [ 1, 2, 3 ] } } }
 #
 
 sub split_by
 {
     my ( $args ) = @_;
-    my ( $atom_site, $attributes, $append_dot, $default_empty_values ) =
-        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'},
-          $args->{'default_empty_values'} );
+    my ( $atom_site, $attributes, $append, $append_dot, $default_empty_values ) =
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append'},
+          $args->{'append_dot'}, $args->{'default_empty_values'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
           'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id' ];
     $append_dot //= 0;
+    $append //= ( $append_dot ? [ { 'label_alt_id' => '.' } ] : $append );
+    $append //= [];
     $default_empty_values //= {};
-
-    my $append = ( $append_dot ? [ { 'label_alt_id' => '.' } ] : [] );
 
     my %split_groups;
     for my $atom_id ( sort { $a <=> $b } keys %{ $atom_site } ) {
