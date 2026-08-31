@@ -1461,10 +1461,8 @@ sub extract
 # Input:
 #     $args->{atom_site} - atom site data structure;
 #     $args->{attributes} - list of attributes that atom site will be split by;
-#     $args->{append} - appending atoms that have specified tags equal to the
-#     specified value to corresponding groups;
-#     $args->{append_dot} - appending $args->{append_dot} - atoms that has
-#     'label_alt_id' eq '.' to corresponding groups.
+#     $args->{append_dot} - atoms that has 'label_alt_id' eq '.' to
+#     corresponding groups.
 # Output:
 #     %split_groups - hash of atom site data structures.
 #     Data structure example:
@@ -1477,16 +1475,14 @@ sub extract
 sub split_by
 {
     my ( $args ) = @_;
-    my ( $atom_site, $attributes, $append, $append_dot, $default_empty_values ) =
-        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append'},
-          $args->{'append_dot'}, $args->{'default_empty_values'} );
+    my ( $atom_site, $attributes, $append_dot, $default_empty_values ) =
+        ( $args->{'atom_site'}, $args->{'attributes'}, $args->{'append_dot'},
+          $args->{'default_empty_values'} );
 
     $attributes //=
         [ 'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
           'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id' ];
     $append_dot //= 0;
-    $append //= ( $append_dot ? [ { 'label_alt_id' => '.' } ] : $append );
-    $append //= [];
     $default_empty_values //= {};
 
     my %split_groups;
@@ -1510,17 +1506,14 @@ sub split_by
         push @{ $split_groups{$group_key}{'atom_ids'} }, $atom_id;
     }
 
-    for my $append_attribute ( @{ $append } ) {
-        my ( $append_name ) = keys %{ $append_attribute };
-        my $append_value = $append_attribute->{$append_name};
-
+    if( $append_dot ) {
         # Pre-determines position of attribute in unique key.
         # HACK: might not work when the 'label_alt_id' does not align between
         # ATOM and HETATM.
-        my $append_pos;
+        my $alt_id_pos;
         for my $i ( 0..$#{ $attributes } ) {
-            if( $attributes->[$i] eq $append_name ) {
-                $append_pos = $i;
+            if( $attributes->[$i] eq 'label_alt_id' ) {
+                $alt_id_pos = $i;
                 last;
             }
         }
@@ -1530,8 +1523,8 @@ sub split_by
         my @origin_keys;
         for my $unique_key ( keys %split_groups ) {
             my @unique_key_attributes = split /,/sxm, $unique_key;
-            if( $unique_key_attributes[$append_pos] ne $append_value ) {
-                $unique_key_attributes[$append_pos] = $append_value;
+            if( $unique_key_attributes[$alt_id_pos] ne q{.} ) {
+                $unique_key_attributes[$alt_id_pos] = '.';
 
                 my $origin_key = join ',', @unique_key_attributes;
                 push @origin_keys, $origin_key;

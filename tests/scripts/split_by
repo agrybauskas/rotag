@@ -14,16 +14,9 @@ use PDBxParser qw( filter
 #
 
 @ARGV = ( "-" ) unless @ARGV;
-my ( $attributes, $pdbx_dump_file, $append_dot, $append ) = @ARGV;
-$append //= '';
+my ( $attributes, $pdbx_dump_file, $append_dot ) = @ARGV;
 
 my @attributes = split( ",", $attributes );
-
-my @append = ();
-for my $attribute_value ( split /,/, $append ) {
-    my ( $attribute, $value ) = split /=/, $attribute_value;
-    push @append, { $attribute => $value };
-}
 
 my $atom_site;
 open( my $fh, "<", $pdbx_dump_file );
@@ -35,8 +28,7 @@ $atom_site = eval( $atom_site );
 
 my $split_groups = split_by( { 'atom_site' => $atom_site,
                                'attributes' => \@attributes,
-                               'append_dot' => $append_dot,
-                               'append' => ( @append ? \@append : undef ) } );
+                               'append_dot' => $append_dot } );
 
 foreach( sort keys %{ $split_groups } ) {
     my %pdbx =();
