@@ -1,0 +1,14 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use PDBxParser qw( group_unique_residue_keys );
+
+#
+# Unit test: PDBxParser::group_unique_residue_keys.
+# Example: ./group_unique_residue_keys '18,1,A,.,18,A;18,1,A,A,18,A'
+#
+
+@ARGV = ( "-" ) unless @ARGV;
+my ( $unique_residue_keys ) = @ARGV;

@@ -15,6 +15,7 @@ our @EXPORT_OK = qw( change_unique_residue_key
                      filter_connected
                      filter_new
                      follow_hetatoms
+                     group_unique_residue_keys
                      increase_chain_id
                      indexed2raw
                      mark_selection
@@ -1549,6 +1550,11 @@ sub split_by
     }
 
     return \%split_groups;
+}
+
+sub group_unique_residue_keys
+{
+
 }
 
 #
