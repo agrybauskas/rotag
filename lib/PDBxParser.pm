@@ -1555,6 +1555,11 @@ sub split_by
 sub group_unique_residue_keys
 {
     my ( $unique_residue_keys ) = @_;
+    my @attributes = (
+        'label_seq_id', 'label_asym_id', 'pdbx_PDB_model_num', 'label_alt_id',
+        'auth_seq_id', 'auth_asym_id', 'pdbx_auth_alt_id'
+    );
+
     my @unique_residue_key_groups = ();
     return \@unique_residue_key_groups;
 }
