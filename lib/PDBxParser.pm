@@ -1572,7 +1572,11 @@ sub group_unique_residue_keys
         $id++;
     }
 
+    my $group_id = 1;
     my @unique_residue_key_groups = ();
+    for my $id ( sort { $a <=> $b } keys %unique_residue_keys ) {
+
+    }
     return \@unique_residue_key_groups;
 }
 
