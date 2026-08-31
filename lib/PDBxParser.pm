@@ -1554,7 +1554,9 @@ sub split_by
 
 sub group_unique_residue_keys
 {
-
+    my ( $unique_residue_keys ) = @_;
+    my @unique_residue_key_groups = ();
+    return \@unique_residue_key_groups;
 }
 
 #

@@ -12,3 +12,14 @@ use PDBxParser qw( group_unique_residue_keys );
 
 @ARGV = ( "-" ) unless @ARGV;
 my ( $unique_residue_keys ) = @ARGV;
+
+my @unique_residue_keys = split /;/, $unique_residue_keys;
+my $grouped_unique_residue_keys =
+    group_unique_residue_keys( \@unique_residue_keys );
+
+for my $group ( @{ $grouped_unique_residue_keys } ) {
+    for my $unique_residue_key ( @{ $group } ) {
+        print $unique_residue_key, "\n";
+    }
+    print "\n";
+}
