@@ -43,7 +43,6 @@ our @EXPORT_OK = qw( change_unique_residue_key
                      unique_residue_keys );
 
 use Carp;
-use Combinatorics qw( permutation );
 use Clone qw( clone );
 use List::MoreUtils qw( any
                         uniq );
@@ -1580,6 +1579,7 @@ sub group_unique_residue_keys
 
     my @unique_residue_key_groups = ();
     for my $id ( sort { $a <=> $b } keys %unique_residue_keys ) {
+        
     }
     return \@unique_residue_key_groups;
 }
