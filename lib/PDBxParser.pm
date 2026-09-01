@@ -1572,14 +1572,13 @@ sub group_unique_residue_keys
             my $attribute = $attributes[$attribute_pos];
             $unique_residue_keys{$id}{$attribute} =
                 $unique_residue_key_parts[$attribute_pos];
+            $unique_residue_keys{$id}{'id'} = $id;
         }
         $id++;
     }
 
-    my $group_id = 1;
     my @unique_residue_key_groups = ();
     for my $id ( sort { $a <=> $b } keys %unique_residue_keys ) {
-
     }
     return \@unique_residue_key_groups;
 }
