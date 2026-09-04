@@ -1595,6 +1595,17 @@ sub group_unique_residue_keys
 
     # Groups unique residue keys according to their relations.
     my @unique_residue_key_groups = ();
+    for my $label_alt_id ( sort keys %label_alt_id_groups ) {
+        next if $label_alt_id eq '.';
+
+        my @unique_residue_key_group = (
+            ( exists $label_alt_id_groups{'.'} ?
+              sort { $a <=> $b } keys %{ $label_alt_id_groups{'.'} } : () ),
+            sort { $a <=> $b } keys %{ $label_alt_id_groups{$label_alt_id} }
+        );
+
+        push @unique_residue_key_groups, \@unique_residue_key_group;
+    }
 
     return \@unique_residue_key_groups;
 }

@@ -21,5 +21,8 @@ for my $group ( @{ $grouped_unique_residue_keys } ) {
     for my $unique_residue_key ( @{ $group } ) {
         print $unique_residue_key, "\n";
     }
+
+    next if $group eq $grouped_unique_residue_keys->[$#{ $grouped_unique_residue_keys } ];
+
     print "\n";
 }
