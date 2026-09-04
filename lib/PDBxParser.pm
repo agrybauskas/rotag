@@ -1593,7 +1593,7 @@ sub group_unique_residue_keys
         $auth_alt_id_groups{$auth_alt_id}{$id} = 1;
     }
 
-    # Groups unique residue keys according to their relations.
+    # Groups unique residue keys according to 'label_alt_id' relations.
     my @unique_residue_key_groups_ids = ();
     for my $label_alt_id ( sort keys %label_alt_id_groups ) {
         next if $label_alt_id eq '.';
@@ -1625,6 +1625,8 @@ sub group_unique_residue_keys
               sort { $a <=> $b }
               keys %{ $label_alt_id_groups{'.'} } ];
     }
+
+    # Adds unique residue keys that have varying 'pdbx_auth_alt_id' values.
 
     # Translates group ids to unique residue keys.
     my @unique_residue_key_groups = ();
