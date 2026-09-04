@@ -1605,6 +1605,9 @@ sub group_unique_residue_keys
         );
 
         for my $i ( 0..$#unique_residue_key_group_ids ) {
+            next if exists $unique_residue_keys{$unique_residue_key_group_ids[$i]} &&
+                $unique_residue_keys{$unique_residue_key_group_ids[$i]}{'pdbx_auth_alt_id'} ne '.';
+
             if( $i == 0 ) {
                 push @unique_residue_key_groups_ids,
                     [ $unique_residue_key_group_ids[$i] ];
@@ -1618,7 +1621,9 @@ sub group_unique_residue_keys
         return [] if ! exists $label_alt_id_groups{'.'};
 
         push @unique_residue_key_groups_ids,
-            [ sort { $a <=> $b } keys %{ $label_alt_id_groups{'.'} } ];
+            [ grep { $unique_residue_keys{$_}{'pdbx_auth_alt_id'} eq '.' }
+              sort { $a <=> $b }
+              keys %{ $label_alt_id_groups{'.'} } ];
     }
 
     # Translates group ids to unique residue keys.
