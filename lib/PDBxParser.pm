@@ -1598,13 +1598,21 @@ sub group_unique_residue_keys
     for my $label_alt_id ( sort keys %label_alt_id_groups ) {
         next if $label_alt_id eq '.';
 
-        my @unique_residue_key_group = (
+        my @unique_residue_key_group_ids = (
             ( exists $label_alt_id_groups{'.'} ?
               sort { $a <=> $b } keys %{ $label_alt_id_groups{'.'} } : () ),
             sort { $a <=> $b } keys %{ $label_alt_id_groups{$label_alt_id} }
         );
 
-        push @unique_residue_key_groups, \@unique_residue_key_group;
+        for my $i ( 0..$#unique_residue_key_group_ids ) {
+            if( $i == 0 ) {
+                push @unique_residue_key_groups,
+                    [ $unique_residue_key_group_ids[$i] ];
+            } else {
+                push @{ $unique_residue_key_groups[$#unique_residue_key_groups] },
+                    $unique_residue_key_group_ids[$i];
+            }
+        }
     }
 
     return \@unique_residue_key_groups;
