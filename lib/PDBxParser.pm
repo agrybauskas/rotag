@@ -1578,9 +1578,14 @@ sub group_unique_residue_keys
         $id++;
     }
 
-    my @unique_residue_key_groups = ();
+    # Defines relations between residue unique keys.
     for my $id ( sort { $a <=> $b } keys %unique_residue_keys ) {
+
     }
+
+    # Groups unique residue keys according to their relations.
+    my @unique_residue_key_groups = ();
+
     return \@unique_residue_key_groups;
 }
 
