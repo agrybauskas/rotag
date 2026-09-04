@@ -1614,6 +1614,12 @@ sub group_unique_residue_keys
             }
         }
     }
+    if( ! @unique_residue_key_groups ) {
+        return \@unique_residue_key_groups if ! exists $label_alt_id_groups{'.'};
+
+        push @unique_residue_key_groups,
+            [ sort { $a <=> $b } keys %{ $label_alt_id_groups{'.'} } ];
+    }
 
     return \@unique_residue_key_groups;
 }
