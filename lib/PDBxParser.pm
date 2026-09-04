@@ -1580,8 +1580,17 @@ sub group_unique_residue_keys
 
     # Marks which unique residue keys have different "label_alt_id" and
     # "pdbx_auth_alt_id" values.
-    my %alt_key_groups = ();
+    my %label_alt_id_groups = ();
+    my %auth_alt_id_groups = ();
     for my $id ( sort { $a <=> $b } keys %unique_residue_keys ) {
+        my $label_alt_id =
+            ( exists $unique_residue_keys{$id}{'label_alt_id'} ?
+              $unique_residue_keys{$id}{'label_alt_id'} : '?' );
+        my $auth_alt_id =
+            ( exists $unique_residue_keys{$id}{'pdbx_auth_alt_id'} ?
+              $unique_residue_keys{$id}{'pdbx_auth_alt_id'} : '?' );
+        $label_alt_id_groups{$label_alt_id}{$id} = 1;
+        $auth_alt_id_groups{$auth_alt_id}{$id} = 1;
     }
 
     # Groups unique residue keys according to their relations.
