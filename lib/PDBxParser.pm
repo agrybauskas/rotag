@@ -1578,9 +1578,10 @@ sub group_unique_residue_keys
         $id++;
     }
 
-    # Defines relations between residue unique keys.
+    # Marks which unique residue keys have different "label_alt_id" and
+    # "pdbx_auth_alt_id" values.
+    my %alt_key_groups = ();
     for my $id ( sort { $a <=> $b } keys %unique_residue_keys ) {
-
     }
 
     # Groups unique residue keys according to their relations.
