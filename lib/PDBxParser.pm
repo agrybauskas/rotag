@@ -1627,6 +1627,11 @@ sub group_unique_residue_keys
     }
 
     # Adds unique residue keys that have varying 'pdbx_auth_alt_id' values.
+    my @auth_unique_residue_key_groups_ids =
+        map { sort { $a <=> $b} keys %{ $auth_alt_id_groups{$_} } }
+        grep { $_ ne '.' }
+        sort keys %auth_alt_id_groups;
+
 
     # Translates group ids to unique residue keys.
     my @unique_residue_key_groups = ();
