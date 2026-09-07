@@ -1553,6 +1553,8 @@ sub split_by
     return \%split_groups;
 }
 
+# TODO: the function either should be refactored or there should be class
+# to deal with unique residue keys seprarately.
 sub group_unique_residue_keys
 {
     my ( $unique_residue_keys ) = @_;
@@ -1627,12 +1629,26 @@ sub group_unique_residue_keys
     }
 
     # Adds unique residue keys that have varying 'pdbx_auth_alt_id' values.
-    my @auth_unique_residue_key_groups_ids =
-        map { sort { $a <=> $b} keys %{ $auth_alt_id_groups{$_} } }
+    my @auth_alt_unique_residue_key_groups_ids =
+        map { [ sort { $a <=> $b} keys %{ $auth_alt_id_groups{$_} } ] }
         grep { $_ ne '.' }
         sort keys %auth_alt_id_groups;
 
     my @unique_residue_key_groups_ids = ();
+    for my $alt_residue_key_group_ids ( @alt_residue_key_groups_ids ) {
+        if( ! @auth_alt_unique_residue_key_groups_ids ) {
+            push @unique_residue_key_groups_ids, $alt_residue_key_group_ids;
+            next;
+        }
+
+        for my $auth_alt_unique_residue_key_group_ids (
+            @auth_alt_unique_residue_key_groups_ids ) {
+
+            push @unique_residue_key_groups_ids,
+                [ @{ $alt_residue_key_group_ids },
+                  @{ $auth_alt_unique_residue_key_group_ids } ];
+        }
+    }
 
     # Translates group ids to unique residue keys.
     my @unique_residue_key_groups = ();
