@@ -1623,7 +1623,8 @@ sub group_unique_residue_keys
         return [] if ! exists $label_alt_id_groups{'.'};
 
         push @alt_residue_key_groups_ids,
-            [ grep { $unique_residue_keys{$_}{'pdbx_auth_alt_id'} eq '.' }
+            [ grep { $unique_residue_keys{$_}{'pdbx_auth_alt_id'} eq '.' ||
+                     $unique_residue_keys{$_}{'pdbx_auth_alt_id'} eq '?' }
               sort { $a <=> $b }
               keys %{ $label_alt_id_groups{'.'} } ];
     }
@@ -1631,7 +1632,7 @@ sub group_unique_residue_keys
     # Adds unique residue keys that have varying 'pdbx_auth_alt_id' values.
     my @auth_alt_unique_residue_key_groups_ids =
         map { [ sort { $a <=> $b} keys %{ $auth_alt_id_groups{$_} } ] }
-        grep { $_ ne '.' }
+        grep { $_ ne '.' && $_ ne '?' }
         sort keys %auth_alt_id_groups;
 
     my @unique_residue_key_groups_ids = ();
