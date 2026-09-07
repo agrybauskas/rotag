@@ -1594,33 +1594,33 @@ sub group_unique_residue_keys
     }
 
     # Groups unique residue keys according to 'label_alt_id' relations.
-    my @unique_residue_key_groups_ids = ();
+    my @alt_residue_key_groups_ids = ();
     for my $label_alt_id ( sort keys %label_alt_id_groups ) {
         next if $label_alt_id eq '.';
 
-        my @unique_residue_key_group_ids = (
+        my @alt_residue_key_group_ids = (
             ( exists $label_alt_id_groups{'.'} ?
               sort { $a <=> $b } keys %{ $label_alt_id_groups{'.'} } : () ),
             sort { $a <=> $b } keys %{ $label_alt_id_groups{$label_alt_id} }
         );
 
-        for my $i ( 0..$#unique_residue_key_group_ids ) {
-            next if exists $unique_residue_keys{$unique_residue_key_group_ids[$i]} &&
-                $unique_residue_keys{$unique_residue_key_group_ids[$i]}{'pdbx_auth_alt_id'} ne '.';
+        for my $i ( 0..$#alt_residue_key_group_ids ) {
+            next if exists $unique_residue_keys{$alt_residue_key_group_ids[$i]} &&
+                $unique_residue_keys{$alt_residue_key_group_ids[$i]}{'pdbx_auth_alt_id'} ne '.';
 
             if( $i == 0 ) {
-                push @unique_residue_key_groups_ids,
-                    [ $unique_residue_key_group_ids[$i] ];
+                push @alt_residue_key_groups_ids,
+                    [ $alt_residue_key_group_ids[$i] ];
             } else {
-                push @{ $unique_residue_key_groups_ids[$#unique_residue_key_groups_ids] },
-                    $unique_residue_key_group_ids[$i];
+                push @{ $alt_residue_key_groups_ids[$#alt_residue_key_groups_ids] },
+                    $alt_residue_key_group_ids[$i];
             }
         }
     }
-    if( ! @unique_residue_key_groups_ids ) {
+    if( ! @alt_residue_key_groups_ids ) {
         return [] if ! exists $label_alt_id_groups{'.'};
 
-        push @unique_residue_key_groups_ids,
+        push @alt_residue_key_groups_ids,
             [ grep { $unique_residue_keys{$_}{'pdbx_auth_alt_id'} eq '.' }
               sort { $a <=> $b }
               keys %{ $label_alt_id_groups{'.'} } ];
@@ -1632,6 +1632,7 @@ sub group_unique_residue_keys
         grep { $_ ne '.' }
         sort keys %auth_alt_id_groups;
 
+    my @unique_residue_key_groups_ids = ();
 
     # Translates group ids to unique residue keys.
     my @unique_residue_key_groups = ();
