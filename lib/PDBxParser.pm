@@ -1608,7 +1608,8 @@ sub group_unique_residue_keys
 
         for my $i ( 0..$#alt_residue_key_group_ids ) {
             next if exists $unique_residue_keys{$alt_residue_key_group_ids[$i]} &&
-                $unique_residue_keys{$alt_residue_key_group_ids[$i]}{'pdbx_auth_alt_id'} ne '.';
+                $unique_residue_keys{$alt_residue_key_group_ids[$i]}{'pdbx_auth_alt_id'} ne '.' &&
+                $unique_residue_keys{$alt_residue_key_group_ids[$i]}{'pdbx_auth_alt_id'} ne '?' ;
 
             if( $i == 0 ) {
                 push @alt_residue_key_groups_ids,
@@ -1619,6 +1620,7 @@ sub group_unique_residue_keys
             }
         }
     }
+
     if( ! @alt_residue_key_groups_ids ) {
         return [] if ! exists $label_alt_id_groups{'.'};
 
