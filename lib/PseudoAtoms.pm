@@ -62,6 +62,7 @@ use PDBxParser qw( change_unique_residue_key
                    determine_residue_keys
                    filter_new
                    filter_by_unique_residue_key
+                   group_unique_residue_keys
                    split_by
                    unique_residue_key );
 use Sampling qw( random_sequence
@@ -601,157 +602,153 @@ sub generate_library
                                      { 'id' => $neighbour_cells->{$cell},
                                        %{ $include_interactions } } } ) };
 
-                # First, checks bond, dihedral angles and bond length changes
-                # by step-by-step adding atoms to sidechains. This is called
-                # growing side chain.
-                my %options = %{ $options };
-                my ( $allowed_angles, $energy_threshold ) =
-                    calc_favourable_angles(
-                           { 'parameters' => $parameters,
-                             'atom_site' => $current_atom_site,
-                             'residue_unique_keys' => [
-                                 $residue_unique_key,
-                                 @assigned_unique_keys
-                             ],
-                             'interaction_site' => \%interaction_site,
-                             'bond_parameters' => $bond_parameters,
-                             'existing_bond_parameters' =>
-                                 $existing_bond_parameters,
-                             'include_hetatoms' => $include_hetatoms,
-                             'non_bonded_potential' =>
-                                 $potential_functions{$interactions}{'non_bonded'},
-                             'bonded_potential' =>
-                                 $potential_functions{$interactions}{'bonded'},
-                             'min_max_ratio' => $min_max_ratio,
-                             'top_rank' => $top_rank,
-                             'threads' => $threads,
-                             'options' => $options } );
+                my $grouped_unique_residue_keys =
+                    group_unique_residue_keys( [ $residue_unique_key,
+                                                 @assigned_unique_keys ] );
+                for my $unique_residue_keys ( @{ $grouped_unique_residue_keys } ) {
+                    # First, checks bond, dihedral angles and bond length changes
+                    # by step-by-step adding atoms to sidechains. This is called
+                    # growing side chain.
+                    my %options = %{ $options };
+                    my ( $allowed_angles, $energy_threshold ) =
+                        calc_favourable_angles(
+                               { 'parameters' => $parameters,
+                                 'atom_site' => $current_atom_site,
+                                 'residue_unique_keys' => $unique_residue_keys,
+                                 'interaction_site' => \%interaction_site,
+                                 'bond_parameters' => $bond_parameters,
+                                 'existing_bond_parameters' =>
+                                     $existing_bond_parameters,
+                                 'include_hetatoms' => $include_hetatoms,
+                                 'non_bonded_potential' =>
+                                     $potential_functions{$interactions}{'non_bonded'},
+                                 'bonded_potential' =>
+                                     $potential_functions{$interactions}{'bonded'},
+                                 'min_max_ratio' => $min_max_ratio,
+                                 'top_rank' => $top_rank,
+                                 'threads' => $threads,
+                                 'options' => $options } );
 
-                next if ! @{ $allowed_angles };
+                    next if ! @{ $allowed_angles };
 
-                # Then, re-checks if each atom of the rotamer obey energy
-                # cutoffs.
-                my $all_bond_parameters =
-                    collect_bond_parameters( $residue_site );
-                my %bond_parameters =
-                    map  { %{ $all_bond_parameters->{$_} } }
-                    grep { exists $all_bond_parameters->{$_} }
-                         ( $residue_unique_key, @assigned_unique_keys );
-                %bond_parameters =
-                    %{ filter_bond_parameters( $parameters,
-                                               $residue_site,
-                                               \%bond_parameters,
-                                               $bond_parameters ) };
+                    # Then, re-checks if each atom of the rotamer obey energy
+                    # cutoffs.
+                    my $all_bond_parameters =
+                        collect_bond_parameters( $residue_site );
+                    my %bond_parameters =
+                        map  { %{ $all_bond_parameters->{$_} } }
+                        grep { exists $all_bond_parameters->{$_} }
+                            @{ $unique_residue_keys };
+                    %bond_parameters =
+                        %{ filter_bond_parameters( $parameters,
+                                                   $residue_site,
+                                                   \%bond_parameters,
+                                                   $bond_parameters ) };
 
-                # TODO: a good place to make an parameter name sorting function.
-                my @bond_parameter_names =
-                    sort { $bond_parameters{$a}{'order'} <=>
-                           $bond_parameters{$b}{'order'} ||
-                           $bond_parameters{$a}{'rank'} <=>
-                           $bond_parameters{$b}{'rank'} ||
-                           $a cmp $b }
-                    keys %bond_parameters;
+                    # TODO: a good place to make an parameter name sorting function.
+                    my @bond_parameter_names =
+                        sort { $bond_parameters{$a}{'order'} <=>
+                               $bond_parameters{$b}{'order'} ||
+                               $bond_parameters{$a}{'rank'} <=>
+                               $bond_parameters{$b}{'rank'} ||
+                               $a cmp $b }
+                        keys %bond_parameters;
 
-                my ( $allowed_angles_full, $energy_sums, $rmsds ) =
-                    @{ threading(
-                           \&calc_full_atom_energy,
-                           { 'parameters' => $parameters,
-                             'atom_site' => $current_atom_site,
-                             'residue_unique_keys' => [
-                                 $residue_unique_key,
-                                 @assigned_unique_keys
-                             ],
-                             'bond_parameter_names' => \@bond_parameter_names,
-                             'interaction_site' => \%interaction_site,
-                             'energy_threshold' => $energy_threshold,
-                             'non_bonded_potential' =>
-                                 $potential_functions{$interactions}{'non_bonded'},
-                             'bonded_potential' =>
-                                 $potential_functions{$interactions}{'bonded'},
-                             ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
-                             'options' => $options },
-                           [ $allowed_angles ],
-                           $threads ) };
+                    my ( $allowed_angles_full, $energy_sums, $rmsds ) =
+                        @{ threading(
+                               \&calc_full_atom_energy,
+                               { 'parameters' => $parameters,
+                                 'atom_site' => $current_atom_site,
+                                 'residue_unique_keys' => $unique_residue_keys,
+                                 'bond_parameter_names' => \@bond_parameter_names,
+                                 'interaction_site' => \%interaction_site,
+                                 'energy_threshold' => $energy_threshold,
+                                 'non_bonded_potential' =>
+                                     $potential_functions{$interactions}{'non_bonded'},
+                                 'bonded_potential' =>
+                                     $potential_functions{$interactions}{'bonded'},
+                                 ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
+                                 'options' => $options },
+                               [ $allowed_angles ],
+                               $threads ) };
 
-                # # NOTE: Keeping commented code for coverage tests as
-                # # multi-threading cannot be processed.
-                # my ( $allowed_angles_full, $energy_sums, $rmsds ) =
-                #     @{ calc_full_atom_energy(
-                #            { 'parameters' => $parameters,
-                #              'atom_site' => $current_atom_site,
-                #              'residue_unique_keys' => [
-                #                  $residue_unique_key,
-                #                  @assigned_unique_keys
-                #               ],
-                #              'bond_parameter_names' => \@bond_parameter_names,
-                #              'interaction_site' => \%interaction_site,
-                #              'non_bonded_potential' =>
-                #                  $potential_functions{$interactions}{'non_bonded'},
-                #              'bonded_potential' =>
-                #                  $potential_functions{$interactions}{'bonded'},
-                #              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
-                #              'options' => $options },
-                #            [ $allowed_angles ] ) };
+                    # # NOTE: Keeping commented code for coverage tests as
+                    # # multi-threading cannot be processed.
+                    # my ( $allowed_angles_full, $energy_sums, $rmsds ) =
+                    #     @{ calc_full_atom_energy(
+                    #            { 'parameters' => $parameters,
+                    #              'atom_site' => $current_atom_site,
+                    #              'residue_unique_keys' => $unique_residue_keys,
+                    #              'bond_parameter_names' => \@bond_parameter_names,
+                    #              'interaction_site' => \%interaction_site,
+                    #              'non_bonded_potential' =>
+                    #                  $potential_functions{$interactions}{'non_bonded'},
+                    #              'bonded_potential' =>
+                    #                  $potential_functions{$interactions}{'bonded'},
+                    #              ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
+                    #              'options' => $options },
+                    #            [ $allowed_angles ] ) };
 
-                for( my $i = 0; $i <= $#{ $allowed_angles_full }; $i++  ) {
-                    my %angles =
-                        map { my $angle_id = $_ + 1;
-                              ( $bond_parameter_names[$_] =>
-                                $allowed_angles_full->[$i][$_] ) }
-                            ( 0..$#{ $allowed_angles_full->[$i] } );
-                    my %atom_ids = ();
-                    my %origin_atom_ids = ();
-                    my %site_ids = ();
-                    my %terminal_atom_data = ();
-                    for my $angle_name ( keys %angles ) {
-                        $atom_ids{$angle_name} =
-                            $bond_parameters{$angle_name}{'atom_ids'};
+                    for( my $i = 0; $i <= $#{ $allowed_angles_full }; $i++  ) {
+                        my %angles =
+                            map { my $angle_id = $_ + 1;
+                                  ( $bond_parameter_names[$_] =>
+                                    $allowed_angles_full->[$i][$_] ) }
+                                ( 0..$#{ $allowed_angles_full->[$i] } );
+                        my %atom_ids = ();
+                        my %origin_atom_ids = ();
+                        my %site_ids = ();
+                        my %terminal_atom_data = ();
+                        for my $angle_name ( keys %angles ) {
+                            $atom_ids{$angle_name} =
+                                $bond_parameters{$angle_name}{'atom_ids'};
 
-                        for my $atom_id ( @{ $atom_ids{$angle_name} } ) {
-                            my $origin_atom_id =
-                                $current_atom_site->{$atom_id}{'origin_atom_id'};
+                            for my $atom_id ( @{ $atom_ids{$angle_name} } ) {
+                                my $origin_atom_id =
+                                    $current_atom_site->{$atom_id}{'origin_atom_id'};
 
-                            if( ! defined $origin_atom_id) {
-                                push @{ $origin_atom_ids{$angle_name} }, $atom_id;
-                                push @{ $site_ids{$angle_name} }, undef;
-                                next;
+                                if( ! defined $origin_atom_id) {
+                                    push @{ $origin_atom_ids{$angle_name} }, $atom_id;
+                                    push @{ $site_ids{$angle_name} }, undef;
+                                    next;
+                                }
+
+                                push @{ $origin_atom_ids{$angle_name} }, $origin_atom_id;
+
+                                if( exists $atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
+                                    push @{ $site_ids{$angle_name} },
+                                        $atom_site->{$origin_atom_id}{'ligand_site_id'};
+                                } else {
+                                    push @{ $site_ids{$angle_name} }, undef;
+                                }
                             }
 
-                            push @{ $origin_atom_ids{$angle_name} }, $origin_atom_id;
-
-                            if( exists $atom_site->{$origin_atom_id}{'ligand_site_id'} ) {
-                                push @{ $site_ids{$angle_name} },
-                                    $atom_site->{$origin_atom_id}{'ligand_site_id'};
-                            } else {
-                                push @{ $site_ids{$angle_name} }, undef;
-                            }
+                            my ( $terminal_atom_id ) =
+                                reverse @{ $bond_parameters{$angle_name}{'atom_ids'} };
+                            $terminal_atom_data{$angle_name} = {
+                                map { $_ => $current_atom_site->{$terminal_atom_id}{$_} }
+                                    ( 'id', 'label_comp_id', 'label_atom_id',
+                                      'label_seq_id', 'label_asym_id',
+                                      'label_alt_id', 'pdbx_PDB_model_num',
+                                      'auth_seq_id', 'auth_asym_id',
+                                      'pdbx_auth_alt_id' )
+                            };
                         }
 
-                        my ( $terminal_atom_id ) =
-                            reverse @{ $bond_parameters{$angle_name}{'atom_ids'} };
-                        $terminal_atom_data{$angle_name} = {
-                            map { $_ => $current_atom_site->{$terminal_atom_id}{$_} }
-                                ( 'id', 'label_comp_id', 'label_atom_id',
-                                  'label_seq_id', 'label_asym_id',
-                                  'label_alt_id', 'pdbx_PDB_model_num',
-                                  'auth_seq_id', 'auth_asym_id',
-                                  'pdbx_auth_alt_id' )
-                        };
-                    }
-
-                    my $rotamer_energy_sum = $energy_sums->[$i];
-                    # HACK: check if the energy sums are correct after the
-                    # addition of additional residue unique keys.
-                    if( defined $rotamer_energy_sum ) {
-                        push @{ $rotamer_library{$residue_unique_key} },
-                            { 'angles' => \%angles,
-                              'atom_ids' => \%atom_ids,
-                              'origin_atom_ids' => \%origin_atom_ids,
-                              'site_ids' => \%site_ids,
-                              'terminal_atom_data' => \%terminal_atom_data,
-                              'potential' => $interactions,
-                              'potential_energy_value' => $energy_sums->[$i],
-                              ( $rmsd ? ( 'rmsd' => $rmsds->[$i][-1] ) : () ) };
+                        my $rotamer_energy_sum = $energy_sums->[$i];
+                        # HACK: check if the energy sums are correct after the
+                        # addition of additional residue unique keys.
+                        if( defined $rotamer_energy_sum ) {
+                            push @{ $rotamer_library{$residue_unique_key} },
+                                { 'angles' => \%angles,
+                                  'atom_ids' => \%atom_ids,
+                                  'origin_atom_ids' => \%origin_atom_ids,
+                                  'site_ids' => \%site_ids,
+                                  'terminal_atom_data' => \%terminal_atom_data,
+                                  'potential' => $interactions,
+                                  'potential_energy_value' => $energy_sums->[$i],
+                                  ( $rmsd ? ( 'rmsd' => $rmsds->[$i][-1] ) : () ) };
+                        }
                     }
                 }
             }
