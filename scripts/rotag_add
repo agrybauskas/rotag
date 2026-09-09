@@ -609,6 +609,21 @@ for my $pdbx_file ( @ARGV ) {
                     next if ! any { exists $bond_parameters->{$_} }
                               keys %{ $rotamer_angles };
 
+                    # # Generates alternative name table to check if any would
+                    # # match.
+                    # my %has_alt_bond_parameter_names = ();
+                    # for my $bond_parameter_name ( sort keys %{ $bond_parameters } ) {
+                    #     my $alt_bond_parameter_name =
+                    #         $bond_parameters->{"$bond_parameter_name"}{'alt_name'};
+                    #     $has_alt_bond_parameter_names{$alt_bond_parameter_name} =
+                    #         1;
+                    # }
+
+                    # next if $group_PDB eq 'HETATM' &&
+                    #     grep { ! exists $has_alt_bond_parameter_names{$_} }
+                    #     grep { ! exists $bond_parameters->{$_} }
+                    #     keys %{ $rotamer_angles };
+
                     %rotamer_atom_site =
                         ( %rotamer_atom_site,
                           %{ generate_pseudo(
