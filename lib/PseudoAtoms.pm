@@ -1116,7 +1116,8 @@ sub calc_favourable_angles
 
                     my $count = 0;
                     for my $i ( sort { $track_idxs{$a}{'energy'} <=>
-                                       $track_idxs{$b}{'energy'} }
+                                       $track_idxs{$b}{'energy'} ||
+                                       $a <=> $b }
                                 keys %track_idxs ) {
                         $track_idxs{$i}{'sorted_index'} = $count;
                         $count++;
