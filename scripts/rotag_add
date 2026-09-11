@@ -620,8 +620,8 @@ for my $pdbx_file ( @ARGV ) {
                     # }
 
                     # next if $group_PDB eq 'HETATM' &&
-                    #     grep { ! exists $has_alt_bond_parameter_names{$_} }
-                    #     grep { ! exists $bond_parameters->{$_} }
+                    #     grep { ! exists $bond_parameters->{$_} &&
+                    #            ! exists $has_alt_bond_parameter_names{$_} }
                     #     keys %{ $rotamer_angles };
 
                     %rotamer_atom_site =
