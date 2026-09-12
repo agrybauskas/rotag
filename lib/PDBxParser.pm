@@ -18,6 +18,7 @@ our @EXPORT_OK = qw( change_unique_residue_key
                      group_unique_residue_keys
                      increase_chain_id
                      indexed2raw
+                     match_unique_residue_key
                      mark_selection
                      obtain_pdbx_data
                      obtain_pdbx_line
@@ -1105,18 +1106,23 @@ sub filter_connected
 sub search_unique_residue_key
 {
     my ( $atom_site, $unique_residue_key ) = @_;
+    my @unique_residue_keys = unique_residue_keys( $atom_site );
+    return match_unique_residue_key( \@unique_residue_keys, $unique_residue_key );
+}
 
-    # TODO: needs refactoring by making unique residue key an object.
-    my @unique_residue_key_parts = split /,/, $unique_residue_key;
+sub match_unique_residue_key
+{
+    my ( $unique_residue_keys, $target_unique_residue_key ) = @_;
+
+    my @unique_residue_key_parts = split /,/, $target_unique_residue_key;
     my $pdbx_auth_alt_id = $unique_residue_key_parts[$#unique_residue_key_parts];
 
     my @matched_residue_keys = ();
-    my @unique_residue_keys = unique_residue_keys( $atom_site );
 
-    # Checks exact match.
+    # Checks exact match first.
     if( $pdbx_auth_alt_id ne '?' ) {
-        foreach( @unique_residue_keys ) {
-            if( $_ =~ m/^\Q${unique_residue_key}\E$/ ) {
+        foreach( @{ $unique_residue_keys } ) {
+            if( $_ =~ m/^\Q${target_unique_residue_key}\E$/ ) {
                 push @matched_residue_keys, $_;
             }
         }
@@ -1128,7 +1134,7 @@ sub search_unique_residue_key
         my @regex_residue_key_parts = @unique_residue_key_parts;
         $regex_residue_key_parts[$#regex_residue_key_parts] = '(\.|\d+)';
         my $regex_residue_key = join ',', @unique_residue_key_parts;
-        foreach( @unique_residue_keys ) {
+        foreach( @{ $unique_residue_keys } ) {
             if( $_ =~ m/^${regex_residue_key}$/ ) {
                 push @matched_residue_keys, $_;
             }
@@ -1137,7 +1143,7 @@ sub search_unique_residue_key
         my @regex_residue_key_parts = @unique_residue_key_parts;
         $regex_residue_key_parts[$#unique_residue_key_parts] = '?';
         my $regex_residue_key = join ',', @unique_residue_key_parts;
-        foreach( @unique_residue_keys ) {
+        foreach( @{ $unique_residue_keys } ) {
             if( $_ =~ m/^\Q${regex_residue_key}\E$/ ) {
                 push @matched_residue_keys, $_;
             }
@@ -1145,7 +1151,7 @@ sub search_unique_residue_key
     }
 
     # NOTE: if not found, return the query.
-    return $unique_residue_key if ! @matched_residue_keys;
+    return $target_unique_residue_key if ! @matched_residue_keys;
 
     return $matched_residue_keys[0];
 }
