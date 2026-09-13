@@ -36,6 +36,7 @@ use PDBxParser qw( change_unique_residue_key
                    filter_by_unique_residue_key
                    increase_chain_id
                    mark_selection
+                   match_unique_residue_key
                    obtain_pdbx_data
                    raw2indexed
                    search_unique_residue_key
@@ -598,9 +599,12 @@ for my $pdbx_file ( @ARGV ) {
 
                     my $current_residue_unique_key =
                         unique_residue_key( $residue_site->{$atom_id} );
+                    my $alt_current_residue_unique_key =
+                        match_unique_residue_key( [ keys %rotamer_angles_residue_keys ],
+                                                  $current_residue_unique_key );
 
                     # next if $group_PDB eq 'HETATM' &&
-                    #     ! exists $rotamer_angles_residue_keys{$current_residue_unique_key};
+                    #     ! exists $rotamer_angles_residue_keys{$alt_current_residue_unique_key};
 
                     # Only checks if any bond parameters are present. If no, it
                     # should be ignored.
