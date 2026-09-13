@@ -1142,7 +1142,7 @@ sub match_unique_residue_key
     } else {
         my @regex_residue_key_parts = @unique_residue_key_parts;
         $regex_residue_key_parts[$#unique_residue_key_parts] = '?';
-        my $regex_residue_key = join ',', @unique_residue_key_parts;
+        my $regex_residue_key = join ',', @regex_residue_key_parts;
         foreach( @{ $unique_residue_keys } ) {
             if( $_ =~ m/^\Q${regex_residue_key}\E$/ ) {
                 push @matched_residue_keys, $_;
