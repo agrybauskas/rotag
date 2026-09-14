@@ -447,6 +447,7 @@ for my $pdbx_file ( @ARGV ) {
 
             my %rotamer_angles = ();
             my %rotamer_angles_atom_ids_tbl = ();
+            my %rotamer_angles_type = ();
             for my $id ( @rotamer_angle_ids ) {
                 my $rotamer_id = $rotamer_angle->{$id}{'rotamer_id'};
 
@@ -512,6 +513,12 @@ for my $pdbx_file ( @ARGV ) {
                         }
                     }
                     $angle_name = join "", @updated_angle_name_all_parts;
+
+                    if( $rotamer_angle->{$related_id}{'label_seq_id'} eq '.' ) {
+                        $rotamer_angles_type{$rotamer_id}{$angle_name} = 'HETATM'
+                    } else {
+                        $rotamer_angles_type{$rotamer_id}{$angle_name} = 'ATOM'
+                    }
 
                     my $angle_value;
                     if( defined $rotamer_angle->{$related_id}{'units'} &&
@@ -597,6 +604,22 @@ for my $pdbx_file ( @ARGV ) {
                     next if ! defined $bond_parameters || ! %{ $bond_parameters };
                     next if ! any { exists $bond_parameters->{$_} }
                               keys %{ $rotamer_angles };
+
+                    # # Generates alternative name table to check if any would
+                    # # match.
+                    # my %has_alt_bond_parameter_names = ();
+                    # for my $bond_parameter_name ( sort keys %{ $bond_parameters } ) {
+                    #     my $alt_bond_parameter_name =
+                    #         $bond_parameters->{"$bond_parameter_name"}{'alt_name'};
+                    #     $has_alt_bond_parameter_names{$alt_bond_parameter_name} =
+                    #         1;
+                    # }
+
+                    # next if $group_PDB eq 'HETATM' &&
+                    #     any { ! exists $bond_parameters->{$_} &&
+                    #           ! exists $has_alt_bond_parameter_names{$_} }
+                    #     grep { $rotamer_angles_type{$rotamer_id}{$_} eq 'HETATM' }
+                    #     keys %{ $rotamer_angles };
 
                     %rotamer_atom_site =
                         ( %rotamer_atom_site,
