@@ -1107,7 +1107,7 @@ sub search_unique_residue_key
 {
     my ( $atom_site, $unique_residue_key ) = @_;
     my @unique_residue_keys = unique_residue_keys( $atom_site );
-    return match_unique_residue_key( \@unique_residue_keys, $unique_residue_key );
+    return match_unique_residue_key( \@unique_residue_keys, $unique_residue_key )->[0];
 }
 
 sub match_unique_residue_key
@@ -1128,7 +1128,7 @@ sub match_unique_residue_key
         }
     }
 
-    return $matched_residue_keys[0] if @matched_residue_keys;
+    return \@matched_residue_keys if @matched_residue_keys;
 
     if( $pdbx_auth_alt_id eq '?' ) {
         my @regex_residue_key_parts = @unique_residue_key_parts;
@@ -1151,9 +1151,9 @@ sub match_unique_residue_key
     }
 
     # NOTE: if not found, return the query.
-    return $target_unique_residue_key if ! @matched_residue_keys;
+    return [ $target_unique_residue_key ] if ! @matched_residue_keys;
 
-    return $matched_residue_keys[0];
+    return \@matched_residue_keys;
 }
 
 sub unique_residue_keys

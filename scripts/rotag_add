@@ -599,12 +599,13 @@ for my $pdbx_file ( @ARGV ) {
 
                     my $current_residue_unique_key =
                         unique_residue_key( $residue_site->{$atom_id} );
-                    my $alt_current_residue_unique_key =
-                        match_unique_residue_key( [ keys %rotamer_angles_residue_keys ],
-                                                  $current_residue_unique_key );
+                    # my $alt_current_residue_unique_keys =
+                    #     match_unique_residue_key( [ keys %rotamer_angles_residue_keys ],
+                    #                               $current_residue_unique_key );
 
                     # next if $group_PDB eq 'HETATM' &&
-                    #     ! exists $rotamer_angles_residue_keys{$alt_current_residue_unique_key};
+                    #     ! any { exists $rotamer_angles_residue_keys{$_} }
+                    #     @{ $alt_current_residue_unique_keys };
 
                     # Only checks if any bond parameters are present. If no, it
                     # should be ignored.
