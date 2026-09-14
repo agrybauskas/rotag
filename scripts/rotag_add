@@ -474,17 +474,9 @@ for my $pdbx_file ( @ARGV ) {
                         map { $rotamer_angle->{$related_id}{$_} }
                         grep { exists $rotamer_angle->{$related_id}{$_} }
                             ( 'site_1_id', 'site_2_id', 'site_3_id', 'site_4_id' );
-                    my %site_ids =
-                        map { $site_ids[$_] => $_ }
-                        0..$#site_ids;
-                    my ( $last_site_id ) = reverse grep { $_ ne '.' } @site_ids;
 
-                    my $current_residue_unique_key = change_unique_residue_key(
-                        unique_residue_key( $rotamer_angle->{$related_id} ),
-                        ( defined $last_site_id ?
-                          ( { 'pdbx_auth_alt_id' => $last_site_id } ) : () )
-                    );
-
+                    my $current_residue_unique_key =
+                        unique_residue_key( $rotamer_angle->{$related_id} );
                     $current_residue_unique_key =
                         search_unique_residue_key( $residue_site,
                                                    $current_residue_unique_key );
