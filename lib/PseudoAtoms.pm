@@ -121,9 +121,10 @@ sub generate_pseudo
                                     'return_data' => 'id' } ) };
 
     for my $atom_id ( @atom_ids ) {
+        my $atom_name = $atom_site{"$atom_id"}{'label_atom_id'};
         my $conformation = $atom_site{"$atom_id"}{'conformation'};
 
-        confess "atom with id $atom_id lacks 'conformation' key."
+        confess "$atom_name atom with id $atom_id lacks 'conformation' key."
             if ! defined $conformation;
 
         # Calculates current dihedral angles of rotatable bonds, bond lengths
