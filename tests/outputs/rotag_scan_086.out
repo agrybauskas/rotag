@@ -1,1 +1,240 @@
-# A placeholder for the future data.
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 117 N N . VAL A 1 25 -25.512 -11.060 -3.278 ? ? . 1 S
+ATOM 118 C CA . VAL A 1 25 -25.941 -10.544 -1.966 ? ? . 1 S
+ATOM 119 C C . VAL A 1 25 -27.189 -9.709 -2.214 ? ? . 1 S
+ATOM 120 O O . VAL A 1 25 -27.108 -8.582 -2.722 ? ? . 1 S
+ATOM 121 C CB . VAL A 1 25 -24.841 -9.732 -1.281 ? ? . 1 S
+ATOM 124 H H . VAL A 1 25 -25.172 -10.454 -3.785 ? ? . 1 S
+ATOM 125 H HA . VAL A 1 25 -26.179 -11.286 -1.389 ? ? . 1 S
+ATOM 133 N N . GLU A 1 26 -28.342 -10.269 -1.850 ? ? . 1 S
+ATOM 134 C CA . GLU A 1 26 -29.646 -9.742 -2.242 ? ? . 1 S
+ATOM 135 C C . GLU A 1 26 -30.675 -10.267 -1.262 ? ? . 1 S
+ATOM 136 O O . GLU A 1 26 -30.750 -11.482 -1.065 ? ? . 1 S
+ATOM 137 C CB . GLU A 1 26 -29.972 -10.227 -3.659 ? ? . 1 S
+ATOM 142 H H . GLU A 1 26 -28.394 -10.976 -1.362 ? ? . 1 S
+ATOM 143 H HA . GLU A 1 26 -29.643 -8.773 -2.222 ? ? . 1 S
+ATOM 148 N N . ASP A 1 27 -31.459 -9.382 -0.630 ? ? . 1 T
+ATOM 149 C CA . ASP A 1 27 -32.444 -9.886 0.303 ? ? . 1 T
+ATOM 150 C C . ASP A 1 27 -33.790 -10.232 -0.318 ? ? . 1 T
+ATOM 151 O O . ASP A 1 27 -34.560 -10.956 0.317 ? ? . 1 T
+ATOM 152 C CB . ASP A 1 27 -32.650 -8.892 1.445 ? ? . 1 T
+ATOM 153 C CG . ASP A 1 27 -33.510 -7.732 1.055 ? ? . 1 T
+ATOM 154 O OD1 . ASP A 1 27 -33.182 -7.066 0.057 ? ? . 1 T
+ATOM 155 O OD2 . ASP A 1 27 -34.527 -7.497 1.737 ? ? . 1 T
+ATOM 156 H H . ASP A 1 27 -31.436 -8.527 -0.724 ? ? . 1 T
+ATOM 157 H HA . ASP A 1 27 -32.095 -10.702 0.695 ? ? . 1 T
+ATOM 158 H HB2 . ASP A 1 27 -33.079 -9.347 2.187 ? ? . 1 T
+ATOM 159 H HB3 . ASP A 1 27 -31.787 -8.546 1.723 ? ? . 1 T
+ATOM 160 N N . ASP A 1 28 -34.072 -9.821 -1.574 ? ? . 1 T
+ATOM 161 C CA . ASP A 1 28 -35.335 -10.141 -2.222 ? ? . 1 T
+ATOM 162 C C . ASP A 1 28 -35.161 -11.489 -2.909 ? ? . 1 T
+ATOM 163 O O . ASP A 1 28 -34.287 -11.622 -3.763 ? ? . 1 T
+ATOM 164 C CB . ASP A 1 28 -35.699 -9.042 -3.228 ? ? . 1 T
+ATOM 165 C CG . ASP A 1 28 -37.032 -9.268 -3.874 ? ? . 1 T
+ATOM 166 O OD1 . ASP A 1 28 -37.916 -8.405 -3.704 ? ? . 1 T
+ATOM 167 O OD2 . ASP A 1 28 -37.227 -10.302 -4.551 ? ? . 1 T
+ATOM 168 H H . ASP A 1 28 -33.539 -9.354 -2.061 ? ? . 1 T
+ATOM 169 H HA . ASP A 1 28 -36.041 -10.212 -1.561 ? ? . 1 T
+ATOM 170 H HB2 . ASP A 1 28 -35.730 -8.189 -2.766 ? ? . 1 T
+ATOM 171 H HB3 . ASP A 1 28 -35.027 -9.018 -3.927 ? ? . 1 T
+ATOM 852 N N . ASP A 1 70 -26.194 -5.914 -3.559 ? ? . 1 T
+ATOM 853 C CA . ASP A 1 70 -27.256 -4.919 -3.462 ? ? . 1 T
+ATOM 854 C C . ASP A 1 70 -26.973 -3.972 -2.307 ? ? . 1 T
+ATOM 855 O O . ASP A 1 70 -26.635 -4.406 -1.197 ? ? . 1 T
+ATOM 856 C CB . ASP A 1 70 -28.612 -5.610 -3.286 ? ? . 1 T
+ATOM 857 C CG . ASP A 1 70 -29.801 -4.711 -3.626 ? ? . 1 T
+ATOM 858 O OD1 . ASP A 1 70 -29.789 -3.507 -3.292 ? ? . 1 T
+ATOM 859 O OD2 . ASP A 1 70 -30.747 -5.243 -4.247 ? ? . 1 T
+ATOM 860 H H . ASP A 1 70 -26.414 -6.698 -3.284 ? ? . 1 T
+ATOM 861 H HA . ASP A 1 70 -27.284 -4.400 -4.281 ? ? . 1 T
+ATOM 862 H HB2 . ASP A 1 70 -28.648 -6.384 -3.868 ? ? . 1 T
+ATOM 863 H HB3 . ASP A 1 70 -28.704 -5.888 -2.361 ? ? . 1 T
+ATOM 883 N N . LYS A 1 72 -29.098 -2.262 -0.794 ? ? . 1 S
+ATOM 884 C CA . LYS A 1 72 -30.255 -2.208 0.102 ? ? . 1 S
+ATOM 885 C C . LYS A 1 72 -30.295 -3.515 0.864 ? ? . 1 S
+ATOM 886 O O . LYS A 1 72 -30.932 -4.484 0.452 ? ? . 1 S
+ATOM 887 C CB . LYS A 1 72 -31.539 -1.981 -0.687 ? ? . 1 S
+ATOM 892 H H . LYS A 1 72 -29.265 -2.633 -1.552 ? ? . 1 S
+ATOM 893 H HA . LYS A 1 72 -30.146 -1.481 0.734 ? ? . 1 S
+ATOM 905 N N . LEU A 1 73 -29.571 -3.562 1.990 ? ? . 1 S
+ATOM 906 C CA A LEU A 1 73 -29.579 -4.765 2.793 ? ? . 1 S
+ATOM 907 C CA B LEU A 1 73 -29.539 -4.752 2.815 ? ? . 1 S
+ATOM 908 C C . LEU A 1 73 -30.286 -4.503 4.115 ? ? . 1 S
+ATOM 909 O O . LEU A 1 73 -30.374 -3.355 4.567 ? ? . 1 S
+ATOM 910 C CB A LEU A 1 73 -28.160 -5.297 3.007 ? ? . 1 S
+ATOM 911 C CB B LEU A 1 73 -28.109 -5.161 3.180 ? ? . 1 S
+ATOM 918 H H A LEU A 1 73 -29.083 -2.923 2.295 ? ? . 1 S
+ATOM 919 H H B LEU A 1 73 -29.093 -2.913 2.289 ? ? . 1 S
+ATOM 920 H HA . LEU A 1 73 -30.024 -5.469 2.335 ? ? . 1 S
+ATOM 939 N N . PRO A 1 74 -30.821 -5.552 4.737 ? ? . 1 S
+ATOM 940 C CA . PRO A 1 74 -31.742 -5.351 5.859 ? ? . 1 S
+ATOM 941 C C . PRO A 1 74 -31.151 -4.595 7.020 ? ? . 1 S
+ATOM 942 O O . PRO A 1 74 -31.869 -3.809 7.650 ? ? . 1 S
+ATOM 943 C CB . PRO A 1 74 -32.118 -6.788 6.258 ? ? . 1 S
+ATOM 946 H HA . PRO A 1 74 -32.539 -4.889 5.555 ? ? . 1 S
+ATOM 1593 N N . LYS A 1 119 -30.867 -0.154 -10.516 ? ? . 1 S
+ATOM 1594 C CA . LYS A 1 119 -32.142 -0.844 -10.314 ? ? . 1 S
+ATOM 1595 C C . LYS A 1 119 -33.262 0.047 -10.831 ? ? . 1 S
+ATOM 1596 O O . LYS A 1 119 -33.254 1.258 -10.575 ? ? . 1 S
+ATOM 1597 C CB . LYS A 1 119 -32.366 -1.168 -8.831 ? ? . 1 S
+ATOM 1602 H H . LYS A 1 119 -30.624 0.340 -9.856 ? ? . 1 S
+ATOM 1603 H HA . LYS A 1 119 -32.148 -1.673 -10.817 ? ? . 1 S
+HETATM 1925 MG MG . MG B 2 . -31.184 -6.586 -1.238 ? ? . 1 T
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite -114.481170
+2 2 composite -129.370273
+3 3 composite -106.584957
+4 4 composite -113.075276
+5 5 composite -105.307163
+6 6 composite -90.925231
+7 7 composite -71.719631
+8 8 composite -95.114835
+9 9 composite -98.771245
+10 10 composite -91.862771
+11 11 composite -81.683062
+12 12 composite -103.547474
+13 13 composite -42.389434
+14 14 composite -81.281462
+15 15 composite -42.095318
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
+2 1 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
+3 1 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
+4 1 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 60.384 degrees
+5 1 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
+6 2 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG -173.017 degrees
+7 2 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 88.138 degrees
+8 2 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.647749 angstrom
+9 2 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 60.384 degrees
+10 2 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
+11 3 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 93.789 degrees
+12 3 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 169.444 degrees
+13 3 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.803126 angstrom
+14 3 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 60.384 degrees
+15 3 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
+16 4 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
+17 4 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
+18 4 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
+19 4 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 50.481 degrees
+20 4 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
+21 5 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 93.789 degrees
+22 5 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 169.444 degrees
+23 5 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.803126 angstrom
+24 5 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 50.481 degrees
+25 5 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
+26 6 . MG B 1 ? ? . 164 165 166 1925 . . . 1 0.200000 CB-CG-OD1.MG 91.607 degrees
+27 6 . MG B 1 ? ? . 165 166 1925 . . . 1 . 0.200000 CG-OD1.MG 162.837 degrees
+28 6 . MG B 1 ? ? . 166 1925 . . . 1 . . 0.200000 OD1.MG 2.157536 angstrom
+29 6 28 ASP A 1 ? ? . 160 161 164 165 . . . . 0.200000 chi1 -138.747 degrees
+30 6 28 ASP A 1 ? ? . 161 164 165 166 . . . . 0.200000 chi2 35.536 degrees
+31 7 . MG B 1 ? ? . 164 165 166 1925 . . . 1 0.200000 CB-CG-OD1.MG -24.303 degrees
+32 7 . MG B 1 ? ? . 165 166 1925 . . . 1 . 0.200000 CG-OD1.MG 131.542 degrees
+33 7 . MG B 1 ? ? . 166 1925 . . . 1 . . 0.200000 OD1.MG 3.177483 angstrom
+34 7 28 ASP A 1 ? ? . 160 161 164 165 . . . . 0.200000 chi1 -138.747 degrees
+35 7 28 ASP A 1 ? ? . 161 164 165 166 . . . . 0.200000 chi2 35.536 degrees
+36 8 . MG B 1 ? ? . 164 165 166 1925 . . . 1 0.200000 CB-CG-OD1.MG 91.607 degrees
+37 8 . MG B 1 ? ? . 165 166 1925 . . . 1 . 0.200000 CG-OD1.MG 162.837 degrees
+38 8 . MG B 1 ? ? . 166 1925 . . . 1 . . 0.200000 OD1.MG 2.157536 angstrom
+39 8 28 ASP A 1 ? ? . 160 161 164 165 . . . . 0.200000 chi1 -138.747 degrees
+40 8 28 ASP A 1 ? ? . 161 164 165 166 . . . . 0.200000 chi2 75.941 degrees
+41 9 . MG B 1 ? ? . 164 165 166 1925 . . . 1 0.200000 CB-CG-OD1.MG 119.463 degrees
+42 9 . MG B 1 ? ? . 165 166 1925 . . . 1 . 0.200000 CG-OD1.MG 177.498 degrees
+43 9 . MG B 1 ? ? . 166 1925 . . . 1 . . 0.200000 OD1.MG 2.051439 angstrom
+44 9 28 ASP A 1 ? ? . 160 161 164 165 . . . . 0.200000 chi1 -138.747 degrees
+45 9 28 ASP A 1 ? ? . 161 164 165 166 . . . . 0.200000 chi2 75.941 degrees
+46 10 . MG B 1 ? ? . 164 165 166 1925 . . . 1 0.200000 CB-CG-OD1.MG -24.303 degrees
+47 10 . MG B 1 ? ? . 165 166 1925 . . . 1 . 0.200000 CG-OD1.MG 131.542 degrees
+48 10 . MG B 1 ? ? . 166 1925 . . . 1 . . 0.200000 OD1.MG 3.177483 angstrom
+49 10 28 ASP A 1 ? ? . 160 161 164 165 . . . . 0.200000 chi1 -138.747 degrees
+50 10 28 ASP A 1 ? ? . 161 164 165 166 . . . . 0.200000 chi2 75.941 degrees
+51 11 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG -94.794 degrees
+52 11 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 158.133 degrees
+53 11 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 2.318063 angstrom
+54 11 70 ASP A 1 ? ? . 852 853 856 857 . . . . 0.200000 chi1 -124.535 degrees
+55 11 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 -67.494 degrees
+56 12 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG 144.387 degrees
+57 12 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 159.217 degrees
+58 12 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 1.543684 angstrom
+59 12 70 ASP A 1 ? ? . 852 853 856 857 . . . . 0.200000 chi1 -124.535 degrees
+60 12 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 -67.494 degrees
+61 13 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG -125.186 degrees
+62 13 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 174.075 degrees
+63 13 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 1.276134 angstrom
+64 13 70 ASP A 1 ? ? . 852 853 856 857 . . . . 0.200000 chi1 -124.535 degrees
+65 13 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 -67.494 degrees
+66 14 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG -94.794 degrees
+67 14 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 158.133 degrees
+68 14 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 2.318063 angstrom
+69 14 70 ASP A 1 ? ? . 852 853 856 857 . . . . 0.200000 chi1 -124.535 degrees
+70 14 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 -66.112 degrees
+71 15 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG -125.186 degrees
+72 15 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 174.075 degrees
+73 15 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 1.276134 angstrom
+74 15 70 ASP A 1 ? ? . 852 853 856 857 . . . . 0.200000 chi1 -124.535 degrees
+75 15 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 -66.112 degrees
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 27 A . ? ? OD1 . B ? . ? MG
+metalc2 metalc 28 A . ? ? OD1 . B ? . ? MG
+metalc3 metalc 70 A . ? ? OD1 . B ? . ? MG
+#
