@@ -1,0 +1,119 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 1153 N N . LYS C 2 100 18.173 42.856 36.269 A 100 . 1 T 1
+ATOM 1154 C CA . LYS C 2 100 19.085 41.853 35.733 A 100 . 1 T 1
+ATOM 1155 C C . LYS C 2 100 18.486 41.204 34.497 A 100 . 1 T 1
+ATOM 1156 O O . LYS C 2 100 17.509 40.456 34.592 A 100 . 1 T 1
+ATOM 1157 C CB . LYS C 2 100 19.405 40.774 36.782 A 100 . 1 T 1
+ATOM 1158 C CG . LYS C 2 100 20.266 41.286 37.927 A 100 . 1 T 1
+ATOM 1159 C CD . LYS C 2 100 21.676 41.670 37.485 A 100 . 1 T 1
+ATOM 1160 C CE . LYS C 2 100 22.101 42.978 38.184 A 100 . 1 T 1
+ATOM 1161 N NZ . LYS C 2 100 23.566 43.210 38.213 A 100 . 1 T 1
+HETATM 3667 MG MG . MG E 1 . 0.000 0.000 0.000 A 203 . 1 T 1
+ATOM 3865 H H . LYS C 2 100 17.368 42.608 36.612 A 100 . 1 T 1
+ATOM 3866 H HA . LYS C 2 100 19.996 42.340 35.454 A 100 . 1 T 1
+ATOM 3867 H HB2 . LYS C 2 100 19.933 39.976 36.304 A 100 . 1 T 1
+ATOM 3868 H HB3 . LYS C 2 100 18.486 40.414 37.196 A 100 . 1 T 1
+ATOM 3869 H HG2 . LYS C 2 100 20.347 40.518 38.667 A 100 . 1 T 1
+ATOM 3870 H HG3 . LYS C 2 100 19.801 42.154 38.346 A 100 . 1 T 1
+ATOM 3871 H HD2 . LYS C 2 100 21.690 41.813 36.425 A 100 . 1 T 1
+ATOM 3872 H HD3 . LYS C 2 100 22.357 40.888 37.749 A 100 . 1 T 1
+ATOM 3873 H HE2 . LYS C 2 100 21.760 42.947 39.198 A 100 . 1 T 1
+ATOM 3874 H HE3 . LYS C 2 100 21.655 43.801 37.665 A 100 . 1 T 1
+ATOM 4505 H HZ1 . LYS C 2 100 23.738 44.091 37.729 A 100 . 1 T 1
+ATOM 4506 H HZ2 . LYS C 2 100 24.002 42.422 37.734 A 100 . 1 T 1
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+15146 3030 100 LYS C 1 100 A . 1153 1154 1157 1158 . . . . 0.142857 chi1 -72.000 degrees
+15147 3030 100 LYS C 1 100 A . 1154 1157 1158 1159 . . . . 0.142857 chi2 -72.000 degrees
+15148 3030 100 LYS C 1 100 A . 1157 1158 1159 1160 . . . . 0.142857 chi3 -180.000 degrees
+15149 3030 100 LYS C 1 100 A . 1158 1159 1160 1161 . . . . 0.142857 chi4 -180.000 degrees
+15150 3030 100 LYS C 1 100 A . 1159 1160 1161 4505 . . . . 0.142857 chi5 -180.000 degrees
+15161 3033 100 LYS C 1 100 A . 1153 1154 1157 1158 . . . . 0.142857 chi1 -72.000 degrees
+15162 3033 100 LYS C 1 100 A . 1154 1157 1158 1159 . . . . 0.142857 chi2 -72.000 degrees
+15163 3033 100 LYS C 1 100 A . 1157 1158 1159 1160 . . . . 0.142857 chi3 -180.000 degrees
+15164 3033 100 LYS C 1 100 A . 1158 1159 1160 1161 . . . . 0.142857 chi4 -180.000 degrees
+15165 3033 100 LYS C 1 100 A . 1159 1160 1161 4505 . . . . 0.142857 chi5 -72.000 degrees
+15181 3037 100 LYS C 1 100 A . 1153 1154 1157 1158 . . . . 0.142857 chi1 -72.000 degrees
+15182 3037 100 LYS C 1 100 A . 1154 1157 1158 1159 . . . . 0.142857 chi2 -72.000 degrees
+15183 3037 100 LYS C 1 100 A . 1157 1158 1159 1160 . . . . 0.142857 chi3 -180.000 degrees
+15184 3037 100 LYS C 1 100 A . 1158 1159 1160 1161 . . . . 0.142857 chi4 -180.000 degrees
+15185 3037 100 LYS C 1 100 A . 1159 1160 1161 4505 . . . . 0.142857 chi5 72.000 degrees
+17061 3413 100 LYS C 1 100 A . 1153 1154 1157 1158 . . . . 0.142857 chi1 -72.000 degrees
+17062 3413 100 LYS C 1 100 A . 1154 1157 1158 1159 . . . . 0.142857 chi2 -72.000 degrees
+17063 3413 100 LYS C 1 100 A . 1157 1158 1159 1160 . . . . 0.142857 chi3 108.000 degrees
+17064 3413 100 LYS C 1 100 A . 1158 1159 1160 1161 . . . . 0.142857 chi4 -180.000 degrees
+17065 3413 100 LYS C 1 100 A . 1159 1160 1161 4505 . . . . 0.142857 chi5 -180.000 degrees
+17361 3473 100 LYS C 1 100 A . 1153 1154 1157 1158 . . . . 0.142857 chi1 -72.000 degrees
+17362 3473 100 LYS C 1 100 A . 1154 1157 1158 1159 . . . . 0.142857 chi2 -72.000 degrees
+17363 3473 100 LYS C 1 100 A . 1157 1158 1159 1160 . . . . 0.142857 chi3 144.000 degrees
+17364 3473 100 LYS C 1 100 A . 1158 1159 1160 1161 . . . . 0.142857 chi4 -180.000 degrees
+17365 3473 100 LYS C 1 100 A . 1159 1160 1161 4505 . . . . 0.142857 chi5 -180.000 degrees
+17376 3476 100 LYS C 1 100 A . 1153 1154 1157 1158 . . . . 0.142857 chi1 -72.000 degrees
+17377 3476 100 LYS C 1 100 A . 1154 1157 1158 1159 . . . . 0.142857 chi2 -72.000 degrees
+17378 3476 100 LYS C 1 100 A . 1157 1158 1159 1160 . . . . 0.142857 chi3 144.000 degrees
+17379 3476 100 LYS C 1 100 A . 1158 1159 1160 1161 . . . . 0.142857 chi4 -180.000 degrees
+17380 3476 100 LYS C 1 100 A . 1159 1160 1161 4505 . . . . 0.142857 chi5 -72.000 degrees
+17396 3480 100 LYS C 1 100 A . 1153 1154 1157 1158 . . . . 0.142857 chi1 -72.000 degrees
+17397 3480 100 LYS C 1 100 A . 1154 1157 1158 1159 . . . . 0.142857 chi2 -72.000 degrees
+17398 3480 100 LYS C 1 100 A . 1157 1158 1159 1160 . . . . 0.142857 chi3 144.000 degrees
+17399 3480 100 LYS C 1 100 A . 1158 1159 1160 1161 . . . . 0.142857 chi4 -180.000 degrees
+17400 3480 100 LYS C 1 100 A . 1159 1160 1161 4505 . . . . 0.142857 chi5 72.000 degrees
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc3 metalc 100 C . 100 A NZ . E 203 . A MG
+#
