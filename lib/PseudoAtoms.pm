@@ -1026,7 +1026,8 @@ sub calc_favourable_angles
 
             # Starts calculating potential energy.
             my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
-            my ( $next_allowed_bond_parameters, $next_allowed_energies )=([],[]);
+            my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
+                ( [], [] );
             foreach( 1, 2 ) {  # Currently, there are only two cycles.
                 ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                     @{ threading(
