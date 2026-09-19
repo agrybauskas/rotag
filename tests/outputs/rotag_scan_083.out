@@ -83,15 +83,16 @@ _[local]_rotamer_energy.value
 6 6 composite -110.568456
 7 7 composite -103.185077
 8 8 composite -99.967022
-9 9 composite -98.618298
-10 10 composite -111.504539
-11 11 composite -70.959856
-12 12 composite -47.286467
-13 13 composite -64.516300
-14 14 composite -43.102304
-15 15 composite -60.385200
-16 16 composite -55.067886
-17 17 composite -42.521295
+9 9 composite -111.504539
+10 10 composite -104.756948
+11 11 composite -85.630501
+12 12 composite -29.164976
+13 13 composite -91.285102
+14 14 composite -59.044540
+15 15 composite -55.774921
+16 16 composite -47.563328
+17 17 composite -61.746339
+18 18 composite -57.939595
 #
 loop_
 _[local]_pairwise_energy.id
@@ -102,108 +103,123 @@ _[local]_pairwise_energy.value
 1 1 6 composite -6.880723
 2 1 7 composite -6.880723
 3 1 8 composite -6.854209
-4 1 9 composite -6.855941
+4 1 9 composite -6.948342
 5 1 10 composite -6.948342
-6 1 11 composite -5.467924
-7 1 12 composite -5.077461
-8 1 13 composite -1.332329
-9 1 14 composite -1.332329
-10 1 15 composite -1.332329
-11 1 16 composite -1.332329
-12 1 17 composite -0.038117
-13 2 6 composite -6.789382
-14 2 7 composite -6.789382
-15 2 8 composite -6.807716
-16 2 9 composite -6.822126
-17 2 10 composite -6.797029
-18 2 11 composite -5.467924
-19 2 12 composite -5.077461
-20 2 13 composite -1.304276
-21 2 14 composite -1.304276
-22 2 15 composite -1.304276
-23 2 16 composite -1.304276
-24 2 17 composite 0.048887
-25 3 6 composite -7.871318
-26 3 7 composite -7.871318
-27 3 8 composite -7.779937
-28 3 9 composite -7.750227
-29 3 10 composite -7.978710
-30 3 11 composite -5.454901
-31 3 12 composite -5.059713
-32 3 13 composite -1.246403
-33 3 14 composite -1.246403
-34 3 15 composite -1.246403
-35 3 16 composite -1.246403
-36 3 17 composite 0.032112
-37 4 6 composite -7.110453
-38 4 7 composite -7.110453
-39 4 8 composite -7.084081
-40 4 9 composite -7.078492
-41 4 10 composite -7.151691
-42 4 11 composite -5.454901
-43 4 12 composite -5.059713
-44 4 13 composite -1.263048
-45 4 14 composite -1.263048
-46 4 15 composite -1.263048
-47 4 16 composite -1.263048
-48 4 17 composite 0.027719
-49 5 6 composite -7.543576
-50 5 7 composite -7.543576
-51 5 8 composite -7.523790
-52 5 9 composite -7.518812
-53 5 10 composite -7.571614
-54 5 11 composite -5.454901
-55 5 12 composite -5.059713
-56 5 13 composite -1.209548
-57 5 14 composite -1.209548
-58 5 15 composite -1.209548
-59 5 16 composite -1.209548
-60 5 17 composite 0.122852
-61 6 11 composite -10.488715
-62 6 12 composite -11.299929
-63 6 13 composite 0.097348
-64 6 14 composite 0.097348
-65 6 15 composite 0.097348
-66 6 16 composite 0.097348
-67 6 17 composite 0.704521
-68 7 11 composite -10.488715
-69 7 12 composite -11.299929
-70 7 13 composite 0.272643
-71 7 14 composite 0.272643
-72 7 15 composite 0.272643
-73 7 16 composite 0.272643
-74 7 17 composite 0.851148
-75 8 11 composite -10.693700
-76 8 12 composite -11.660264
-77 8 13 composite 0.144353
-78 8 14 composite 0.144353
-79 8 15 composite 0.144353
-80 8 16 composite 0.144353
-81 8 17 composite 0.720222
-82 9 11 composite -10.697690
-83 9 12 composite -11.704782
-84 9 13 composite 0.092349
-85 9 14 composite 0.092349
-86 9 15 composite 0.092349
-87 9 16 composite 0.092349
-88 9 17 composite 0.662398
-89 10 11 composite -10.051207
-90 10 12 composite -10.666993
-91 10 13 composite 0.198462
-92 10 14 composite 0.198462
-93 10 15 composite 0.198462
-94 10 16 composite 0.198462
-95 10 17 composite 0.801306
-96 11 13 composite -0.161600
-97 11 14 composite -0.161600
-98 11 15 composite -0.161600
-99 11 16 composite -0.161600
-100 11 17 composite 0.363270
-101 12 13 composite -0.114636
-102 12 14 composite -0.114636
-103 12 15 composite -0.114636
-104 12 16 composite -0.114636
-105 12 17 composite 0.403719
+6 1 11 composite -0.450150
+7 1 12 composite -0.988241
+8 1 13 composite -0.782855
+9 1 14 composite -0.151811
+10 1 15 composite -0.151811
+11 1 16 composite -0.151811
+12 1 17 composite -0.416701
+13 1 18 composite -0.416701
+14 2 6 composite -6.789382
+15 2 7 composite -6.789382
+16 2 8 composite -6.807716
+17 2 9 composite -6.797029
+18 2 10 composite -6.797029
+19 2 11 composite -0.450150
+20 2 12 composite -0.988241
+21 2 13 composite -0.782855
+22 2 14 composite -0.068655
+23 2 15 composite -0.068655
+24 2 16 composite -0.068655
+25 2 17 composite -0.353541
+26 2 18 composite -0.353541
+27 3 6 composite -7.871318
+28 3 7 composite -7.871318
+29 3 8 composite -7.779937
+30 3 9 composite -7.978710
+31 3 10 composite -7.978710
+32 3 11 composite -0.460285
+33 3 12 composite -0.997643
+34 3 13 composite -0.784782
+35 3 14 composite -0.117270
+36 3 15 composite -0.117270
+37 3 16 composite -0.117270
+38 3 17 composite -0.388734
+39 3 18 composite -0.388734
+40 4 6 composite -7.110453
+41 4 7 composite -7.110453
+42 4 8 composite -7.084081
+43 4 9 composite -7.151691
+44 4 10 composite -7.151691
+45 4 11 composite -0.460285
+46 4 12 composite -0.997643
+47 4 13 composite -0.784782
+48 4 14 composite -0.122802
+49 4 15 composite -0.122802
+50 4 16 composite -0.122802
+51 4 17 composite -0.406064
+52 4 18 composite -0.406064
+53 5 6 composite -7.543576
+54 5 7 composite -7.543576
+55 5 8 composite -7.523790
+56 5 9 composite -7.571614
+57 5 10 composite -7.571614
+58 5 11 composite -0.460285
+59 5 12 composite -0.997643
+60 5 13 composite -0.784782
+61 5 14 composite -0.031393
+62 5 15 composite -0.031393
+63 5 16 composite -0.031393
+64 5 17 composite -0.321629
+65 5 18 composite -0.321629
+66 6 11 composite -2.668634
+67 6 12 composite -3.120996
+68 6 13 composite -2.459324
+69 6 14 composite 0.657883
+70 6 15 composite 0.657883
+71 6 16 composite 0.657883
+72 6 17 composite 0.513610
+73 6 18 composite 0.513610
+74 7 11 composite -2.668634
+75 7 12 composite -3.120996
+76 7 13 composite -2.459324
+77 7 14 composite 0.779621
+78 7 15 composite 0.779621
+79 7 16 composite 0.779621
+80 7 17 composite 0.673978
+81 7 18 composite 0.673978
+82 8 11 composite -2.659434
+83 8 12 composite -3.092347
+84 8 13 composite -2.454783
+85 8 14 composite 0.698755
+86 8 15 composite 0.698755
+87 8 16 composite 0.698755
+88 8 17 composite 0.558535
+89 8 18 composite 0.558535
+90 9 11 composite -2.691685
+91 9 12 composite -3.159041
+92 9 13 composite -2.474668
+93 9 14 composite 0.703403
+94 9 15 composite 0.703403
+95 9 16 composite 0.703403
+96 9 17 composite 0.592734
+97 9 18 composite 0.592734
+98 10 11 composite -2.691685
+99 10 12 composite -3.159041
+100 10 13 composite -2.474668
+101 10 14 composite 0.806281
+102 10 15 composite 0.806281
+103 10 16 composite 0.806281
+104 10 17 composite 0.722253
+105 10 18 composite 0.722253
+106 11 14 composite 2.356735
+107 11 15 composite 2.356735
+108 11 16 composite 2.356735
+109 11 17 composite 2.015396
+110 11 18 composite 2.015396
+111 12 14 composite 2.045263
+112 12 15 composite 2.045263
+113 12 16 composite 2.045263
+114 12 17 composite 1.673059
+115 12 18 composite 1.673059
+116 13 14 composite 1.045337
+117 13 15 composite 1.045337
+118 13 16 composite 1.045337
+119 13 17 composite 0.912996
+120 13 18 composite 0.912996
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -267,51 +283,56 @@ _[local]_rotamer_bond_parameter.units
 38 8 . MG B 1 31 A . 199 301 . . . 1 . . 0.200000 OD1.MG 1.975742 angstrom
 39 8 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -130.697 degrees
 40 8 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 36.604 degrees
-41 9 . MG B 1 31 A . 197 198 199 301 . . . 1 0.200000 CB-CG-OD1.MG 39.357 degrees
-42 9 . MG B 1 31 A . 198 199 301 . . . 1 . 0.200000 CG-OD1.MG 154.642 degrees
-43 9 . MG B 1 31 A . 199 301 . . . 1 . . 0.200000 OD1.MG 1.975742 angstrom
+41 9 . MG B 1 31 A . 197 198 199 301 . . . 1 0.200000 CB-CG-OD1.MG 36.452 degrees
+42 9 . MG B 1 31 A . 198 199 301 . . . 1 . 0.200000 CG-OD1.MG 130.815 degrees
+43 9 . MG B 1 31 A . 199 301 . . . 1 . . 0.200000 OD1.MG 1.565479 angstrom
 44 9 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -130.697 degrees
-45 9 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 41.643 degrees
-46 10 . MG B 1 31 A . 197 198 199 301 . . . 1 0.200000 CB-CG-OD1.MG 36.452 degrees
-47 10 . MG B 1 31 A . 198 199 301 . . . 1 . 0.200000 CG-OD1.MG 130.815 degrees
-48 10 . MG B 1 31 A . 199 301 . . . 1 . . 0.200000 OD1.MG 1.565479 angstrom
+45 9 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 11.756 degrees
+46 10 . MG B 1 31 A . 197 198 199 301 . . . 1 0.200000 CB-CG-OD1.MG 39.357 degrees
+47 10 . MG B 1 31 A . 198 199 301 . . . 1 . 0.200000 CG-OD1.MG 154.642 degrees
+48 10 . MG B 1 31 A . 199 301 . . . 1 . . 0.200000 OD1.MG 1.975742 angstrom
 49 10 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -130.697 degrees
 50 10 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 11.756 degrees
-51 11 . MG B 1 31 A . 226 227 228 301 . . . 1 0.500000 CB-CG-OD1.MG 128.117 degrees
-52 11 . MG B 1 31 A . 227 228 301 . . . 1 . 0.500000 CG-OD1.MG 123.764 degrees
-53 11 . MG B 1 31 A . 228 301 . . . 1 . . 0.500000 OD1.MG 1.838743 angstrom
-54 11 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.500000 chi1 -28.275 degrees
-55 11 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.500000 chi2 75.646 degrees
-56 12 . MG B 1 31 A . 226 227 228 301 . . . 1 0.500000 CB-CG-OD1.MG 128.117 degrees
-57 12 . MG B 1 31 A . 227 228 301 . . . 1 . 0.500000 CG-OD1.MG 123.764 degrees
-58 12 . MG B 1 31 A . 228 301 . . . 1 . . 0.500000 OD1.MG 1.838743 angstrom
-59 12 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.500000 chi1 -28.275 degrees
-60 12 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.500000 chi2 88.122 degrees
-61 13 . MG B 1 31 A . 291 292 293 301 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
-62 13 . MG B 1 31 A . 292 293 301 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
-63 13 . MG B 1 31 A . 293 301 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
-64 13 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 81.243 degrees
-65 13 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -36.987 degrees
-66 14 . MG B 1 31 A . 291 292 293 301 . . . 1 0.200000 CB-CG-OD1.MG 15.735 degrees
-67 14 . MG B 1 31 A . 292 293 301 . . . 1 . 0.200000 CG-OD1.MG 116.643 degrees
-68 14 . MG B 1 31 A . 293 301 . . . 1 . . 0.200000 OD1.MG 2.510518 angstrom
-69 14 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 81.243 degrees
-70 14 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -36.987 degrees
+51 11 . MG B 1 31 A . 226 227 228 301 . . . 1 0.333333 CB-CG-OD1.MG -122.824 degrees
+52 11 . MG B 1 31 A . 227 228 301 . . . 1 . 0.333333 CG-OD1.MG 173.449 degrees
+53 11 . MG B 1 31 A . 228 301 . . . 1 . . 0.333333 OD1.MG 1.886969 angstrom
+54 11 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.333333 chi1 -135.815 degrees
+55 11 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.333333 chi2 -48.804 degrees
+56 12 . MG B 1 31 A . 226 227 228 301 . . . 1 0.333333 CB-CG-OD1.MG 9.722 degrees
+57 12 . MG B 1 31 A . 227 228 301 . . . 1 . 0.333333 CG-OD1.MG 170.890 degrees
+58 12 . MG B 1 31 A . 228 301 . . . 1 . . 0.333333 OD1.MG 1.268096 angstrom
+59 12 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.333333 chi1 -135.815 degrees
+60 12 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.333333 chi2 -48.804 degrees
+61 13 . MG B 1 31 A . 226 227 228 301 . . . 1 0.333333 CB-CG-OD1.MG 128.117 degrees
+62 13 . MG B 1 31 A . 227 228 301 . . . 1 . 0.333333 CG-OD1.MG 123.764 degrees
+63 13 . MG B 1 31 A . 228 301 . . . 1 . . 0.333333 OD1.MG 1.838743 angstrom
+64 13 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.333333 chi1 -135.815 degrees
+65 13 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.333333 chi2 -48.804 degrees
+66 14 . MG B 1 31 A . 291 292 293 301 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
+67 14 . MG B 1 31 A . 292 293 301 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
+68 14 . MG B 1 31 A . 293 301 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
+69 14 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 60.384 degrees
+70 14 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 30.836 degrees
 71 15 . MG B 1 31 A . 291 292 293 301 . . . 1 0.200000 CB-CG-OD1.MG 93.789 degrees
 72 15 . MG B 1 31 A . 292 293 301 . . . 1 . 0.200000 CG-OD1.MG 169.444 degrees
 73 15 . MG B 1 31 A . 293 301 . . . 1 . . 0.200000 OD1.MG 1.803126 angstrom
-74 15 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 81.243 degrees
-75 15 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -36.987 degrees
+74 15 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 60.384 degrees
+75 15 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 30.836 degrees
 76 16 . MG B 1 31 A . 291 292 293 301 . . . 1 0.200000 CB-CG-OD1.MG 36.860 degrees
 77 16 . MG B 1 31 A . 292 293 301 . . . 1 . 0.200000 CG-OD1.MG 133.680 degrees
 78 16 . MG B 1 31 A . 293 301 . . . 1 . . 0.200000 OD1.MG 1.629182 angstrom
-79 16 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 81.243 degrees
-80 16 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -36.987 degrees
+79 16 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 60.384 degrees
+80 16 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 30.836 degrees
 81 17 . MG B 1 31 A . 291 292 293 301 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
 82 17 . MG B 1 31 A . 292 293 301 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
 83 17 . MG B 1 31 A . 293 301 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
-84 17 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 81.243 degrees
-85 17 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 30.836 degrees
+84 17 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 60.384 degrees
+85 17 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 12.749 degrees
+86 18 . MG B 1 31 A . 291 292 293 301 . . . 1 0.200000 CB-CG-OD1.MG 93.789 degrees
+87 18 . MG B 1 31 A . 292 293 301 . . . 1 . 0.200000 CG-OD1.MG 169.444 degrees
+88 18 . MG B 1 31 A . 293 301 . . . 1 . . 0.200000 OD1.MG 1.803126 angstrom
+89 18 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 60.384 degrees
+90 18 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 12.749 degrees
 #
 loop_
 _struct_conn.id

@@ -61,14 +61,6 @@ _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
 1 1 composite -27.305261
 2 2 composite -20.676364
-3 3 composite -27.305261
-4 4 composite -20.676364
-5 5 composite -27.305261
-6 6 composite -20.676364
-7 7 composite -27.305261
-8 8 composite -20.676364
-9 9 composite -27.305261
-10 10 composite -20.676364
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -92,56 +84,16 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-2 1 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-3 1 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 2.700000 angstrom
-4 1 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-5 1 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-6 2 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-7 2 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-8 2 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 3.200000 angstrom
-9 2 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-10 2 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-11 3 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-12 3 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-13 3 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 2.700000 angstrom
-14 3 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-15 3 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-16 4 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-17 4 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-18 4 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 3.200000 angstrom
-19 4 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-20 4 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-21 5 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-22 5 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-23 5 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 2.700000 angstrom
-24 5 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-25 5 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-26 6 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-27 6 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-28 6 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 3.200000 angstrom
-29 6 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-30 6 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-31 7 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-32 7 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-33 7 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 2.700000 angstrom
-34 7 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-35 7 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-36 8 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-37 8 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-38 8 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 3.200000 angstrom
-39 8 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-40 8 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-41 9 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-42 9 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-43 9 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 2.700000 angstrom
-44 9 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-45 9 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
-46 10 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.100000 CB-CG-OD1.MG 54.000 degrees
-47 10 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.100000 CG-OD1.MG 81.100 degrees
-48 10 . MG B 1 101 A . 154 1925 . . . 1 . . 0.100000 OD1.MG 3.200000 angstrom
-49 10 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.100000 chi1 -108.000 degrees
-50 10 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.100000 chi2 -180.000 degrees
+1 1 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.500000 CB-CG-OD1.MG 54.000 degrees
+2 1 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.500000 CG-OD1.MG 81.100 degrees
+3 1 . MG B 1 101 A . 154 1925 . . . 1 . . 0.500000 OD1.MG 2.700000 angstrom
+4 1 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.500000 chi1 -108.000 degrees
+5 1 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.500000 chi2 -180.000 degrees
+6 2 . MG B 1 101 A . 152 153 154 1925 . . . 1 0.500000 CB-CG-OD1.MG 54.000 degrees
+7 2 . MG B 1 101 A . 153 154 1925 . . . 1 . 0.500000 CG-OD1.MG 81.100 degrees
+8 2 . MG B 1 101 A . 154 1925 . . . 1 . . 0.500000 OD1.MG 3.200000 angstrom
+9 2 27 ASP A 1 27 A . 148 149 152 153 . . . . 0.500000 chi1 -108.000 degrees
+10 2 27 ASP A 1 27 A . 149 152 153 154 . . . . 0.500000 chi2 -180.000 degrees
 #
 loop_
 _struct_conn.id

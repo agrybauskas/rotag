@@ -105,18 +105,18 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -114.481170
-2 2 composite -129.370273
-3 3 composite -106.584957
-4 4 composite -113.075276
-5 5 composite -105.307163
+1 1 composite -123.528801
+2 2 composite -129.687848
+3 3 composite -114.481170
+4 4 composite -129.370273
+5 5 composite -113.075276
 6 6 composite -90.925231
 7 7 composite -71.719631
 8 8 composite -95.114835
 9 9 composite -98.771245
 10 10 composite -91.862771
-11 11 composite -81.683062
-12 12 composite -103.547474
+11 11 composite -101.306483
+12 12 composite -81.683062
 13 13 composite -42.389434
 14 14 composite -81.281462
 15 15 composite -42.095318
@@ -143,29 +143,29 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
-2 1 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
-3 1 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
-4 1 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 60.384 degrees
+1 1 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG -173.017 degrees
+2 1 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 88.138 degrees
+3 1 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.647749 angstrom
+4 1 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 81.243 degrees
 5 1 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
 6 2 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG -173.017 degrees
 7 2 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 88.138 degrees
 8 2 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.647749 angstrom
 9 2 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 60.384 degrees
-10 2 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
-11 3 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 93.789 degrees
-12 3 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 169.444 degrees
-13 3 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.803126 angstrom
+10 2 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 -36.987 degrees
+11 3 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
+12 3 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
+13 3 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
 14 3 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 60.384 degrees
 15 3 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
-16 4 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
-17 4 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
-18 4 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
-19 4 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 50.481 degrees
+16 4 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG -173.017 degrees
+17 4 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 88.138 degrees
+18 4 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.647749 angstrom
+19 4 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 60.384 degrees
 20 4 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
-21 5 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 93.789 degrees
-22 5 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 169.444 degrees
-23 5 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.803126 angstrom
+21 5 . MG B 1 ? ? . 152 153 154 1925 . . . 1 0.200000 CB-CG-OD1.MG 20.709 degrees
+22 5 . MG B 1 ? ? . 153 154 1925 . . . 1 . 0.200000 CG-OD1.MG 178.095 degrees
+23 5 . MG B 1 ? ? . 154 1925 . . . 1 . . 0.200000 OD1.MG 1.585037 angstrom
 24 5 27 ASP A 1 ? ? . 148 149 152 153 . . . . 0.200000 chi1 50.481 degrees
 25 5 27 ASP A 1 ? ? . 149 152 153 154 . . . . 0.200000 chi2 87.124 degrees
 26 6 . MG B 1 ? ? . 164 165 166 1925 . . . 1 0.200000 CB-CG-OD1.MG 91.607 degrees
@@ -193,14 +193,14 @@ _[local]_rotamer_bond_parameter.units
 48 10 . MG B 1 ? ? . 166 1925 . . . 1 . . 0.200000 OD1.MG 3.177483 angstrom
 49 10 28 ASP A 1 ? ? . 160 161 164 165 . . . . 0.200000 chi1 -138.747 degrees
 50 10 28 ASP A 1 ? ? . 161 164 165 166 . . . . 0.200000 chi2 75.941 degrees
-51 11 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG -94.794 degrees
-52 11 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 158.133 degrees
-53 11 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 2.318063 angstrom
+51 11 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG 163.767 degrees
+52 11 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 99.421 degrees
+53 11 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 2.062178 angstrom
 54 11 70 ASP A 1 ? ? . 852 853 856 857 . . . . 0.200000 chi1 -124.535 degrees
-55 11 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 -67.494 degrees
-56 12 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG 144.387 degrees
-57 12 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 159.217 degrees
-58 12 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 1.543684 angstrom
+55 11 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 81.897 degrees
+56 12 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG -94.794 degrees
+57 12 . MG B 1 ? ? . 857 858 1925 . . . 1 . 0.200000 CG-OD1.MG 158.133 degrees
+58 12 . MG B 1 ? ? . 858 1925 . . . 1 . . 0.200000 OD1.MG 2.318063 angstrom
 59 12 70 ASP A 1 ? ? . 852 853 856 857 . . . . 0.200000 chi1 -124.535 degrees
 60 12 70 ASP A 1 ? ? . 853 856 857 858 . . . . 0.200000 chi2 -67.494 degrees
 61 13 . MG B 1 ? ? . 856 857 858 1925 . . . 1 0.200000 CB-CG-OD1.MG -125.186 degrees

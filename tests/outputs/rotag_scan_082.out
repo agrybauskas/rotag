@@ -77,18 +77,18 @@ _[local]_rotamer_energy.value
 1 1 composite 19.672740
 2 2 composite 20.198995
 3 3 composite 20.867781
-4 4 composite 21.619950
+4 4 composite 22.144352
 5 5 composite 22.876403
-6 6 composite 28.976406
-7 7 composite 28.659472
-8 8 composite 28.435574
-9 9 composite 24.563735
-10 10 composite 22.247897
-11 11 composite 20.696489
-12 12 composite 20.521969
-13 13 composite 20.442869
-14 14 composite 18.610564
-15 15 composite 18.522238
+6 6 composite 24.563735
+7 7 composite 22.247897
+8 8 composite 22.330231
+9 9 composite 22.614430
+10 10 composite 22.272111
+11 11 composite 18.800139
+12 12 composite 18.610564
+13 13 composite 18.522238
+14 14 composite 17.632054
+15 15 composite 17.523398
 16 16 composite -2.067122
 17 17 composite -1.709963
 18 18 composite -1.514557
@@ -101,156 +101,156 @@ _[local]_pairwise_energy.rotamer_id_1
 _[local]_pairwise_energy.rotamer_id_2
 _[local]_pairwise_energy.type
 _[local]_pairwise_energy.value
-1 1 6 composite 2.352345
-2 1 7 composite 2.353655
-3 1 8 composite 2.399026
-4 1 9 composite 2.558468
-5 1 10 composite 2.690975
-6 1 11 composite 1.114571
-7 1 12 composite 1.120969
-8 1 13 composite 1.126820
-9 1 14 composite 1.279806
-10 1 15 composite 1.285617
+1 1 6 composite 2.558468
+2 1 7 composite 2.690975
+3 1 8 composite 2.698849
+4 1 9 composite 2.700432
+5 1 10 composite 2.698165
+6 1 11 composite 1.273082
+7 1 12 composite 1.279806
+8 1 13 composite 1.285617
+9 1 14 composite 1.452059
+10 1 15 composite 1.459293
 11 1 16 composite -0.052657
 12 1 17 composite -0.068400
 13 1 18 composite -0.097648
 14 1 19 composite -0.100655
 15 1 20 composite -0.103213
-16 2 6 composite 2.353293
-17 2 7 composite 2.355123
-18 2 8 composite 2.404040
-19 2 9 composite 2.571227
-20 2 10 composite 2.708961
-21 2 11 composite 1.117193
-22 2 12 composite 1.123582
-23 2 13 composite 1.129428
-24 2 14 composite 1.282572
-25 2 15 composite 1.288513
+16 2 6 composite 2.571227
+17 2 7 composite 2.708961
+18 2 8 composite 2.715946
+19 2 9 composite 2.716084
+20 2 10 composite 2.716654
+21 2 11 composite 1.275855
+22 2 12 composite 1.282572
+23 2 13 composite 1.288513
+24 2 14 composite 1.455949
+25 2 15 composite 1.463421
 26 2 16 composite -0.051955
 27 2 17 composite -0.085633
 28 2 18 composite -0.114892
 29 2 19 composite -0.117872
 30 2 20 composite -0.120372
-31 3 6 composite 2.350731
-32 3 7 composite 2.353045
-33 3 8 composite 2.404514
-34 3 9 composite 2.578119
-35 3 10 composite 2.720000
-36 3 11 composite 1.116692
-37 3 12 composite 1.123079
-38 3 13 composite 1.128926
-39 3 14 composite 1.282367
-40 3 15 composite 1.288295
+31 3 6 composite 2.578119
+32 3 7 composite 2.720000
+33 3 8 composite 2.726238
+34 3 9 composite 2.725105
+35 3 10 composite 2.727967
+36 3 11 composite 1.275654
+37 3 12 composite 1.282367
+38 3 13 composite 1.288295
+39 3 14 composite 1.456035
+40 3 15 composite 1.463488
 41 3 16 composite -0.052710
 42 3 17 composite -0.115500
 43 3 18 composite -0.144735
 44 3 19 composite -0.147648
 45 3 20 composite -0.150047
-46 4 6 composite 2.344712
-47 4 7 composite 2.347441
-48 4 8 composite 2.400212
-49 4 9 composite 2.578137
-50 4 10 composite 2.722446
-51 4 11 composite 1.113166
-52 4 12 composite 1.119556
-53 4 13 composite 1.125410
-54 4 14 composite 1.279257
-55 4 15 composite 1.285054
-56 4 16 composite -0.062045
-57 4 17 composite -0.147446
-58 4 18 composite -0.186137
-59 4 19 composite -0.188944
-60 4 20 composite -0.191201
-61 5 6 composite 2.219283
-62 5 7 composite 2.222450
-63 5 8 composite 2.278977
-64 5 9 composite 2.456432
-65 5 10 composite 2.598340
-66 5 11 composite 0.969485
-67 5 12 composite 0.976247
-68 5 13 composite 0.982355
-69 5 14 composite 1.137160
-70 5 15 composite 1.143140
+46 4 6 composite 2.461240
+47 4 7 composite 2.603210
+48 4 8 composite 2.609840
+49 4 9 composite 2.609563
+50 4 10 composite 2.611150
+51 4 11 composite 1.134076
+52 4 12 composite 1.141112
+53 4 13 composite 1.147079
+54 4 14 composite 1.309940
+55 4 15 composite 1.315882
+56 4 16 composite -0.094402
+57 4 17 composite -0.140988
+58 4 18 composite -0.145290
+59 4 19 composite -0.148380
+60 4 20 composite -0.150621
+61 5 6 composite 2.456432
+62 5 7 composite 2.598340
+63 5 8 composite 2.604422
+64 5 9 composite 2.603374
+65 5 10 composite 2.606198
+66 5 11 composite 1.130112
+67 5 12 composite 1.137160
+68 5 13 composite 1.143140
+69 5 14 composite 1.306184
+70 5 15 composite 1.311823
 71 5 16 composite -0.119022
 72 5 17 composite -0.183642
 73 5 18 composite -0.187839
 74 5 19 composite -0.190777
 75 5 20 composite -0.192830
-76 6 11 composite 2.497967
-77 6 12 composite 2.498392
-78 6 13 composite 2.509749
-79 6 14 composite 2.569243
-80 6 15 composite 2.587162
-81 6 16 composite -0.092919
-82 6 17 composite -0.018942
-83 6 18 composite 0.063133
-84 6 19 composite 0.149753
-85 6 20 composite 0.237139
-86 7 11 composite 2.471806
-87 7 12 composite 2.471319
-88 7 13 composite 2.480983
-89 7 14 composite 2.537994
-90 7 15 composite 2.553795
-91 7 16 composite -0.095483
-92 7 17 composite -0.021754
-93 7 18 composite 0.060097
-94 7 19 composite 0.146526
-95 7 20 composite 0.233760
-96 8 11 composite 2.482946
-97 8 12 composite 2.484461
-98 8 13 composite 2.496059
-99 8 14 composite 2.557223
-100 8 15 composite 2.574941
-101 8 16 composite -0.062560
-102 8 17 composite 0.011058
-103 8 18 composite 0.092374
-104 8 19 composite 0.177656
-105 8 20 composite 0.263454
-106 9 11 composite 2.494719
-107 9 12 composite 2.498096
-108 9 13 composite 2.511327
-109 9 14 composite 2.579368
-110 9 15 composite 2.598533
-111 9 16 composite 0.004116
-112 9 17 composite 0.076765
-113 9 18 composite 0.155914
-114 9 19 composite 0.238090
-115 9 20 composite 0.319961
-116 10 11 composite 2.477865
-117 10 12 composite 2.483202
-118 10 13 composite 2.498077
-119 10 14 composite 2.570301
-120 10 15 composite 2.590913
-121 10 16 composite 0.045805
-122 10 17 composite 0.117465
-123 10 18 composite 0.194995
-124 10 19 composite 0.274987
-125 10 20 composite 0.354274
-126 11 16 composite -0.221686
-127 11 17 composite -0.135531
-128 11 18 composite -0.046359
-129 11 19 composite 0.044273
-130 11 20 composite 0.132581
-131 12 16 composite -0.216591
-132 12 17 composite -0.126598
-133 12 18 composite -0.033547
-134 12 19 composite 0.059248
-135 12 20 composite 0.148994
-136 13 16 composite -0.210870
-137 13 17 composite -0.118264
-138 13 18 composite -0.022351
-139 13 19 composite 0.072467
-140 13 20 composite 0.163664
-141 14 16 composite -0.183915
-142 14 17 composite -0.091490
-143 14 18 composite 0.001792
-144 14 19 composite 0.092956
-145 14 20 composite 0.180589
-146 15 16 composite -0.179846
-147 15 17 composite -0.085843
-148 15 18 composite 0.008946
-149 15 19 composite 0.101761
-150 15 20 composite 0.191018
+76 6 11 composite 2.570696
+77 6 12 composite 2.579368
+78 6 13 composite 2.598533
+79 6 14 composite 2.675728
+80 6 15 composite 2.700722
+81 6 16 composite 0.004116
+82 6 17 composite 0.076765
+83 6 18 composite 0.155914
+84 6 19 composite 0.238090
+85 6 20 composite 0.319961
+86 7 11 composite 2.559769
+87 7 12 composite 2.570301
+88 7 13 composite 2.590913
+89 7 14 composite 2.672016
+90 7 15 composite 2.698168
+91 7 16 composite 0.045805
+92 7 17 composite 0.117465
+93 7 18 composite 0.194995
+94 7 19 composite 0.274987
+95 7 20 composite 0.354274
+96 8 11 composite 2.572408
+97 8 12 composite 2.581821
+98 8 13 composite 2.602065
+99 8 14 composite 2.682069
+100 8 15 composite 2.708121
+101 8 16 composite 0.043035
+102 8 17 composite 0.114576
+103 8 18 composite 0.191953
+104 8 19 composite 0.271764
+105 8 20 composite 0.350849
+106 9 11 composite 2.594250
+107 9 12 composite 2.603364
+108 9 13 composite 2.624237
+109 9 14 composite 2.704307
+110 9 15 composite 2.731465
+111 9 16 composite 0.041544
+112 9 17 composite 0.113062
+113 9 18 composite 0.190363
+114 9 19 composite 0.270048
+115 9 20 composite 0.348961
+116 10 11 composite 2.530953
+117 10 12 composite 2.542870
+118 10 13 composite 2.564012
+119 10 14 composite 2.646003
+120 10 15 composite 2.672367
+121 10 16 composite 0.055518
+122 10 17 composite 0.126956
+123 10 18 composite 0.204244
+124 10 19 composite 0.283978
+125 10 20 composite 0.362996
+126 11 16 composite -0.188254
+127 11 17 composite -0.098506
+128 11 18 composite -0.007340
+129 11 19 composite 0.081965
+130 11 20 composite 0.168221
+131 12 16 composite -0.183915
+132 12 17 composite -0.091490
+133 12 18 composite 0.001792
+134 12 19 composite 0.092956
+135 12 20 composite 0.180589
+136 13 16 composite -0.179846
+137 13 17 composite -0.085843
+138 13 18 composite 0.008946
+139 13 19 composite 0.101761
+140 13 20 composite 0.191018
+141 14 16 composite -0.160289
+142 14 17 composite -0.068760
+143 14 18 composite 0.023919
+144 14 19 composite 0.117377
+145 14 20 composite 0.206118
+146 15 16 composite -0.158085
+147 15 17 composite -0.065856
+148 15 18 composite 0.027904
+149 15 19 composite 0.122596
+150 15 20 composite 0.212486
 #
 loop_
 _[local]_rotamer_bond_parameter.id
@@ -280,29 +280,29 @@ _[local]_rotamer_bond_parameter.units
 4 2 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -60.000 degrees
 5 3 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -160.000 degrees
 6 3 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -50.000 degrees
-7 4 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -160.000 degrees
-8 4 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -40.000 degrees
+7 4 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -150.000 degrees
+8 4 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -50.000 degrees
 9 5 28 ASP A 1 21 A . 160 161 164 165 . . . . 0.200000 chi1 -150.000 degrees
 10 5 28 ASP A 1 21 A . 161 164 165 166 . . . . 0.200000 chi2 -40.000 degrees
-11 6 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -120.000 degrees
-12 6 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 70.000 degrees
-13 7 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -120.000 degrees
-14 7 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 80.000 degrees
-15 8 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -110.000 degrees
-16 8 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 80.000 degrees
-17 9 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -90.000 degrees
-18 9 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -90.000 degrees
+11 6 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -90.000 degrees
+12 6 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -90.000 degrees
+13 7 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -80.000 degrees
+14 7 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -90.000 degrees
+15 8 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -80.000 degrees
+16 8 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -80.000 degrees
+17 9 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -80.000 degrees
+18 9 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -70.000 degrees
 19 10 30 ASP A 1 23 A . 193 194 197 198 . . . . 0.200000 chi1 -80.000 degrees
-20 10 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 -90.000 degrees
-21 11 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -90.000 degrees
+20 10 30 ASP A 1 23 A . 194 197 198 199 . . . . 0.200000 chi2 80.000 degrees
+21 11 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -80.000 degrees
 22 11 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.200000 chi2 60.000 degrees
-23 12 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -90.000 degrees
+23 12 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -80.000 degrees
 24 12 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.200000 chi2 70.000 degrees
-25 13 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -90.000 degrees
+25 13 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -80.000 degrees
 26 13 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.200000 chi2 80.000 degrees
-27 14 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -80.000 degrees
+27 14 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -70.000 degrees
 28 14 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.200000 chi2 70.000 degrees
-29 15 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -80.000 degrees
+29 15 33 ASP A 1 26 A . 222 223 226 227 . . . . 0.200000 chi1 -70.000 degrees
 30 15 33 ASP A 1 26 A . 223 226 227 228 . . . . 0.200000 chi2 80.000 degrees
 31 16 37 ASN A 1 30 A . 287 288 291 292 . . . . 0.200000 chi1 -90.000 degrees
 32 16 37 ASN A 1 30 A . 288 291 292 293 . . . . 0.200000 chi2 -10.000 degrees
