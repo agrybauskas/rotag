@@ -1000,7 +1000,7 @@ sub calc_favourable_angles
                                        \@default_allowed_bond_parameters ], [] );
                     $energy_combinations{$parameter_key} =
                         permutation( 2, [],
-                                     [ $bond_combinations{$parameter_key_prev},
+                                     [ $energy_combinations{$parameter_key_prev},
                                        \@default_allowed_energies ], [] );
 
                     # Flattens parameter pairs: [ [ 1 ], [ 2 ] ] =>[ [ 1, 2 ] ].
