@@ -972,8 +972,10 @@ sub calc_favourable_angles
                     # parameters can be added all at the same time.
                     if( $parameter_key_prev ) {
                         my $parameter_subkey =
+                            $#bond_parameter_names > 0 ?
                             join ',',
-                            @bond_parameter_names[0..$#bond_parameter_names-1];
+                            @bond_parameter_names[0..$#bond_parameter_names-1] :
+                            $bond_parameter_names[0];
                         $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
                     }
                     @default_allowed_bond_parameters =
