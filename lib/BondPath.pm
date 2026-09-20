@@ -63,15 +63,17 @@ sub new
                 grep { defined $atom_site->{$_} }
                     @{ $atom_site->{$atom_id}{'connections'} };
         }
+        my @hetatom_neighbour_atom_ids = ();
         if( $include_hetatoms &&
             defined $atom_site->{$atom_id}{'connections_hetatom'} ) {
-            push @neighbour_atom_ids,
+            push @hetatom_neighbour_atom_ids,
                 grep { defined $atom_site->{$_} }
                     @{ $atom_site->{$atom_id}{'connections_hetatom'} };
         }
 
         my @sorted_neighbour_atom_ids =
-            @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $atom_site ) };
+            ( @{ sort_atom_ids_by_name( \@neighbour_atom_ids, $atom_site ) },
+              @{ sort_atom_ids_by_name( \@hetatom_neighbour_atom_ids, $atom_site ) } );
 
         for( my $i = 0; $i <= $#sorted_neighbour_atom_ids; $i++ ) {
             my $sorted_neighbour_atom_id = $sorted_neighbour_atom_ids[$i];
