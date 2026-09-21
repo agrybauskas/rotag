@@ -1,0 +1,56 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 1283 N N . ASP B 2 116 56.851 -5.973 62.083 A 116 . 1 T 1
+ATOM 1284 C CA . ASP B 2 116 57.450 -4.685 61.747 A 116 . 1 T 1
+ATOM 1285 C C . ASP B 2 116 58.793 -4.830 61.058 A 116 . 1 T 1
+ATOM 1286 O O . ASP B 2 116 59.002 -4.283 59.979 A 116 . 1 T 1
+ATOM 1287 C CB . ASP B 2 116 57.649 -3.836 63.009 A 116 . 1 T 1
+ATOM 1288 C CG . ASP B 2 116 56.353 -3.362 63.605 A 116 . 1 T 1
+ATOM 1289 O OD1 . ASP B 2 116 55.335 -3.357 62.882 A 116 . 1 T 1
+ATOM 1290 O OD2 . ASP B 2 116 56.346 -2.989 64.795 A 116 . 1 T 1
+HETATM 2709 MG MG . MG C 3 . 53.351 -2.993 61.762 F 9 . 1 T 1
+HETATM 2710 MG MG . MG D 3 . 54.338 -3.164 65.866 A 300 . 1 T 1
+ATOM 2947 H H . ASP B 2 116 56.519 -6.088 62.923 A 116 . 1 T 1
+ATOM 2948 H HA . ASP B 2 116 56.791 -4.168 61.081 A 116 . 1 T 1
+ATOM 2949 H HB2 . ASP B 2 116 58.233 -2.976 62.757 A 116 . 1 T 1
+ATOM 2950 H HB3 . ASP B 2 116 58.157 -4.425 63.744 A 116 . 1 T 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 116 B . 116 A OD1 . C 9 . F MG
+metalc2 metalc 116 B . 116 A OD1 . D 300 . A MG
+metalc3 metalc 116 B . 116 A OD2 . C 9 . F MG
+metalc4 metalc 116 B . 116 A OD2 . D 300 . A MG
+#

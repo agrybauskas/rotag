@@ -1,0 +1,56 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1 T 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1 T 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1 T 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1 T 1
+ATOM 1140 C CB . GLU C 2 98 19.244 45.308 40.890 A 98 . 1 T 1
+ATOM 1141 C CG . GLU C 2 98 20.096 45.709 42.086 A 98 . 1 T 1
+ATOM 1142 C CD . GLU C 2 98 21.086 46.815 41.759 A 98 . 1 T 1
+ATOM 1143 O OE1 . GLU C 2 98 21.680 46.761 40.659 A 98 . 1 T 1
+ATOM 1144 O OE2 . GLU C 2 98 21.279 47.725 42.602 A 98 . 1 T 1
+HETATM 3667 MG MG . MG E 1 . 0.000 0.000 0.000 A 203 . 1 T 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1 T 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1 T 1
+ATOM 3859 H HB2 . GLU C 2 98 19.917 45.002 40.117 A 98 . 1 T 1
+ATOM 3860 H HB3 . GLU C 2 98 18.632 44.488 41.204 A 98 . 1 T 1
+ATOM 3861 H HG2 . GLU C 2 98 20.648 44.855 42.418 A 98 . 1 T 1
+ATOM 3862 H HG3 . GLU C 2 98 19.453 46.058 42.867 A 98 . 1 T 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 98 C . 98 A OE1 . E 203 . A MG
+metalc2 metalc 98 C . 98 A OE2 . E 203 . A MG
+#
