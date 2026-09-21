@@ -1156,7 +1156,7 @@ sub calc_favourable_angles
                           $residue_site->{$atom_id}{'label_asym_id'} . " " .
                           $residue_site->{$atom_id}{'label_seq_id'} . " " .
                           $residue_site->{$atom_id}{'label_alt_id'} . " " .
-                          "${residue_name} " .
+                          $residue_site->{$atom_id}{'label_comp_id'} . " " .
                           $residue_site->{$atom_id}{'label_atom_id'} . " " .
                           join( ',', grep { ! exists $visited_bond_parameters{$_} }
                                      @parameter_names_sorted ) . " " .
