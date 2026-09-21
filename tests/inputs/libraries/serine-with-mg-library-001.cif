@@ -38,5 +38,5 @@ _struct_conn.ptnr2_label_asym_id
 _struct_conn.ptnr2_auth_seq_id
 _struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
-metalc1 metalc 18 A 18 A OG 18 B . A MG
+metalc1 metalc 18 A 18 A OG . B 101 A MG
 #
