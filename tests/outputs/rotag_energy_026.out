@@ -1,1 +1,13 @@
-# A placeholder for the future data.
+data_rotag
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.label_seq_id
+_[local]_rotamer_energy.label_asym_id
+_[local]_rotamer_energy.pdbx_PDB_model_num
+_[local]_rotamer_energy.label_alt_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 . B 1 2 composite -64.649014
+2 18 A 1 2 composite -37.801285
+#
