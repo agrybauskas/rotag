@@ -1173,6 +1173,7 @@ sub calc_favourable_angles
                              # appended.
         for my $neighbour_atom_id ( uniq @neighbour_atom_ids ) {
             next if $visited_atom_ids{$neighbour_atom_id};
+            # next if ! exists $residue_site->{$neighbour_atom_id};
             push @next_atom_ids, $neighbour_atom_id;
         }
     }
