@@ -1,0 +1,56 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 665 N N . GLU A 1 71 14.523 12.591 34.025 A 71 . 1 T 1
+ATOM 666 C CA . GLU A 1 71 14.562 13.369 32.795 A 71 . 1 T 1
+ATOM 667 C C . GLU A 1 71 15.448 14.596 32.927 A 71 . 1 T 1
+ATOM 668 O O . GLU A 1 71 16.189 14.902 32.007 A 71 . 1 T 1
+ATOM 669 C CB . GLU A 1 71 13.152 13.793 32.384 A 71 . 1 T 1
+ATOM 670 C CG . GLU A 1 71 12.359 12.664 31.744 A 71 . 1 T 1
+ATOM 671 C CD . GLU A 1 71 10.864 12.917 31.700 A 71 . 1 T 1
+ATOM 672 O OE1 . GLU A 1 71 10.419 14.050 31.966 A 71 . 1 T 1
+ATOM 673 O OE2 . GLU A 1 71 10.114 11.973 31.415 A 71 . 1 T 1
+ATOM 674 H H . GLU A 1 71 13.680 12.543 34.524 A 71 . 1 T 1
+HETATM 2750 MG MG . MG B 1 . 0.000 0.000 0.000 A 284 . 1 T 1
+ATOM 2828 H HA . GLU A 1 71 14.962 12.746 32.023 A 71 . 1 T 1
+ATOM 2829 H HB2 . GLU A 1 71 12.635 14.124 33.261 A 71 . 1 T 1
+ATOM 2830 H HB3 . GLU A 1 71 13.237 14.596 31.682 A 71 . 1 T 1
+ATOM 2831 H HG2 . GLU A 1 71 12.715 12.542 30.742 A 71 . 1 T 1
+ATOM 2832 H HG3 . GLU A 1 71 12.539 11.776 32.312 A 71 . 1 T 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 71 A . 71 A OE1 . B 284 . A MG
+metalc2 metalc 71 A . 71 A OE2 . B 284 . A MG
+#
