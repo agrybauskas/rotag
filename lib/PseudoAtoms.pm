@@ -1417,6 +1417,11 @@ sub calc_full_atom_energy
                     ( ! is_second_neighbour( \%rotamer_interaction_site,
                                              $rotamer_atom_id,
                                              $neighbour_atom_id ) ) ){
+                    # use Data::Dumper;
+                    # print STDERR Dumper
+                    #     $rotamer_interaction_site{$rotamer_atom_id}{'label_atom_id'} . ' <-> ' .
+                    #     $rotamer_interaction_site{$neighbour_atom_id}{'label_atom_id'};
+
                     $rotamer_atom_energy +=
                         $non_bonded_potential->(
                             $parameters,
@@ -1427,9 +1432,14 @@ sub calc_full_atom_energy
                     next ALLOWED_ANGLES
                         if $rotamer_atom_energy > $energy_cutoff;
 
+                    # print STDERR Dumper $rotamer_atom_energy;
+
                     $rotamer_energy_sum += $rotamer_atom_energy;
                 }
             }
+
+            # use Data::Dumper;
+            # print STDERR Dumper "------------------------------------------";
         }
 
         push @allowed_angles, $checkable_angles[$i];
@@ -1441,6 +1451,9 @@ sub calc_full_atom_energy
                    @{ rmsd_sidechains( $parameters, $residue_site,\%rotamer_site,
                                        { 'average' => 1 } ) };
         }
+
+        # use Data::Dumper;
+        # print STDERR Dumper "====================";
     }
 
     return [ \@allowed_angles, \@energy_sums, \@rmsd_averages ] ;
