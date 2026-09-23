@@ -1,0 +1,38 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 665 N N . GLU A 1 71 14.523 12.591 34.025 A 71 . 1 T
+ATOM 666 C CA . GLU A 1 71 14.562 13.369 32.795 A 71 . 1 T
+ATOM 667 C C . GLU A 1 71 15.448 14.596 32.927 A 71 . 1 T
+ATOM 668 O O . GLU A 1 71 16.189 14.902 32.007 A 71 . 1 T
+ATOM 669 C CB . GLU A 1 71 13.152 13.793 32.384 A 71 . 1 T
+ATOM 674 H H . GLU A 1 71 13.680 12.543 34.524 A 71 . 1 T
+ATOM 2828 H HA . GLU A 1 71 14.962 12.746 32.023 A 71 . 1 T
+ATOM 2847 C CG 12 GLU A 1 71 12.785770 13.341340 30.978664 A 71 . 1 T
+ATOM 2848 C CD 12 GLU A 1 71 12.194077 11.945796 30.920990 A 71 . 1 T
+ATOM 2849 O OE1 12 GLU A 1 71 11.017458 11.755923 31.284290 A 71 . 1 T
+ATOM 2850 O OE2 12 GLU A 1 71 12.911997 11.016419 30.526392 A 71 . 1 T
+ATOM 2851 H HB2 12 GLU A 1 71 12.459371 13.361389 33.076789 A 71 . 1 T
+ATOM 2852 H HB3 12 GLU A 1 71 13.099174 14.860762 32.427971 A 71 . 1 T
+ATOM 2853 H HG2 12 GLU A 1 71 12.068039 14.033618 30.589769 A 71 . 1 T
+ATOM 2854 H HG3 12 GLU A 1 71 13.676649 13.359777 30.387427 A 71 . 1 T
+HETATM 2855 MG MG 12 MG B 1 . 9.737927 10.024184 32.581385 A 284 1 1 T
+HETATM 2856 MG MG 12 MG C 1 . 10.953668 9.108071 29.607708 A 285 1 1 T
+#
