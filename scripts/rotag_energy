@@ -27,7 +27,8 @@ use PDBxParser qw( filter
                    raw2indexed
                    split_by
                    to_csv
-                   to_pdbx );
+                   to_pdbx
+                   unique_residue_key );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
@@ -287,23 +288,23 @@ for my $pdbx_file ( @ARGV ) {
             for my $energy ( @{ $energies{$atom_site_identifier} } ) {
                 my $atom_id = $energy->atoms->[0];
                 my $atom = $atom_site->{$atom_id};
-                my $label_seq_id = $atom->{'label_seq_id'};
+                my $unique_residue_key = unique_residue_key( $atom );
                 my $calculation_method = $energy->energy_type;
-                if( exists $rotamer_energies{$label_seq_id}{'energy'}{$calculation_method} ){
-                    $rotamer_energies{$label_seq_id}{'energy'}{$calculation_method} +=
+                if( exists $rotamer_energies{$unique_residue_key}{'energy'}{$calculation_method} ){
+                    $rotamer_energies{$unique_residue_key}{'energy'}{$calculation_method} +=
                         $energy->value;
                 } else {
-                    $rotamer_energies{$label_seq_id}{'atom_id'} = $atom_id;
-                    $rotamer_energies{$label_seq_id}{'energy'}{$calculation_method} =
+                    $rotamer_energies{$unique_residue_key}{'atom_id'} = $atom_id;
+                    $rotamer_energies{$unique_residue_key}{'energy'}{$calculation_method} =
                         $energy->value;
                 }
             }
 
             my ( undef, $label_alt_id ) = split /,/, $atom_site_identifier;
-            for my $label_seq_id ( sort keys %rotamer_energies ) {
-                my $atom_id = $rotamer_energies{$label_seq_id}{'atom_id'};
+            for my $unique_residue_key ( sort keys %rotamer_energies ) {
+                my $atom_id = $rotamer_energies{$unique_residue_key}{'atom_id'};
                 for my $calculation_method (
-                    sort keys %{ $rotamer_energies{$label_seq_id}{'energy'} } ) {
+                    sort keys %{ $rotamer_energies{$unique_residue_key}{'energy'} } ) {
                     push @{ $pdbx_data{'_[local]_rotamer_energy'}{'data'} },
                         { 'id' => $calculation_id,
                           'label_seq_id' => $atom_site->{$atom_id}{'label_seq_id'},
@@ -314,7 +315,7 @@ for my $pdbx_file ( @ARGV ) {
                           'calculation_method' => $calculation_method,
                           'value' =>
                               sprintf( $sig_figs_max,
-                                       $rotamer_energies{$label_seq_id}
+                                       $rotamer_energies{$unique_residue_key}
                                                         {'energy'}
                                                         {$calculation_method} )};
                     $calculation_id++;
