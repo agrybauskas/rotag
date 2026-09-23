@@ -378,6 +378,7 @@ for my $pdbx_file ( @ARGV ) {
                     grep { ! exists $visited_residue_keys{$residue_unique_key} }
                     map { unique_residue_key( $target_atom_site->{$_} ) }
                     grep { $target_atom_site->{$_}{'group_PDB'} eq 'ATOM'  }
+                    grep { exists $target_atom_site->{$_} }
                     map { keys %{ $struct_conn_connections->{$_} } }
                     keys %{ $residue_site };
 
