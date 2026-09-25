@@ -1409,13 +1409,26 @@ sub calc_full_atom_energy
 
         my $rotamer_energy_sum = 0;
         for my $rotamer_atom_id ( @rotamer_atom_ids ) {
+            my $rotamer_atom_name =
+                $rotamer_interaction_site{$rotamer_atom_id}{'label_atom_id'};
+            my $residue_unique_key =
+                unique_residue_key( $rotamer_interaction_site{$rotamer_atom_id} );
+
             # Calculation of potential energy of bonded atoms.
             if( defined $bonded_potential ) {
-                $rotamer_energy_sum += $bonded_potential->(
+                my $bonded_rotamer_energy = $bonded_potential->(
                     $parameters,
                     $rotamer_interaction_site{$rotamer_atom_id},
                     $options
                 );
+                $rotamer_energy_sum += $bonded_rotamer_energy;
+
+                print info(
+                    { message => 'non-bonded rotamer energy of ' .
+                          $residue_unique_key . ' ' . $rotamer_atom_name . ': ' .
+                          $bonded_rotamer_energy . "\n",
+                      program => $options->{'program_called_by'} }
+                ) if $verbose && $verbosity_level > 1;
             }
 
             for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
