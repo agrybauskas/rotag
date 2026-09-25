@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use Exporter qw( import );
-our @EXPORT_OK = qw( change_unique_residue_key
+our @EXPORT_OK = qw( atom_site_to_pdbx
+                     change_unique_residue_key
                      create_pdbx_entry
                      determine_ligand_sites
                      determine_residue_keys
@@ -1862,6 +1863,11 @@ sub to_pdbx
     }
 
     return;
+}
+
+sub atom_site_to_pdbx
+{
+    my ( $atom_site ) = @_;
 }
 
 #

@@ -57,7 +57,8 @@ use Measure qw( around_distance
                 rmsd_sidechains );
 use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
-use PDBxParser qw( change_unique_residue_key
+use PDBxParser qw( atom_site_to_pdbx
+                   change_unique_residue_key
                    create_pdbx_entry
                    determine_residue_keys
                    filter_new
@@ -1488,6 +1489,10 @@ sub calc_full_atom_energy
             { message => $i + 1 . ' rotamer energy sum: ' . $rotamer_energy_sum . "\n",
               program => $options->{'program_called_by'} }
         ) if $verbose && $verbosity_level > 0;
+
+        if( $verbose && $verbosity_level > 2 ) {
+            atom_site_to_pdbx( \%rotamer_interaction_site );
+        }
 
         if( defined $rmsd ) {
             push @rmsd_averages,
