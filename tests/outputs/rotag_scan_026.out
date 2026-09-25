@@ -92,6 +92,10 @@ Options:
                         print out additional information about the occuring
                         scanning of the bond parameters, such as residue name,
                         accepted bond parameter count and etc.
+    --verbosity-level <int>
+                        changes verbosity level and together with '--verbose'
+                        option will produce more descriptive logs (default:
+                        1 | 0 | 2).
     -n, --threads <int>
                         number of threads.
     -v, --version

@@ -130,6 +130,10 @@ our $VERSION = $VERSION;
 #*                        print out additional information about the occuring
 #*                        scanning of the bond parameters, such as residue name,
 #*                        accepted bond parameter count and etc.
+#*    --verbosity-level <int>
+#*                        changes verbosity level and together with '--verbose'
+#*                        option will produce more descriptive logs (default:
+#*                        1 | 0 | 2).
 #*    -n, --threads <int>
 #*                        number of threads.
 #*    -v, --version
@@ -153,6 +157,7 @@ my $rand_seed;
 my $rand_step;
 my $threads = 1;
 my $verbose = 0;
+my $verbosity_level = 1;
 my $tags = '_atom_site,_[local]_rotamer_bond_parameter,_[local]_rotamer_energy';
 my $output_format = 'pdbx';
 my $parameters_cmd = '';
@@ -191,6 +196,7 @@ GetOptions(
     'format|F=s' => \$output_format,
     'threads|n=s' => \$threads,
     'verbose' => sub { $verbose = 1 },
+    'verbosity-level=s' => \$verbosity_level,
     'help|h' => sub {
                         open my $fh, '<', $0;
                         while( <$fh> ) {
@@ -352,7 +358,8 @@ for my $pdbx_file ( @ARGV ) {
                   'options' => { 'rand_seed' => $rand_seed,
                                  'rand_step' => $rand_step,
                                  'program_called_by' => $0,
-                                 'verbose' => $verbose }
+                                 'verbose' => $verbose,
+                                 'verbosity_level' => $verbosity_level },
                 } );
 
         for my $residue_unique_key ( keys %{ $rotamer_library } ) {
@@ -492,6 +499,7 @@ for my $pdbx_file ( @ARGV ) {
             'non_bonded_potential' => \&ForceField::NonBonded::general,
             'program_called_by' => $0,
             'verbose' => $verbose,
+            'verbosity_level' => $verbosity_level
         } );
         my $pairwise_rotamer_energies =
             $sidechain_interactions->get_pairwise_rotamer_energies();
