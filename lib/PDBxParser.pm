@@ -1868,6 +1868,29 @@ sub to_pdbx
 sub atom_site_to_pdbx
 {
     my ( $atom_site ) = @_;
+    my %pdbx_data;
+    $pdbx_data{'_atom_site'}{'data'} = $atom_site;
+    $pdbx_data{'_atom_site'}{'metadata'}{'type'} = 'indexed';
+    $pdbx_data{'_atom_site'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_atom_site'}{'metadata'}{'attributes'} = [
+        'group_PDB',
+        'id',
+        'type_symbol',
+        'label_atom_id',
+        'label_alt_id',
+        'label_comp_id',
+        'label_asym_id',
+        'label_entity_id',
+        'label_seq_id',
+        'Cartn_x',
+        'Cartn_y',
+        'Cartn_z',
+        'auth_asym_id',
+        'auth_seq_id',
+        'pdbx_auth_alt_id',
+        'pdbx_PDB_model_num',
+    ];
+    to_pdbx( \%pdbx_data );
 }
 
 #
