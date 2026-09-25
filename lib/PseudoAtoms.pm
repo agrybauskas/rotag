@@ -1424,7 +1424,7 @@ sub calc_full_atom_energy
                 $rotamer_energy_sum += $bonded_rotamer_energy;
 
                 print info(
-                    { message => 'non-bonded rotamer energy of ' .
+                    { message => 'bonded rotamer energy of ' .
                           $residue_unique_key . ' ' . $rotamer_atom_name . ': ' .
                           $bonded_rotamer_energy . "\n",
                       program => $options->{'program_called_by'} }
