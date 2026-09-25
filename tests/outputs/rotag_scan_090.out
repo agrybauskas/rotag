@@ -1,1 +1,860 @@
-# A placeholder for the future data.
+Info: rotag_scan: 1 C 98 . GLU HB3  5
+Info: rotag_scan: 1 C 98 . GLU HB2  4
+Info: rotag_scan: 1 C 98 . GLU CG  4
+Info: rotag_scan: 1 C 98 . GLU HG2  5
+Info: rotag_scan: 1 C 98 . GLU CD  3
+Info: rotag_scan: 1 C 98 . GLU HG3  3
+Info: rotag_scan: 1 C 98 . GLU OE2  5
+Info: rotag_scan: 1 C 98 . GLU OE1  5
+Info: rotag_scan: 1 E . . MG MG  5
+Info: rotag_scan: checkable rotamer count: 5
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.0753627130245146
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.848248872918323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.211820814121161
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237875201111144
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.185561820338105
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0271977629426564
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.28819292820956
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 0.709631985036835
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.78945570853272
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 1.54180008476139
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 4.98999586027647
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.11963863884078
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 2.98136785513853
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.05158655877039
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.105383452025573
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.069423091989709
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.0753627130245146
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.848248872918323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.211820814121161
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237875201111144
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.185561820338105
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0271977629426564
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.28819308181494
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 0.709631985036835
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.78945570853272
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 1.54180008476139
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 4.98999586027647
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.11963863884078
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 2.98136785513853
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.05158655877039
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.105383452025573
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.069423091989709
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.0753627130245146
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.848248872918323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.211820814121161
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237875201111144
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.185561820338105
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0271977629426564
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.28819306236724
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 0.709631985036835
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.78945570853272
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 1.54180008476139
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 4.98999586027647
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.11963863884078
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 2.98136785513853
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.05158655877039
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.105383452025573
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.069423091989709
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.0753627130245146
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.848248872918323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.211820814121161
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237875201111144
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.185561820338105
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0271977629426564
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.28819318964043
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 0.709631985036835
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.78945570853272
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 1.54180008476139
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 4.98999586027647
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.11963863884078
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 2.98136785513853
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.05158655877039
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.105383452025573
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.069423091989709
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.0753627130245146
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.848248872918323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.211820814121161
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237875201111144
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.185561820338105
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0271977629426564
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.24280067905995
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 0.709631985036835
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.78945570853272
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 1.54180008476139
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 4.98999586027647
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.11963863884078
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 2.98136785513853
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.05158655877039
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.105383452025573
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.069423091989709
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and .,E,1,.,203,A,? MG: 37.7986141932537
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE1: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. N: 5.03074220476826
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. CA: -0.39500868046185
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. C: -5.23844248674542
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. O: 5.27742551342659
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? CB: -0.863319686581678
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. H: -3.09510764899157
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. HA: -1.23121366272109
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB2: 0.0500752574924992
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB3: 0.0454653418137004
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG2: 0.0510058498418033
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG3: 0.100027092929721
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and .,E,1,.,203,A,? MG: -30.7370762688382
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE2: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. N: 4.06152199059552
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. CA: -0.4253502976174
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. C: -4.6691235450159
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. O: 4.84759273807963
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? CB: -0.918213539695905
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. H: -2.66425153951362
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. HA: -0.838062167624571
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB2: 0.0533874444360032
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB3: 0.046469927505656
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG2: 0.0972820616183138
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG3: 0.0509881485975333
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and .,E,1,.,203,A,? MG: -29.8139996009935
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB2: 1.35059220621725
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. N: 0.0191680423421352
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. C: 0.203766898841311
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. O: 0.0332007937362123
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? CD: 0.105383452025573
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE1: 0.0500752574924992
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE2: 0.0533874444360032
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. H: -0.0213633168610963
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. HA: -0.00979578516925583
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG2: -0.00332006064116361
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG3: -0.00137017040452068
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and .,E,1,.,203,A,? MG: -0.113527691932639
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB3: 0.920541485663537
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. N: 0.0972622916008403
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. C: -0.00508678542091072
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. O: 0.0330530143570341
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? CD: -0.069423091989709
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE1: 0.0454653418137004
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE2: 0.046469927505656
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. H: -0.0337966371605182
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. HA: -0.00699576192480999
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG2: -0.00450075993714262
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG3: -0.00325283431138571
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and .,E,1,.,203,A,? MG: -0.0981428164493681
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG2: 0.0878090182781725
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. N: 0.020837735109117
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. CA: -0.0157016794767893
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. C: -0.0292783672284967
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. O: 0.026751093147435
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE1: 0.0510058498418033
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE2: 0.0972820616183138
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. H: -0.0178840795000402
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. HA: -0.0047505087715426
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB2: -0.00332006064116361
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB3: -0.00450075993714262
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and .,E,1,.,203,A,? MG: -0.115223447042107
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG3: 0.0874499312257432
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. N: 0.0258612456799271
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. CA: 0.0912213538969441
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0347202913882172
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. O: 0.0286100966116161
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE1: 0.100027092929721
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE2: 0.0509881485975333
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. H: -0.0229910393278053
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. HA: -0.0083829427834018
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB2: -0.00137017040452068
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB3: -0.00325283431138571
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and .,E,1,.,203,A,? MG: -0.153668011208195
+Info: rotag_scan: bonded atom energy of .,E,1,.,203,A,? MG: 0
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. N: -11.6277507542702
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. CA: 1.02321576693325
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. C: 11.6028782406547
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. O: -12.020049611124
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 2.26599636007847
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CG: -1.24280067905995
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CD: 37.7986141932537
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE1: -30.7370762688382
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE2: -29.8139996009935
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. H: 7.05800978731261
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. HA: 2.73858103392503
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB2: -0.113527691932639
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB3: -0.0981428164493681
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG2: -0.115223447042107
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG3: -0.153668011208195
+Info: rotag_scan: 5 rotamer energy sum: -43.0231753873338
+Info: rotag_scan: kept rotamer count: 1
+Info: rotag_scan: 1 C 98 . GLU HB3  5
+Info: rotag_scan: 1 C 98 . GLU HB2  4
+Info: rotag_scan: 1 C 98 . GLU CG  4
+Info: rotag_scan: 1 C 98 . GLU HG2  5
+Info: rotag_scan: 1 C 98 . GLU CD  5
+Info: rotag_scan: 1 C 98 . GLU HG3  5
+Info: rotag_scan: 1 C 98 . GLU OE2  5
+Info: rotag_scan: 1 C 98 . GLU OE1  5
+Info: rotag_scan: 1 E . . MG MG  5
+Info: rotag_scan: checkable rotamer count: 5
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.136559016648918
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.680997918212934
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.203905888132252
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237571435029119
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.180832915572667
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0500233328842654
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.04533837063269
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 9.16604286776979e-07
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.97677264450772
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 2.91113539796337
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 5.20248301989279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.26286870830129
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 3.05304474225334
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.27435768150311
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and .,E,1,.,203,A,? MG: 30.6977654882126
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE1: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. N: 4.75817798066528
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. CA: -0.259839908798155
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. C: -6.00844385432323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. O: 5.79644847765056
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? CB: 1.17333437523093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. H: -3.01521903247868
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. HA: -1.21148367956736
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB2: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB3: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG2: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG3: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and .,E,1,.,203,A,? MG: -27.538250359977
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE2: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. N: 4.58124923345326
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. CA: -0.452602216928769
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. C: -4.57596063987595
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. O: 4.77001540191818
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? CB: -1.06404637605747
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. H: -2.87045750611297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. HA: -0.993088312644432
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB3: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG3: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and .,E,1,.,203,A,? MG: -46.1152051259982
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB2: 1.17257243484939
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. N: 0.0191241315759784
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. C: 0.277859709430623
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. O: 0.033162183752247
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? CD: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE1: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. H: -0.0216680741734805
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. HA: -0.00942723951918991
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG3: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and .,E,1,.,203,A,? MG: -0.0879549472329848
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB3: 1.39955962395457
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. N: 0.118695983825941
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. C: -0.0205022080711468
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. O: 0.033092527415222
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? CD: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE1: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE2: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. H: -0.0342589965439751
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. HA: -0.00706227105664678
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG2: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and .,E,1,.,203,A,? MG: -0.0808279631668353
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG2: 0.000270416259080121
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. N: 0.0208541772725027
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. CA: -0.0155463898880819
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. C: -0.02960211792089
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. O: 0.0265585572778332
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE1: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. H: -0.0169462923207883
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. HA: -0.00485623522232856
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB3: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and .,E,1,.,203,A,? MG: -0.123456963733387
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG3: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. N: 0.0202227997347006
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. CA: 0.0323633971466538
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0333012225269294
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. O: 0.0281569091229952
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE1: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE2: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. H: -0.0219901881037207
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. HA: -0.00746005509436308
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB2: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and .,E,1,.,203,A,? MG: -0.119251062801454
+Info: rotag_scan: bonded atom energy of .,E,1,.,203,A,? MG: 0
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. N: -7.69388472715938
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. CA: 0.648316719033631
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. C: 7.93872273543632
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. O: -8.69871534162595
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 1.70402174442962
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CG: -1.04533837063269
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CD: 30.6977654882126
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE1: -27.538250359977
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE2: -46.1152051259982
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. H: 5.05300629311991
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. HA: 1.44755350965482
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB2: -0.0879549472329848
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB3: -0.0808279631668353
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG2: -0.123456963733387
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG3: -0.119251062801454
+Info: rotag_scan: 1 rotamer energy sum: -81.0979247477337
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.136559016648918
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.680997918212934
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.203905888132252
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237571435029119
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.180832915572667
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0500233328842654
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.00381650068756
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 9.16604286776979e-07
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.97677264450772
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 2.91113539796337
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 5.20248301989279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.26286870830129
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 3.05304474225334
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.27435768150311
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and .,E,1,.,203,A,? MG: 28.4869053880459
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE1: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. N: 4.75817798066528
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. CA: -0.259839908798155
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. C: -6.00844385432323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. O: 5.79644847765056
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? CB: 1.17333437523093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. H: -3.01521903247868
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. HA: -1.21148367956736
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB2: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB3: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG2: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG3: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and .,E,1,.,203,A,? MG: -24.9208202927917
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE2: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. N: 4.58124923345326
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. CA: -0.452602216928769
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. C: -4.57596063987595
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. O: 4.77001540191818
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? CB: -1.06404637605747
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. H: -2.87045750611297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. HA: -0.993088312644432
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB3: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG3: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and .,E,1,.,203,A,? MG: -45.2387990202891
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB2: 1.17257243484939
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. N: 0.0191241315759784
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. C: 0.277859709430623
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. O: 0.033162183752247
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? CD: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE1: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. H: -0.0216680741734805
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. HA: -0.00942723951918991
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG3: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and .,E,1,.,203,A,? MG: -0.0832462104486933
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB3: 1.39955962395457
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. N: 0.118695983825941
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. C: -0.0205022080711468
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. O: 0.033092527415222
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? CD: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE1: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE2: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. H: -0.0342589965439751
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. HA: -0.00706227105664678
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG2: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and .,E,1,.,203,A,? MG: -0.0788036966916332
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG2: 0.000270416259080121
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. N: 0.0208541772725027
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. CA: -0.0155463898880819
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. C: -0.02960211792089
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. O: 0.0265585572778332
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE1: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. H: -0.0169462923207883
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. HA: -0.00485623522232856
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB3: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and .,E,1,.,203,A,? MG: -0.115665928261683
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG3: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. N: 0.0202227997347006
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. CA: 0.0323633971466538
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0333012225269294
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. O: 0.0281569091229952
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE1: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE2: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. H: -0.0219901881037207
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. HA: -0.00746005509436308
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB2: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and .,E,1,.,203,A,? MG: -0.119955839030822
+Info: rotag_scan: bonded atom energy of .,E,1,.,203,A,? MG: 0
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. N: -7.75679500508481
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. CA: 0.639587351869156
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. C: 7.76391079176804
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. O: -8.54402527587528
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 1.64625523125443
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CG: -1.00381650068756
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CD: 28.4869053880459
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE1: -24.9208202927917
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE2: -45.2387990202891
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. H: 5.08196970617177
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. HA: 1.4332305910317
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB2: -0.0832462104486933
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB3: -0.0788036966916332
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG2: -0.115665928261683
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG3: -0.119955839030822
+Info: rotag_scan: 2 rotamer energy sum: -78.5561778791382
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.136559016648918
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.680997918212934
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.203905888132252
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237571435029119
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.180832915572667
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0500233328842654
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.09074757136566
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 9.16604286776979e-07
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.97677264450772
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 2.91113539796337
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 5.20248301989279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.26286870830129
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 3.05304474225334
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.27435768150311
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and .,E,1,.,203,A,? MG: 36.4891202681887
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE1: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. N: 4.75817798066528
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. CA: -0.259839908798155
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. C: -6.00844385432323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. O: 5.79644847765056
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? CB: 1.17333437523093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. H: -3.01521903247868
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. HA: -1.21148367956736
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB2: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB3: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG2: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG3: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and .,E,1,.,203,A,? MG: -34.8380170952647
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE2: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. N: 4.58124923345326
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. CA: -0.452602216928769
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. C: -4.57596063987595
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. O: 4.77001540191818
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? CB: -1.06404637605747
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. H: -2.87045750611297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. HA: -0.993088312644432
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB3: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG3: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and .,E,1,.,203,A,? MG: -55.2587373674567
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB2: 1.17257243484939
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. N: 0.0191241315759784
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. C: 0.277859709430623
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. O: 0.033162183752247
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? CD: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE1: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. H: -0.0216680741734805
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. HA: -0.00942723951918991
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG3: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and .,E,1,.,203,A,? MG: -0.0956404319472188
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB3: 1.39955962395457
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. N: 0.118695983825941
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. C: -0.0205022080711468
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. O: 0.033092527415222
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? CD: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE1: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE2: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. H: -0.0342589965439751
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. HA: -0.00706227105664678
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG2: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and .,E,1,.,203,A,? MG: -0.0834841180238723
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG2: 0.000270416259080121
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. N: 0.0208541772725027
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. CA: -0.0155463898880819
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. C: -0.02960211792089
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. O: 0.0265585572778332
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE1: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. H: -0.0169462923207883
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. HA: -0.00485623522232856
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB3: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and .,E,1,.,203,A,? MG: -0.123231611674082
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG3: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. N: 0.0202227997347006
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. CA: 0.0323633971466538
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0333012225269294
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. O: 0.0281569091229952
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE1: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE2: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. H: -0.0219901881037207
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. HA: -0.00746005509436308
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB2: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and .,E,1,.,203,A,? MG: -0.119098862279755
+Info: rotag_scan: bonded atom energy of .,E,1,.,203,A,? MG: 0
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. N: -8.09346117575542
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. CA: 0.704862429977189
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. C: 8.65865357785039
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. O: -9.32463291242832
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 1.81743185389415
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CG: -1.09074757136566
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CD: 36.4891202681887
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE1: -34.8380170952647
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE2: -55.2587373674567
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. H: 5.25548777503831
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. HA: 1.6233633024308
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB2: -0.0956404319472188
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB3: -0.0834841180238723
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG2: -0.123231611674082
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG3: -0.119098862279755
+Info: rotag_scan: 3 rotamer energy sum: -102.269875798602
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.136559016648918
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.680997918212934
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.203905888132252
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237571435029119
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.180832915572667
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0500233328842654
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.36194607857447
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 9.16604286776979e-07
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.97677264450772
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 2.91113539796337
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 5.20248301989279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.26286870830129
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 3.05304474225334
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.27435768150311
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and .,E,1,.,203,A,? MG: 36.9506095884569
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE1: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. N: 4.75817798066528
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. CA: -0.259839908798155
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. C: -6.00844385432323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. O: 5.79644847765056
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? CB: 1.17333437523093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. H: -3.01521903247868
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. HA: -1.21148367956736
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB2: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB3: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG2: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG3: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and .,E,1,.,203,A,? MG: -28.0570174047907
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE2: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. N: 4.58124923345326
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. CA: -0.452602216928769
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. C: -4.57596063987595
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. O: 4.77001540191818
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? CB: -1.06404637605747
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. H: -2.87045750611297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. HA: -0.993088312644432
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB3: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG3: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and .,E,1,.,203,A,? MG: -61.5988000591635
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB2: 1.17257243484939
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. N: 0.0191241315759784
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. C: 0.277859709430623
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. O: 0.033162183752247
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? CD: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE1: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. H: -0.0216680741734805
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. HA: -0.00942723951918991
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG3: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and .,E,1,.,203,A,? MG: -0.0980418106865054
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB3: 1.39955962395457
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. N: 0.118695983825941
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. C: -0.0205022080711468
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. O: 0.033092527415222
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? CD: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE1: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE2: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. H: -0.0342589965439751
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. HA: -0.00706227105664678
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG2: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and .,E,1,.,203,A,? MG: -0.0967249202768515
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG2: 0.000270416259080121
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. N: 0.0208541772725027
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. CA: -0.0155463898880819
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. C: -0.02960211792089
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. O: 0.0265585572778332
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE1: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. H: -0.0169462923207883
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. HA: -0.00485623522232856
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB3: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and .,E,1,.,203,A,? MG: -0.149487666648593
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG3: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. N: 0.0202227997347006
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. CA: 0.0323633971466538
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0333012225269294
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. O: 0.0281569091229952
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE1: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE2: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. H: -0.0219901881037207
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. HA: -0.00746005509436308
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB2: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and .,E,1,.,203,A,? MG: -0.174903598709076
+Info: rotag_scan: bonded atom energy of .,E,1,.,203,A,? MG: 0
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. N: -9.48313127545945
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. CA: 0.774360454966563
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. C: 8.94243520805755
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. O: -9.81269859305421
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 2.03222837198521
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CG: -1.36194607857447
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CD: 36.9506095884569
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE1: -28.0570174047907
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE2: -61.5988000591635
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. H: 6.12285840181426
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. HA: 1.73174422638347
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB2: -0.0980418106865054
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB3: -0.0967249202768515
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG2: -0.149487666648593
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG3: -0.174903598709076
+Info: rotag_scan: 4 rotamer energy sum: -101.536734176055
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CG: 0.136559016648918
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. N: 0.680997918212934
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. C: -0.203905888132252
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. O: 0.237571435029119
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. H: -0.180832915572667
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and 98,C,1,.,98,A,. HA: 0.0500233328842654
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CG and .,E,1,.,203,A,? MG: -1.09248840528182
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? CD: 9.16604286776979e-07
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. N: -4.97677264450772
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. CA: 2.91113539796337
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. C: 5.20248301989279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. O: -5.26286870830129
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. H: 3.05304474225334
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,. HA: 1.27435768150311
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB2: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and 98,C,1,.,98,A,? HB3: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? CD and .,E,1,.,203,A,? MG: 30.0450119389326
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE1: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. N: 4.75817798066528
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. CA: -0.259839908798155
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. C: -6.00844385432323
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. O: 5.79644847765056
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? CB: 1.17333437523093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. H: -3.01521903247868
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,. HA: -1.21148367956736
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB2: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HB3: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG2: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and 98,C,1,.,98,A,? HG3: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE1 and .,E,1,.,203,A,? MG: -24.7411257309403
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? OE2: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. N: 4.58124923345326
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. CA: -0.452602216928769
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. C: -4.57596063987595
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. O: 4.77001540191818
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? CB: -1.06404637605747
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. H: -2.87045750611297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,. HA: -0.993088312644432
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HB3: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and 98,C,1,.,98,A,? HG3: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? OE2 and .,E,1,.,203,A,? MG: -51.570531290891
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB2: 1.17257243484939
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. N: 0.0191241315759784
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. C: 0.277859709430623
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. O: 0.033162183752247
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? CD: 0.00207791815214446
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE1: 0.0857510964342937
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? OE2: 0.0469347272647971
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. H: -0.0216680741734805
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,. HA: -0.00942723951918991
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and 98,C,1,.,98,A,? HG3: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB2 and .,E,1,.,203,A,? MG: -0.0860541449189641
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HB3: 1.39955962395457
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. N: 0.118695983825941
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. C: -0.0205022080711468
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. O: 0.033092527415222
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? CD: -0.068954233931802
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE1: 0.047777895500693
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? OE2: 0.0437460513454297
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. H: -0.0342589965439751
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,. HA: -0.00706227105664678
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG2: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and 98,C,1,.,98,A,? HG3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HB3 and .,E,1,.,203,A,? MG: -0.0844062908900929
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG2: 0.000270416259080121
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. N: 0.0208541772725027
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. CA: -0.0155463898880819
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. C: -0.02960211792089
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. O: 0.0265585572778332
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE1: 0.0573005377283477
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? OE2: 0.0544324925979283
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. H: -0.0169462923207883
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,. HA: -0.00485623522232856
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB2: -0.00404370364794279
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and 98,C,1,.,98,A,? HB3: -0.00403858586166882
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG2 and .,E,1,.,203,A,? MG: -0.11975609684804
+Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG3: 0
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. N: 0.0202227997347006
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. CA: 0.0323633971466538
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0333012225269294
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. O: 0.0281569091229952
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE1: 0.0509331278150928
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE2: 0.102560344405469
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. H: -0.0219901881037207
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. HA: -0.00746005509436308
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB2: -0.00132109240593093
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? HB3: -0.00398451427102832
+Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and .,E,1,.,203,A,? MG: -0.13941350596071
+Info: rotag_scan: bonded atom energy of .,E,1,.,203,A,? MG: 0
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. N: -8.66756092999842
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. CA: 0.698621265439532
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. C: 8.24178946849029
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. O: -9.11358816824045
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 1.76117915675519
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CG: -1.09248840528182
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CD: 30.0450119389326
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE1: -24.7411257309403
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE2: -51.570531290891
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. H: 5.61242727398793
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. HA: 1.58012199019929
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB2: -0.0860541449189641
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HB3: -0.0844062908900929
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG2: -0.11975609684804
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? HG3: -0.13941350596071
+Info: rotag_scan: 5 rotamer energy sum: -88.1364440669261
+Info: rotag_scan: kept rotamer count: 5
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1 T
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1 T
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1 T
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1 T
+ATOM 1140 C CB . GLU C 2 98 19.244 45.308 40.890 A 98 . 1 T
+ATOM 1141 C CG . GLU C 2 98 20.096 45.709 42.086 A 98 . 1 T
+ATOM 1142 C CD . GLU C 2 98 21.086 46.815 41.759 A 98 . 1 T
+ATOM 1143 O OE1 . GLU C 2 98 21.680 46.761 40.659 A 98 . 1 T
+ATOM 1144 O OE2 . GLU C 2 98 21.279 47.725 42.602 A 98 . 1 T
+HETATM 3667 MG MG . MG E 1 . 0.000 0.000 0.000 A 203 . 1 T
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1 T
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1 T
+ATOM 3859 H HB2 . GLU C 2 98 19.917 45.002 40.117 A 98 . 1 T
+ATOM 3860 H HB3 . GLU C 2 98 18.632 44.488 41.204 A 98 . 1 T
+ATOM 3861 H HG2 . GLU C 2 98 20.648 44.855 42.418 A 98 . 1 T
+ATOM 3862 H HG3 . GLU C 2 98 19.453 46.058 42.867 A 98 . 1 T
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite -43.023175
+2 2 composite -81.097925
+3 3 composite -78.556178
+4 4 composite -102.269876
+5 5 composite -101.536734
+6 6 composite -88.136444
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 . MG E 1 203 A . 1142 1143 3667 . . . 1 . 0.166667 CD-OE1.MG 170.890 degrees
+2 1 . MG E 1 203 A . 1141 1142 1143 3667 . . . 1 0.166667 CG-CD-OE1.MG 9.722 degrees
+3 1 . MG E 1 203 A . 1143 3667 . . . 1 . . 0.166667 OE1.MG 1.268096 angstrom
+4 1 98 GLU C 1 98 A . 1136 1137 1140 1141 . . . . 0.166667 chi1 -79.489 degrees
+5 1 98 GLU C 1 98 A . 1137 1140 1141 1142 . . . . 0.166667 chi2 -78.574 degrees
+6 1 98 GLU C 1 98 A . 1140 1141 1142 1143 . . . . 0.166667 chi3 88.122 degrees
+7 2 . MG E 1 203 A . 1142 1144 3667 . . . 1 . 0.166667 CD-OE2.MG 123.378 degrees
+8 2 . MG E 1 203 A . 1141 1142 1144 3667 . . . 1 0.166667 CG-CD-OE2.MG 100.223 degrees
+9 2 . MG E 1 203 A . 1144 3667 . . . 1 . . 0.166667 OE2.MG 2.215182 angstrom
+10 2 98 GLU C 1 98 A . 1136 1137 1140 1141 . . . . 0.166667 chi1 -86.174 degrees
+11 2 98 GLU C 1 98 A . 1137 1140 1141 1142 . . . . 0.166667 chi2 -59.980 degrees
+12 2 98 GLU C 1 98 A . 1140 1141 1142 1143 . . . . 0.166667 chi3 -35.888 degrees
+13 3 . MG E 1 203 A . 1142 1144 3667 . . . 1 . 0.166667 CD-OE2.MG 140.987 degrees
+14 3 . MG E 1 203 A . 1141 1142 1144 3667 . . . 1 0.166667 CG-CD-OE2.MG 88.658 degrees
+15 3 . MG E 1 203 A . 1144 3667 . . . 1 . . 0.166667 OE2.MG 2.258452 angstrom
+16 3 98 GLU C 1 98 A . 1136 1137 1140 1141 . . . . 0.166667 chi1 -86.174 degrees
+17 3 98 GLU C 1 98 A . 1137 1140 1141 1142 . . . . 0.166667 chi2 -59.980 degrees
+18 3 98 GLU C 1 98 A . 1140 1141 1142 1143 . . . . 0.166667 chi3 -35.888 degrees
+19 4 . MG E 1 203 A . 1142 1144 3667 . . . 1 . 0.166667 CD-OE2.MG 113.297 degrees
+20 4 . MG E 1 203 A . 1141 1142 1144 3667 . . . 1 0.166667 CG-CD-OE2.MG 133.087 degrees
+21 4 . MG E 1 203 A . 1144 3667 . . . 1 . . 0.166667 OE2.MG 1.834231 angstrom
+22 4 98 GLU C 1 98 A . 1136 1137 1140 1141 . . . . 0.166667 chi1 -86.174 degrees
+23 4 98 GLU C 1 98 A . 1137 1140 1141 1142 . . . . 0.166667 chi2 -59.980 degrees
+24 4 98 GLU C 1 98 A . 1140 1141 1142 1143 . . . . 0.166667 chi3 -35.888 degrees
+25 5 . MG E 1 203 A . 1142 1144 3667 . . . 1 . 0.166667 CD-OE2.MG 130.815 degrees
+26 5 . MG E 1 203 A . 1141 1142 1144 3667 . . . 1 0.166667 CG-CD-OE2.MG 36.452 degrees
+27 5 . MG E 1 203 A . 1144 3667 . . . 1 . . 0.166667 OE2.MG 1.565479 angstrom
+28 5 98 GLU C 1 98 A . 1136 1137 1140 1141 . . . . 0.166667 chi1 -86.174 degrees
+29 5 98 GLU C 1 98 A . 1137 1140 1141 1142 . . . . 0.166667 chi2 -59.980 degrees
+30 5 98 GLU C 1 98 A . 1140 1141 1142 1143 . . . . 0.166667 chi3 -35.888 degrees
+31 6 . MG E 1 203 A . 1142 1144 3667 . . . 1 . 0.166667 CD-OE2.MG 154.642 degrees
+32 6 . MG E 1 203 A . 1141 1142 1144 3667 . . . 1 0.166667 CG-CD-OE2.MG 39.357 degrees
+33 6 . MG E 1 203 A . 1144 3667 . . . 1 . . 0.166667 OE2.MG 1.975742 angstrom
+34 6 98 GLU C 1 98 A . 1136 1137 1140 1141 . . . . 0.166667 chi1 -86.174 degrees
+35 6 98 GLU C 1 98 A . 1137 1140 1141 1142 . . . . 0.166667 chi2 -59.980 degrees
+36 6 98 GLU C 1 98 A . 1140 1141 1142 1143 . . . . 0.166667 chi3 -35.888 degrees
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 98 C . 98 A OE1 . E 203 . A MG
+metalc2 metalc 98 C . 98 A OE2 . E 203 . A MG
+#

@@ -8,6 +8,7 @@ Info: rotag_scan: 1 C 98 . GLU OE2  5
 Info: rotag_scan: 1 C 98 . GLU OE1  5
 Info: rotag_scan: 1 E . . MG MG  5
 Info: rotag_scan: checkable rotamer count: 5
+Info: rotag_scan: 5 rotamer energy sum: -43.0231753873338
 Info: rotag_scan: kept rotamer count: 1
 Info: rotag_scan: 1 C 98 . GLU HB3  5
 Info: rotag_scan: 1 C 98 . GLU HB2  4
@@ -19,6 +20,11 @@ Info: rotag_scan: 1 C 98 . GLU OE2  5
 Info: rotag_scan: 1 C 98 . GLU OE1  5
 Info: rotag_scan: 1 E . . MG MG  5
 Info: rotag_scan: checkable rotamer count: 5
+Info: rotag_scan: 1 rotamer energy sum: -81.0979247477337
+Info: rotag_scan: 2 rotamer energy sum: -78.5561778791382
+Info: rotag_scan: 3 rotamer energy sum: -102.269875798602
+Info: rotag_scan: 4 rotamer energy sum: -101.536734176055
+Info: rotag_scan: 5 rotamer energy sum: -88.1364440669261
 Info: rotag_scan: kept rotamer count: 5
 data_rotag
 #
