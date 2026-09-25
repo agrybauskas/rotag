@@ -1414,6 +1414,11 @@ sub calc_full_atom_energy
             my $residue_unique_key =
                 unique_residue_key( $rotamer_interaction_site{$rotamer_atom_id} );
 
+            print info(
+                { message => 'accumulated energy sum of: ' . $rotamer_energy_sum . "\n",
+                  program => $options->{'program_called_by'} }
+            ) if $verbose && $verbosity_level > 1;
+
             # Calculation of potential energy of bonded atoms.
             if( defined $bonded_potential ) {
                 my $bonded_rotamer_energy = $bonded_potential->(
@@ -1460,11 +1465,6 @@ sub calc_full_atom_energy
                             $options );
                     $rotamer_atom_energy += $non_bonded_rotamer_energy;
 
-                    next ALLOWED_ANGLES
-                        if $rotamer_atom_energy > $energy_cutoff;
-
-                    $rotamer_energy_sum += $rotamer_atom_energy;
-
                     print info(
                         { message => 'non-bonded energy between ' .
                               $residue_unique_key . ' ' . $rotamer_atom_name . ' and ' .
@@ -1472,6 +1472,11 @@ sub calc_full_atom_energy
                               $non_bonded_rotamer_energy . "\n",
                           program => $options->{'program_called_by'} }
                     ) if $verbose && $verbosity_level > 1;
+
+                    next ALLOWED_ANGLES
+                        if $rotamer_atom_energy > $energy_cutoff;
+
+                    $rotamer_energy_sum += $rotamer_atom_energy;
                 }
             }
         }
