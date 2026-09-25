@@ -657,22 +657,33 @@ sub generate_library
                         keys %bond_parameters;
 
                     my ( $allowed_angles_full, $energy_sums, $rmsds ) =
-                        @{ threading(
-                               \&calc_full_atom_energy,
-                               { 'parameters' => $parameters,
-                                 'atom_site' => $current_atom_site,
-                                 'residue_unique_keys' => $unique_residue_keys,
-                                 'bond_parameter_names' => \@bond_parameter_names,
-                                 'interaction_site' => \%interaction_site,
-                                 'energy_threshold' => $energy_threshold,
-                                 'non_bonded_potential' =>
-                                     $potential_functions{$interactions}{'non_bonded'},
-                                 'bonded_potential' =>
-                                     $potential_functions{$interactions}{'bonded'},
-                                 ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
-                                 'options' => $options },
-                               [ $allowed_angles ],
-                               $threads ) };
+                        ( [], [], [] );
+                    foreach( 0..1 ) {  # Currently, there are only two cycles.
+                        ( $allowed_angles_full, $energy_sums, $rmsds ) =
+                            @{ threading(
+                                   \&calc_full_atom_energy,
+                                   { 'parameters' => $parameters,
+                                     'atom_site' => $current_atom_site,
+                                     'residue_unique_keys' => $unique_residue_keys,
+                                     'bond_parameter_names' => \@bond_parameter_names,
+                                     'interaction_site' => \%interaction_site,
+                                     'energy_threshold' => $energy_threshold,
+                                     'non_bonded_potential' =>
+                                         $potential_functions{$interactions}{'non_bonded'},
+                                     'bonded_potential' =>
+                                         $potential_functions{$interactions}{'bonded'},
+                                     ( $rmsd ? ( 'rmsd' => 1 ): ()  ),
+                                     'options' => $options },
+                                   [ $allowed_angles ],
+                                   $threads ) };
+
+                        last if @{ $allowed_angles_full };
+                        last if $energy_threshold->{'hetatom'} >=
+                            $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'};
+
+                        $energy_threshold->{'hetatom'} =
+                            $parameters->{'_[local]_force_field'}{'cutoff_hetatom_max'};
+                    }
 
                     # # NOTE: Keeping commented code for coverage tests as
                     # # multi-threading cannot be processed.

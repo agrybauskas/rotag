@@ -1,1 +1,471 @@
-# A placeholder for the future data.
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1283 N N . ASP B 2 116 56.851 -5.973 62.083 A 116 . 1 T
+ATOM 1284 C CA . ASP B 2 116 57.450 -4.685 61.747 A 116 . 1 T
+ATOM 1285 C C . ASP B 2 116 58.793 -4.830 61.058 A 116 . 1 T
+ATOM 1286 O O . ASP B 2 116 59.002 -4.283 59.979 A 116 . 1 T
+ATOM 1287 C CB . ASP B 2 116 57.649 -3.836 63.009 A 116 . 1 T
+ATOM 1288 C CG . ASP B 2 116 56.353 -3.362 63.605 A 116 . 1 T
+ATOM 1289 O OD1 . ASP B 2 116 55.335 -3.357 62.882 A 116 . 1 T
+ATOM 1290 O OD2 . ASP B 2 116 56.346 -2.989 64.795 A 116 . 1 T
+HETATM 2709 MG MG . MG C 3 . 53.351 -2.993 61.762 F 9 . 1 T
+HETATM 2710 MG MG . MG D 3 . 54.338 -3.164 65.866 A 300 . 1 T
+ATOM 2947 H H . ASP B 2 116 56.519 -6.088 62.923 A 116 . 1 T
+ATOM 2948 H HA . ASP B 2 116 56.791 -4.168 61.081 A 116 . 1 T
+ATOM 2949 H HB2 . ASP B 2 116 58.233 -2.976 62.757 A 116 . 1 T
+ATOM 2950 H HB3 . ASP B 2 116 58.157 -4.425 63.744 A 116 . 1 T
+#
+loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 7.345680
+2 2 composite 7.345680
+3 3 composite 504.684872
+4 4 composite -27.320788
+5 5 composite 138.681376
+6 6 composite -27.320788
+7 7 composite 155.306691
+8 8 composite 138.681376
+9 9 composite 8.658393
+10 10 composite 8.658393
+11 11 composite 505.829570
+12 12 composite -4.928210
+13 13 composite 53.107420
+14 14 composite -4.928210
+15 15 composite 71.918949
+16 16 composite 53.107420
+17 17 composite 83.202272
+18 18 composite 83.202272
+19 19 composite 378.264170
+20 20 composite 59.804617
+21 21 composite 378.264170
+22 22 composite 192.228022
+23 23 composite 378.264170
+24 24 composite 162.742397
+25 25 composite 70.566308
+26 26 composite 162.742397
+27 27 composite 54.344952
+28 28 composite 162.742397
+29 29 composite 375.326571
+30 30 composite 57.667100
+31 31 composite 375.326571
+32 32 composite 189.934336
+33 33 composite 375.326571
+34 34 composite 246.861056
+35 35 composite 1.365787
+36 36 composite 246.861056
+37 37 composite 29.065402
+38 38 composite 246.861056
+39 39 composite 377.737913
+40 40 composite 59.633324
+41 41 composite 377.737913
+42 42 composite 191.951902
+43 43 composite 377.737913
+#
+loop_
+_[local]_rotamer_bond_parameter.id
+_[local]_rotamer_bond_parameter.rotamer_id
+_[local]_rotamer_bond_parameter.label_seq_id
+_[local]_rotamer_bond_parameter.label_comp_id
+_[local]_rotamer_bond_parameter.label_asym_id
+_[local]_rotamer_bond_parameter.pdbx_PDB_model_num
+_[local]_rotamer_bond_parameter.auth_seq_id
+_[local]_rotamer_bond_parameter.auth_asym_id
+_[local]_rotamer_bond_parameter.label_alt_id
+_[local]_rotamer_bond_parameter.atom_1_id
+_[local]_rotamer_bond_parameter.atom_2_id
+_[local]_rotamer_bond_parameter.atom_3_id
+_[local]_rotamer_bond_parameter.atom_4_id
+_[local]_rotamer_bond_parameter.site_1_id
+_[local]_rotamer_bond_parameter.site_2_id
+_[local]_rotamer_bond_parameter.site_3_id
+_[local]_rotamer_bond_parameter.site_4_id
+_[local]_rotamer_bond_parameter.frequency
+_[local]_rotamer_bond_parameter.type
+_[local]_rotamer_bond_parameter.value
+_[local]_rotamer_bond_parameter.units
+1 1 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -122.824 degrees
+2 1 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+3 1 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 173.449 degrees
+4 1 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+5 1 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.886969 angstrom
+6 1 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+7 1 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+8 1 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+9 2 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -122.824 degrees
+10 2 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+11 2 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 173.449 degrees
+12 2 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+13 2 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.886969 angstrom
+14 2 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+15 2 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+16 2 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+17 3 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -122.824 degrees
+18 3 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 25.036 degrees
+19 3 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 173.449 degrees
+20 3 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 165.754 degrees
+21 3 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.886969 angstrom
+22 3 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.327272 angstrom
+23 3 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+24 3 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+25 4 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG 128.117 degrees
+26 4 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+27 4 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 123.764 degrees
+28 4 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+29 4 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.838743 angstrom
+30 4 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+31 4 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+32 4 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+33 5 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG 128.117 degrees
+34 5 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 121.119 degrees
+35 5 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 123.764 degrees
+36 5 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 179.435 degrees
+37 5 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.838743 angstrom
+38 5 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.473907 angstrom
+39 5 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+40 5 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+41 6 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG 128.117 degrees
+42 6 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+43 6 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 123.764 degrees
+44 6 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+45 6 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.838743 angstrom
+46 6 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+47 6 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+48 6 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+49 7 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG 128.117 degrees
+50 7 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 25.036 degrees
+51 7 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 123.764 degrees
+52 7 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 165.754 degrees
+53 7 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.838743 angstrom
+54 7 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.327272 angstrom
+55 7 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+56 7 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+57 8 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG 128.117 degrees
+58 8 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 121.119 degrees
+59 8 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 123.764 degrees
+60 8 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 179.435 degrees
+61 8 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.838743 angstrom
+62 8 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.473907 angstrom
+63 8 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+64 8 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -82.671 degrees
+65 9 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -122.824 degrees
+66 9 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+67 9 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 173.449 degrees
+68 9 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+69 9 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.886969 angstrom
+70 9 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+71 9 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+72 9 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+73 10 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -122.824 degrees
+74 10 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+75 10 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 173.449 degrees
+76 10 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+77 10 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.886969 angstrom
+78 10 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+79 10 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+80 10 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+81 11 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -122.824 degrees
+82 11 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 25.036 degrees
+83 11 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 173.449 degrees
+84 11 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 165.754 degrees
+85 11 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.886969 angstrom
+86 11 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.327272 angstrom
+87 11 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+88 11 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+89 12 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -151.264 degrees
+90 12 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+91 12 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 86.429 degrees
+92 12 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+93 12 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.456883 angstrom
+94 12 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+95 12 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+96 12 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+97 13 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -151.264 degrees
+98 13 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 121.119 degrees
+99 13 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 86.429 degrees
+100 13 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 179.435 degrees
+101 13 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.456883 angstrom
+102 13 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.473907 angstrom
+103 13 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+104 13 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+105 14 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -151.264 degrees
+106 14 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+107 14 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 86.429 degrees
+108 14 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+109 14 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.456883 angstrom
+110 14 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+111 14 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+112 14 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+113 15 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -151.264 degrees
+114 15 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 25.036 degrees
+115 15 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 86.429 degrees
+116 15 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 165.754 degrees
+117 15 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.456883 angstrom
+118 15 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.327272 angstrom
+119 15 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+120 15 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+121 16 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG -151.264 degrees
+122 16 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG 121.119 degrees
+123 16 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 86.429 degrees
+124 16 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 179.435 degrees
+125 16 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.456883 angstrom
+126 16 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 1.473907 angstrom
+127 16 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+128 16 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+129 17 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG 9.722 degrees
+130 17 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+131 17 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 170.890 degrees
+132 17 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+133 17 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.268096 angstrom
+134 17 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+135 17 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+136 17 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+137 18 . MG C 1 9 F . 1287 1288 1289 2709 . . . 1 0.023256 CB-CG-OD1.MG 9.722 degrees
+138 18 . MG D 1 300 A . 1287 1288 1289 2710 . . . 2 0.023256 CB-CG-OD1.MG -43.668 degrees
+139 18 . MG C 1 9 F . 1288 1289 2709 . . . 1 . 0.023256 CG-OD1.MG 170.890 degrees
+140 18 . MG D 1 300 A . 1288 1289 2710 . . . 2 . 0.023256 CG-OD1.MG 86.770 degrees
+141 18 . MG C 1 9 F . 1289 2709 . . . 1 . . 0.023256 OD1.MG 1.268096 angstrom
+142 18 . MG D 1 300 A . 1289 2710 . . . 2 . . 0.023256 OD1.MG 3.121060 angstrom
+143 18 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -28.275 degrees
+144 18 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -48.804 degrees
+145 19 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+146 19 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+147 19 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+148 19 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+149 19 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+150 19 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+151 19 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+152 19 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 0.574 degrees
+153 20 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+154 20 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 55.934 degrees
+155 20 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+156 20 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 108.722 degrees
+157 20 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+158 20 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 3.008785 angstrom
+159 20 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+160 20 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 0.574 degrees
+161 21 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+162 21 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+163 21 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+164 21 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+165 21 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+166 21 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+167 21 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+168 21 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 0.574 degrees
+169 22 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+170 22 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 90.220 degrees
+171 22 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+172 22 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 103.234 degrees
+173 22 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+174 22 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.382193 angstrom
+175 22 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+176 22 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 0.574 degrees
+177 23 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+178 23 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+179 23 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+180 23 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+181 23 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+182 23 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+183 23 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+184 23 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 0.574 degrees
+185 24 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 39.579 degrees
+186 24 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+187 24 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 167.289 degrees
+188 24 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+189 24 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 3.106599 angstrom
+190 24 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+191 24 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+192 24 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+193 25 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 39.579 degrees
+194 25 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 55.934 degrees
+195 25 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 167.289 degrees
+196 25 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 108.722 degrees
+197 25 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 3.106599 angstrom
+198 25 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 3.008785 angstrom
+199 25 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+200 25 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+201 26 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 39.579 degrees
+202 26 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+203 26 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 167.289 degrees
+204 26 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+205 26 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 3.106599 angstrom
+206 26 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+207 26 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+208 26 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+209 27 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 39.579 degrees
+210 27 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 90.220 degrees
+211 27 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 167.289 degrees
+212 27 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 103.234 degrees
+213 27 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 3.106599 angstrom
+214 27 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.382193 angstrom
+215 27 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+216 27 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+217 28 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 39.579 degrees
+218 28 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+219 28 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 167.289 degrees
+220 28 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+221 28 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 3.106599 angstrom
+222 28 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+223 28 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+224 28 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+225 29 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+226 29 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+227 29 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+228 29 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+229 29 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+230 29 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+231 29 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+232 29 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+233 30 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+234 30 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 55.934 degrees
+235 30 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+236 30 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 108.722 degrees
+237 30 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+238 30 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 3.008785 angstrom
+239 30 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+240 30 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+241 31 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+242 31 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+243 31 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+244 31 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+245 31 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+246 31 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+247 31 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+248 31 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+249 32 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+250 32 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 90.220 degrees
+251 32 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+252 32 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 103.234 degrees
+253 32 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+254 32 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.382193 angstrom
+255 32 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+256 32 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+257 33 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+258 33 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+259 33 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+260 33 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+261 33 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+262 33 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+263 33 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+264 33 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -57.107 degrees
+265 34 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG -65.006 degrees
+266 34 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+267 34 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 119.786 degrees
+268 34 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+269 34 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.635661 angstrom
+270 34 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+271 34 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+272 34 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 19.678 degrees
+273 35 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG -65.006 degrees
+274 35 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 55.934 degrees
+275 35 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 119.786 degrees
+276 35 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 108.722 degrees
+277 35 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.635661 angstrom
+278 35 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 3.008785 angstrom
+279 35 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+280 35 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 19.678 degrees
+281 36 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG -65.006 degrees
+282 36 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+283 36 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 119.786 degrees
+284 36 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+285 36 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.635661 angstrom
+286 36 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+287 36 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+288 36 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 19.678 degrees
+289 37 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG -65.006 degrees
+290 37 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 90.220 degrees
+291 37 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 119.786 degrees
+292 37 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 103.234 degrees
+293 37 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.635661 angstrom
+294 37 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.382193 angstrom
+295 37 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+296 37 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 19.678 degrees
+297 38 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG -65.006 degrees
+298 38 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+299 38 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 119.786 degrees
+300 38 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+301 38 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.635661 angstrom
+302 38 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+303 38 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+304 38 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 19.678 degrees
+305 39 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+306 39 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+307 39 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+308 39 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+309 39 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+310 39 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+311 39 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+312 39 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -20.183 degrees
+313 40 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+314 40 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 55.934 degrees
+315 40 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+316 40 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 108.722 degrees
+317 40 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+318 40 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 3.008785 angstrom
+319 40 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+320 40 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -20.183 degrees
+321 41 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+322 41 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+323 41 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+324 41 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+325 41 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+326 41 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+327 41 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+328 41 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -20.183 degrees
+329 42 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+330 42 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG 90.220 degrees
+331 42 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+332 42 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 103.234 degrees
+333 42 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+334 42 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.382193 angstrom
+335 42 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+336 42 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -20.183 degrees
+337 43 . MG C 1 9 F . 1287 1288 1290 2709 . . . 1 0.023256 CB-CG-OD2.MG 124.024 degrees
+338 43 . MG D 1 300 A . 1287 1288 1290 2710 . . . 2 0.023256 CB-CG-OD2.MG -44.213 degrees
+339 43 . MG C 1 9 F . 1288 1290 2709 . . . 1 . 0.023256 CG-OD2.MG 165.953 degrees
+340 43 . MG D 1 300 A . 1288 1290 2710 . . . 2 . 0.023256 CG-OD2.MG 160.375 degrees
+341 43 . MG C 1 9 F . 1290 2709 . . . 1 . . 0.023256 OD2.MG 1.373378 angstrom
+342 43 . MG D 1 300 A . 1290 2710 . . . 2 . . 0.023256 OD2.MG 1.679256 angstrom
+343 43 116 ASP B 1 116 A . 1283 1284 1287 1288 . . . . 0.023256 chi1 -121.870 degrees
+344 43 116 ASP B 1 116 A . 1284 1287 1288 1289 . . . . 0.023256 chi2 -20.183 degrees
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+metalc1 metalc 116 B . 116 A OD1 . C 9 . F MG
+metalc2 metalc 116 B . 116 A OD1 . D 300 . A MG
+metalc3 metalc 116 B . 116 A OD2 . C 9 . F MG
+metalc4 metalc 116 B . 116 A OD2 . D 300 . A MG
+#
