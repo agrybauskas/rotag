@@ -1452,6 +1452,11 @@ sub calc_full_atom_energy
         push @allowed_angles, $checkable_angles[$i];
         push @energy_sums, $rotamer_energy_sum;
 
+        print info(
+            { message => $i + 1 . ' rotamer energy sum: ' . $rotamer_energy_sum . "\n",
+              program => $options->{'program_called_by'} }
+        ) if $verbose && $verbosity_level > 0;
+
         if( defined $rmsd ) {
             push @rmsd_averages,
                 map { [ $_->{'value'} ] }
