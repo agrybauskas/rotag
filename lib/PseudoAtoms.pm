@@ -1352,12 +1352,19 @@ sub calc_full_atom_energy
         $args->{'options'},
     );
 
-    my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
+    my ( $verbose, $verbosity_level ) = (
+        $options->{'verbose'},
+        $options->{'verbosity_level'},
+    );
 
+    $verbose //= 0;
+    $verbosity_level //= 1;
     $energy_threshold //= {
         'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
         'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
     };
+
+    my $interaction_atom_names = $parameters->{'_[local]_interaction_atom_names'};
 
     my $residue_site = {
         map { %{ filter_by_unique_residue_key( $atom_site, $_, 1 ) } }
