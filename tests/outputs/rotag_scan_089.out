@@ -7,6 +7,8 @@ Info: rotag_scan: 1 C 98 . GLU HG3  3
 Info: rotag_scan: 1 C 98 . GLU OE2  5
 Info: rotag_scan: 1 C 98 . GLU OE1  5
 Info: rotag_scan: 1 E . . MG MG  5
+Info: rotag_scan: checkable rotamer count: 5
+Info: rotag_scan: kept rotamer count: 1
 Info: rotag_scan: 1 C 98 . GLU HB3  5
 Info: rotag_scan: 1 C 98 . GLU HB2  4
 Info: rotag_scan: 1 C 98 . GLU CG  4
@@ -16,6 +18,8 @@ Info: rotag_scan: 1 C 98 . GLU HG3  5
 Info: rotag_scan: 1 C 98 . GLU OE2  5
 Info: rotag_scan: 1 C 98 . GLU OE1  5
 Info: rotag_scan: 1 E . . MG MG  5
+Info: rotag_scan: checkable rotamer count: 5
+Info: rotag_scan: kept rotamer count: 5
 data_rotag
 #
 loop_

@@ -1378,6 +1378,11 @@ sub calc_full_atom_energy
     my @energy_sums;
     my @rmsd_averages;
 
+    print info(
+        { message => 'checkable rotamer count: ' . scalar( @checkable_angles ) . "\n",
+          program => $options->{'program_called_by'} }
+    ) if $verbose && $verbosity_level > 0;
+
   ALLOWED_ANGLES:
     for( my $i = 0; $i <= $#checkable_angles; $i++ ) {
         my %rotamer_site = %{ $residue_site };
@@ -1454,6 +1459,11 @@ sub calc_full_atom_energy
                                        { 'average' => 1 } ) };
         }
     }
+
+    print info(
+        { message => 'kept rotamer count: ' . scalar( @allowed_angles ) . "\n",
+          program => $options->{'program_called_by'} }
+    ) if $verbose && $verbosity_level > 0;
 
     return [ \@allowed_angles, \@energy_sums, \@rmsd_averages ] ;
 }
