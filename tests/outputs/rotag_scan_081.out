@@ -40,16 +40,16 @@ _[local]_rotamer_energy.id
 _[local]_rotamer_energy.rotamer_id
 _[local]_rotamer_energy.calculation_method
 _[local]_rotamer_energy.value
-1 1 composite -82.252532
-2 2 composite -64.356562
-3 3 composite -82.071612
-4 4 composite -75.854549
-5 5 composite -86.245430
-6 6 composite -107.520672
-7 7 composite -93.694466
-8 8 composite -76.519054
-9 9 composite -108.055410
-10 10 composite -63.640204
+1 1 composite -107.520672
+2 2 composite -93.694466
+3 3 composite -107.404282
+4 4 composite -93.664911
+5 5 composite -107.687113
+6 6 composite -106.990853
+7 7 composite -106.024948
+8 8 composite -106.027996
+9 9 composite -105.086153
+10 10 composite -108.276807
 11 11 composite -107.118745
 12 12 composite -106.578645
 13 13 composite -106.776713
@@ -76,66 +76,66 @@ _[local]_rotamer_bond_parameter.frequency
 _[local]_rotamer_bond_parameter.type
 _[local]_rotamer_bond_parameter.value
 _[local]_rotamer_bond_parameter.units
-1 1 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 108.685 degrees
-2 1 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -34.277 degrees
-3 1 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.063408 angstrom
+1 1 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 144.341 degrees
+2 1 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 87.657 degrees
+3 1 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.445474 angstrom
 4 1 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 5 1 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
 6 1 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-7 2 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 139.467 degrees
-8 2 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -123.741 degrees
-9 2 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 3.084795 angstrom
+7 2 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 122.740 degrees
+8 2 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 136.289 degrees
+9 2 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.139404 angstrom
 10 2 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 11 2 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
 12 2 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-13 3 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 121.117 degrees
-14 3 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 82.097 degrees
-15 3 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.337799 angstrom
+13 3 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 144.341 degrees
+14 3 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 87.657 degrees
+15 3 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.445474 angstrom
 16 3 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 17 3 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-18 3 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-19 4 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 175.601 degrees
-20 4 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 171.152 degrees
-21 4 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.509562 angstrom
+18 3 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -72.000 degrees
+19 4 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 122.740 degrees
+20 4 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 136.289 degrees
+21 4 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.139404 angstrom
 22 4 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 23 4 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-24 4 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-25 5 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 157.020 degrees
-26 5 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 60.323 degrees
-27 5 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.139326 angstrom
+24 4 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -72.000 degrees
+25 5 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 108.936 degrees
+26 5 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -93.563 degrees
+27 5 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.633069 angstrom
 28 5 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 29 5 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-30 5 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-31 6 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 144.341 degrees
-32 6 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 87.657 degrees
-33 6 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.445474 angstrom
+30 5 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -72.000 degrees
+31 6 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 108.936 degrees
+32 6 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -93.563 degrees
+33 6 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.633069 angstrom
 34 6 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 35 6 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-36 6 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-37 7 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 122.740 degrees
-38 7 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 136.289 degrees
-39 7 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.139404 angstrom
+36 6 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -54.000 degrees
+37 7 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 108.936 degrees
+38 7 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -93.563 degrees
+39 7 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.633069 angstrom
 40 7 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 41 7 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-42 7 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-43 8 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 103.920 degrees
-44 8 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -120.239 degrees
-45 8 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.723649 angstrom
+42 7 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -36.000 degrees
+43 8 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 144.341 degrees
+44 8 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG 87.657 degrees
+45 8 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.445474 angstrom
 46 8 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 47 8 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-48 8 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
+48 8 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -18.000 degrees
 49 9 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 108.936 degrees
 50 9 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -93.563 degrees
 51 9 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.633069 angstrom
 52 9 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 53 9 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-54 9 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
-55 10 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 154.430 degrees
-56 10 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -15.116 degrees
-57 10 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 2.882894 angstrom
+54 9 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -18.000 degrees
+55 10 . MG B 1 284 A . 671 672 2750 . . . 1 . 0.076923 CD-OE1.MG 108.936 degrees
+56 10 . MG B 1 284 A . 670 671 672 2750 . . . 1 0.076923 CG-CD-OE1.MG -93.563 degrees
+57 10 . MG B 1 284 A . 672 2750 . . . 1 . . 0.076923 OE1.MG 1.633069 angstrom
 58 10 71 GLU A 1 71 A . 665 666 669 670 . . . . 0.076923 chi1 -72.000 degrees
 59 10 71 GLU A 1 71 A . 666 669 670 671 . . . . 0.076923 chi2 -180.000 degrees
-60 10 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 -90.000 degrees
+60 10 71 GLU A 1 71 A . 669 670 671 672 . . . . 0.076923 chi3 72.000 degrees
 61 11 . MG B 1 284 A . 671 673 2750 . . . 1 . 0.076923 CD-OE2.MG 136.452 degrees
 62 11 . MG B 1 284 A . 670 671 673 2750 . . . 1 0.076923 CG-CD-OE2.MG 134.248 degrees
 63 11 . MG B 1 284 A . 673 2750 . . . 1 . . 0.076923 OE2.MG 1.755058 angstrom
