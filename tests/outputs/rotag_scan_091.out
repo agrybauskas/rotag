@@ -174,7 +174,43 @@ Info: rotag_scan: accumulated energy sum of: -19.7480044680915
 Info: rotag_scan: bonded atom energy of 98,C,1,.,98,A,? HG3: 0.0874499312257432
 Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. N: 0.0258612456799271
 Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. CA: 0.0912213538969441
-Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0347202913882172
+Info: rotag_scan: non-bonded energdata_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1
+ATOM 1140 C CB . GLU C 2 98 19.244000 45.308000 40.890000 A 98 ? 1
+ATOM 1141 C CG . GLU C 2 98 20.387773 45.790485 41.770972 A 98 ? 1
+ATOM 1142 C CD . GLU C 2 98 21.554703 46.344088 40.969683 A 98 ? 1
+ATOM 1143 O OE1 . GLU C 2 98 21.532114 47.558083 40.667264 A 98 ? 1
+ATOM 1144 O OE2 . GLU C 2 98 22.481802 45.567542 40.632841 A 98 ? 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1
+ATOM 3859 H HB2 . GLU C 2 98 19.683914 44.781929 40.069135 A 98 ? 1
+ATOM 3860 H HB3 . GLU C 2 98 18.648572 44.647708 41.485836 A 98 ? 1
+ATOM 3861 H HG2 . GLU C 2 98 20.744454 44.967825 42.354285 A 98 ? 1
+ATOM 3862 H HG3 . GLU C 2 98 20.026200 46.567066 42.412375 A 98 ? 1
+HETATM 3863 MG MG . MG E 1 . 21.352052 48.800200 40.486180 A 203 ? 1
+#
+y between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. C: -0.0347202913882172
 Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,. O: 0.0286100966116161
 Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE1: 0.100027092929721
 Info: rotag_scan: non-bonded energy between 98,C,1,.,98,A,? HG3 and 98,C,1,.,98,A,? OE2: 0.0509881485975333
@@ -785,7 +821,187 @@ Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A
 Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. CA: 0.698621265439532
 Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. C: 8.24178946849029
 Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,. O: -9.11358816824045
-Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 1.76117915675519
+Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CB: 1.76117915data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1
+ATOM 1140 C CB . GLU C 2 98 19.244000 45.308000 40.890000 A 98 ? 1
+ATOM 1141 C CG . GLU C 2 98 20.476469 45.796131 41.638244 A 98 ? 1
+ATOM 1142 C CD . GLU C 2 98 21.394602 46.642168 40.771343 A 98 ? 1
+ATOM 1143 O OE1 . GLU C 2 98 21.508860 46.331367 39.564653 A 98 ? 1
+ATOM 1144 O OE2 . GLU C 2 98 22.008449 47.603330 41.296088 A 98 ? 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1
+ATOM 3859 H HB2 . GLU C 2 98 19.591620 44.707955 40.075629 A 98 ? 1
+ATOM 3860 H HB3 . GLU C 2 98 18.675064 44.717540 41.577902 A 98 ? 1
+ATOM 3861 H HG2 . GLU C 2 98 21.030293 44.947617 41.981095 A 98 ? 1
+ATOM 3862 H HG3 . GLU C 2 98 20.162505 46.391383 42.470297 A 98 ? 1
+HETATM 3864 MG MG . MG E 1 . 24.133966 47.501607 41.911608 A 203 ? 1
+#
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1
+ATOM 1140 C CB . GLU C 2 98 19.244000 45.308000 40.890000 A 98 ? 1
+ATOM 1141 C CG . GLU C 2 98 20.476469 45.796131 41.638244 A 98 ? 1
+ATOM 1142 C CD . GLU C 2 98 21.394602 46.642168 40.771343 A 98 ? 1
+ATOM 1143 O OE1 . GLU C 2 98 21.508860 46.331367 39.564653 A 98 ? 1
+ATOM 1144 O OE2 . GLU C 2 98 22.008449 47.603330 41.296088 A 98 ? 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1
+ATOM 3859 H HB2 . GLU C 2 98 19.591620 44.707955 40.075629 A 98 ? 1
+ATOM 3860 H HB3 . GLU C 2 98 18.675064 44.717540 41.577902 A 98 ? 1
+ATOM 3861 H HG2 . GLU C 2 98 21.030293 44.947617 41.981095 A 98 ? 1
+ATOM 3862 H HG3 . GLU C 2 98 20.162505 46.391383 42.470297 A 98 ? 1
+HETATM 3864 MG MG . MG E 1 . 23.939073 48.077178 42.367894 A 203 ? 1
+#
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1
+ATOM 1140 C CB . GLU C 2 98 19.244000 45.308000 40.890000 A 98 ? 1
+ATOM 1141 C CG . GLU C 2 98 20.476469 45.796131 41.638244 A 98 ? 1
+ATOM 1142 C CD . GLU C 2 98 21.394602 46.642168 40.771343 A 98 ? 1
+ATOM 1143 O OE1 . GLU C 2 98 21.508860 46.331367 39.564653 A 98 ? 1
+ATOM 1144 O OE2 . GLU C 2 98 22.008449 47.603330 41.296088 A 98 ? 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1
+ATOM 3859 H HB2 . GLU C 2 98 19.591620 44.707955 40.075629 A 98 ? 1
+ATOM 3860 H HB3 . GLU C 2 98 18.675064 44.717540 41.577902 A 98 ? 1
+ATOM 3861 H HG2 . GLU C 2 98 21.030293 44.947617 41.981095 A 98 ? 1
+ATOM 3862 H HG3 . GLU C 2 98 20.162505 46.391383 42.470297 A 98 ? 1
+HETATM 3864 MG MG . MG E 1 . 23.787194 47.657464 40.851631 A 203 ? 1
+#
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1
+ATOM 1140 C CB . GLU C 2 98 19.244000 45.308000 40.890000 A 98 ? 1
+ATOM 1141 C CG . GLU C 2 98 20.476469 45.796131 41.638244 A 98 ? 1
+ATOM 1142 C CD . GLU C 2 98 21.394602 46.642168 40.771343 A 98 ? 1
+ATOM 1143 O OE1 . GLU C 2 98 21.508860 46.331367 39.564653 A 98 ? 1
+ATOM 1144 O OE2 . GLU C 2 98 22.008449 47.603330 41.296088 A 98 ? 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1
+ATOM 3859 H HB2 . GLU C 2 98 19.591620 44.707955 40.075629 A 98 ? 1
+ATOM 3860 H HB3 . GLU C 2 98 18.675064 44.717540 41.577902 A 98 ? 1
+ATOM 3861 H HG2 . GLU C 2 98 21.030293 44.947617 41.981095 A 98 ? 1
+ATOM 3862 H HG3 . GLU C 2 98 20.162505 46.391383 42.470297 A 98 ? 1
+HETATM 3864 MG MG . MG E 1 . 22.646566 47.756275 42.717405 A 203 ? 1
+#
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1
+ATOM 1140 C CB . GLU C 2 98 19.244000 45.308000 40.890000 A 98 ? 1
+ATOM 1141 C CG . GLU C 2 98 20.476469 45.796131 41.638244 A 98 ? 1
+ATOM 1142 C CD . GLU C 2 98 21.394602 46.642168 40.771343 A 98 ? 1
+ATOM 1143 O OE1 . GLU C 2 98 21.508860 46.331367 39.564653 A 98 ? 1
+ATOM 1144 O OE2 . GLU C 2 98 22.008449 47.603330 41.296088 A 98 ? 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1
+ATOM 3859 H HB2 . GLU C 2 98 19.591620 44.707955 40.075629 A 98 ? 1
+ATOM 3860 H HB3 . GLU C 2 98 18.675064 44.717540 41.577902 A 98 ? 1
+ATOM 3861 H HG2 . GLU C 2 98 21.030293 44.947617 41.981095 A 98 ? 1
+ATOM 3862 H HG3 . GLU C 2 98 20.162505 46.391383 42.470297 A 98 ? 1
+HETATM 3864 MG MG . MG E 1 . 23.016799 48.505091 42.736093 A 203 ? 1
+#
+675519
 Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CG: -1.09248840528182
 Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? CD: 30.0450119389326
 Info: rotag_scan: non-bonded energy between .,E,1,.,203,A,? MG and 98,C,1,.,98,A,? OE1: -24.7411257309403
