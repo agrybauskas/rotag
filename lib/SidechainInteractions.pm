@@ -246,15 +246,17 @@ sub predict
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
     my ( $non_bonded_potential, $bonded_potential, $program_called_by,
-         $dry_run, $verbose ) =
+         $dry_run, $verbose, $verbosity_level ) =
         ( $options->{'non_bonded_potential'},
           $options->{'bonded_potential'},
           $options->{'program_called_by'},
           $options->{'dry_run'},
-          $options->{'verbose'} );
+          $options->{'verbose'},
+          $options->{'verbosity_level'}, );
 
     $dry_run //= 0;
     $verbose //= 0;
+    $verbosity_level //= 1;
 
     my $cutoff_atom = $parameters->{'_[local]_force_field'}{'cutoff_atom'};
 
@@ -452,7 +454,7 @@ sub predict
                 }
             }
 
-            if( $verbose ){
+            if( $verbose && $verbosity_level > 0 ){
                 my $rotamer_count =
                     scalar( keys %{ $rotamer_pairs->{$unique_residue_key} } );
                 my $neighbour_rotamer_count =
@@ -471,7 +473,7 @@ sub predict
             }
         }
 
-        if( $verbose ) {
+        if( $verbose && $verbosity_level > 0 ) {
             # Total count of rotamers for reach residue.
             for my $current_unique_residue_key ( sort keys %{ $rotamer_pairs } ) {
                 print info(
