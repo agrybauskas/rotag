@@ -1424,7 +1424,7 @@ sub calc_full_atom_energy
                 $rotamer_energy_sum += $bonded_rotamer_energy;
 
                 print info(
-                    { message => 'bonded rotamer energy of ' .
+                    { message => 'bonded atom energy of ' .
                           $residue_unique_key . ' ' . $rotamer_atom_name . ': ' .
                           $bonded_rotamer_energy . "\n",
                       program => $options->{'program_called_by'} }
@@ -1432,6 +1432,11 @@ sub calc_full_atom_energy
             }
 
             for my $neighbour_atom_id ( sort keys %rotamer_interaction_site ) {
+                my $neighbour_atom_name =
+                    $rotamer_interaction_site{$neighbour_atom_id}{'label_atom_id'};
+                my $neighbour_residue_unique_key =
+                    unique_residue_key( $rotamer_interaction_site{$neighbour_atom_id} );
+
                 my $energy_cutoff =
                     ( $rotamer_interaction_site{$rotamer_atom_id}{'group_PDB'} eq 'HETATM' ||
                       $rotamer_interaction_site{$neighbour_atom_id}{'group_PDB'} eq 'HETATM' ) ?
@@ -1447,17 +1452,26 @@ sub calc_full_atom_energy
                                              $rotamer_atom_id,
                                              $neighbour_atom_id ) ) ){
 
-                    $rotamer_atom_energy +=
+                    my $non_bonded_rotamer_energy =
                         $non_bonded_potential->(
                             $parameters,
                             $rotamer_interaction_site{$rotamer_atom_id},
                             $rotamer_interaction_site{$neighbour_atom_id},
                             $options );
+                    $rotamer_atom_energy += $non_bonded_rotamer_energy;
 
                     next ALLOWED_ANGLES
                         if $rotamer_atom_energy > $energy_cutoff;
 
                     $rotamer_energy_sum += $rotamer_atom_energy;
+
+                    print info(
+                        { message => 'non-bonded energy between ' .
+                              $residue_unique_key . ' ' . $rotamer_atom_name . ' and ' .
+                              $neighbour_residue_unique_key . ' ' . $neighbour_atom_name . ': ' .
+                              $non_bonded_rotamer_energy . "\n",
+                          program => $options->{'program_called_by'} }
+                    ) if $verbose && $verbosity_level > 1;
                 }
             }
         }
