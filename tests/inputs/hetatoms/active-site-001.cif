@@ -1,0 +1,92 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+_atom_site.[local]_selection_group
+ATOM 1017 N N . ALA C 2 83 20.277 50.376 39.795 A 83 . 1 T 1
+ATOM 1018 C CA . ALA C 2 83 19.675 50.633 38.491 A 83 . 1 T 1
+ATOM 1019 C C . ALA C 2 83 18.587 51.694 38.666 A 83 . 1 T 1
+ATOM 1020 O O . ALA C 2 83 18.420 52.574 37.812 A 83 . 1 T 1
+ATOM 1021 C CB . ALA C 2 83 19.063 49.350 37.928 A 83 . 1 T 1
+ATOM 1136 N N . GLU C 2 98 17.375 46.839 41.316 A 98 . 1 T 1
+ATOM 1137 C CA . GLU C 2 98 18.329 46.400 40.325 A 98 . 1 T 1
+ATOM 1138 C C . GLU C 2 98 17.537 45.810 39.171 A 98 . 1 T 1
+ATOM 1139 O O . GLU C 2 98 16.374 45.435 39.338 A 98 . 1 T 1
+ATOM 1140 C CB . GLU C 2 98 19.244 45.308 40.890 A 98 . 1 T 1
+ATOM 1141 C CG . GLU C 2 98 20.096 45.709 42.086 A 98 . 1 T 1
+ATOM 1142 C CD . GLU C 2 98 21.086 46.815 41.759 A 98 . 1 T 1
+ATOM 1143 O OE1 . GLU C 2 98 21.680 46.761 40.659 A 98 . 1 T 1
+ATOM 1144 O OE2 . GLU C 2 98 21.279 47.725 42.602 A 98 . 1 T 1
+ATOM 1153 N N . LYS C 2 100 18.173 42.856 36.269 A 100 . 1 T 1
+ATOM 1154 C CA . LYS C 2 100 19.085 41.853 35.733 A 100 . 1 T 1
+ATOM 1155 C C . LYS C 2 100 18.486 41.204 34.497 A 100 . 1 T 1
+ATOM 1156 O O . LYS C 2 100 17.509 40.456 34.592 A 100 . 1 T 1
+ATOM 1157 C CB . LYS C 2 100 19.405 40.774 36.782 A 100 . 1 T 1
+ATOM 1158 C CG . LYS C 2 100 20.266 41.286 37.927 A 100 . 1 T 1
+ATOM 1159 C CD . LYS C 2 100 21.676 41.670 37.485 A 100 . 1 T 1
+ATOM 1160 C CE . LYS C 2 100 22.101 42.978 38.184 A 100 . 1 T 1
+ATOM 1161 N NZ . LYS C 2 100 23.566 43.210 38.213 A 100 . 1 T 1
+ATOM 3826 H H . ALA C 2 83 20.211 49.552 40.175 A 83 . 1 T 1
+ATOM 3827 H HA . ALA C 2 83 20.419 50.993 37.812 A 83 . 1 T 1
+ATOM 3857 H H . GLU C 2 98 16.715 46.275 41.587 A 98 . 1 T 1
+ATOM 3858 H HA . GLU C 2 98 18.918 47.225 39.983 A 98 . 1 T 1
+ATOM 3859 H HB2 . GLU C 2 98 19.917 45.002 40.117 A 98 . 1 T 1
+ATOM 3860 H HB3 . GLU C 2 98 18.632 44.488 41.204 A 98 . 1 T 1
+ATOM 3861 H HG2 . GLU C 2 98 20.648 44.855 42.418 A 98 . 1 T 1
+ATOM 3862 H HG3 . GLU C 2 98 19.453 46.058 42.867 A 98 . 1 T 1
+ATOM 3865 H H . LYS C 2 100 17.368 42.608 36.612 A 100 . 1 T 1
+ATOM 3866 H HA . LYS C 2 100 19.996 42.340 35.454 A 100 . 1 T 1
+ATOM 3867 H HB2 . LYS C 2 100 19.933 39.976 36.304 A 100 . 1 T 1
+ATOM 3868 H HB3 . LYS C 2 100 18.486 40.414 37.196 A 100 . 1 T 1
+ATOM 3869 H HG2 . LYS C 2 100 20.347 40.518 38.667 A 100 . 1 T 1
+ATOM 3870 H HG3 . LYS C 2 100 19.801 42.154 38.346 A 100 . 1 T 1
+ATOM 3871 H HD2 . LYS C 2 100 21.690 41.813 36.425 A 100 . 1 T 1
+ATOM 3872 H HD3 . LYS C 2 100 22.357 40.888 37.749 A 100 . 1 T 1
+ATOM 3873 H HE2 . LYS C 2 100 21.760 42.947 39.198 A 100 . 1 T 1
+ATOM 3874 H HE3 . LYS C 2 100 21.655 43.801 37.665 A 100 . 1 T 1
+ATOM 4502 H HB1 . ALA C 2 83 19.603 49.050 37.054 A 83 . 1 T 1
+ATOM 4503 H HB2 . ALA C 2 83 18.039 49.525 37.671 A 83 . 1 T 1
+ATOM 4504 H HB3 . ALA C 2 83 19.118 48.575 38.664 A 83 . 1 T 1
+ATOM 4505 H HZ1 . LYS C 2 100 23.738 44.091 37.729 A 100 . 1 T 1
+ATOM 4506 H HZ2 . LYS C 2 100 24.002 42.422 37.734 A 100 . 1 T 1
+HETATM 4507 O O . HOH D 1 . -23.107 18.401 -21.626 A 101 . 1 T 1
+HETATM 4508 MG MG . MG E 1 . 0.000 0.000 0.000 A 102 . 1 T 1
+HETATM 4509 H H1 . HOH D 1 . -23.577 19.214 -21.869 A 101 . 1 T 1
+HETATM 4510 H H2 . HOH D 1 . -23.577 17.588 -21.869 A 101 . 1 T 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+hydrog1 hydrog 98 C . 98 A OE1 . D 101 . A H1
+hydrog2 hydrog 98 C . 98 A OE2 . D 101 . A H1
+hydrog3 hydrog 100 C . 100 A NZ . D 101 . A H1
+metalc1 metalc . D . 101 A H1 . E 102 . A MG
+#
