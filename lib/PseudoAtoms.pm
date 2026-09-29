@@ -1043,7 +1043,10 @@ sub calc_favourable_angles
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
 
             # Starts calculating potential energy.
-            my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
+            my $parameter_key_sorted = match_parameter_key(
+                parameter_key( \@parameter_names_sorted ),
+                [ keys %bond_combinations ]
+            );
             my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                 ( [], [] );
             foreach( 0..1 ) {  # Currently, there are only two cycles.

@@ -23,7 +23,22 @@ sub parameter_key
 sub match_parameter_key
 {
     my ( $parameter_key, $parameter_keys ) = @_;
-    my $matched_parameter_key = '';
+    my @parameter_key_parts = split /,/, $parameter_key;
+    my $matched_parameter_key;
+    for my $parameter_key_candidate ( sort @{ $parameter_keys } ) {
+        my %parameter_key_candidate =
+            map { $_ => 0 } split /,/, $parameter_key_candidate;
+        my $rank = 0;
+        foreach( @parameter_key_parts ) {
+            next if ! exists $parameter_key_candidate{$_};
+            $parameter_key_candidate{$_} = 1;
+            $rank++;
+        }
+        if( $rank == scalar @parameter_key_parts ) {
+            $matched_parameter_key = $parameter_key_candidate;
+            last;
+        }
+    }
     return $matched_parameter_key;
 }
 
