@@ -60,6 +60,6 @@ _struct_conn.ptnr2_auth_asym_id
 _struct_conn.ptnr2_label_atom_id
 hydrog1 hydrog 98 C . 98 A OE1 . D 101 . A H1
 metalc1 metalc . D . 101 A O . E 102 . A MG
-hydrog2 hydrog 98 C . 98 A OE1 . D 103 . A H1
+hydrog2 hydrog 98 C . 98 A OE2 . D 103 . A H1
 metalc2 metalc . D . 103 A O . F 104 . A MG
 #
