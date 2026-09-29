@@ -6,6 +6,7 @@ use warnings;
 use Exporter qw( import );
 BEGIN {
 our @EXPORT_OK = qw( combine_permuted_values
+                     match_parameter_key
                      parameter_key )
 }
 
@@ -17,6 +18,13 @@ sub parameter_key
 {
     my ( $names ) = @_;
     return join ',', @{ $names };
+}
+
+sub match_parameter_key
+{
+    my ( $parameter_key, $parameter_keys ) = @_;
+    my $matched_parameter_key = '';
+    return $matched_parameter_key;
 }
 
 sub combine_permuted_values
