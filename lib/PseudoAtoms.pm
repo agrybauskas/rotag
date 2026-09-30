@@ -28,7 +28,6 @@ use Logging qw( info
 use threads;
 
 use BondCombinations qw( combine_permuted_values
-                         match_parameter_key
                          parameter_key );
 use BondParameters qw( alt_bond_parameter_names
                        collect_bond_parameters
@@ -917,6 +916,11 @@ sub calc_favourable_angles
                        $a cmp $b }
                 keys %bond_parameters;
             my @parameter_names_visited =
+                sort { $bond_parameters{$a}{'order'} <=>
+                       $bond_parameters{$b}{'order'} ||
+                       $bond_parameters{$a}{'rank'} <=>
+                       $bond_parameters{$b}{'rank'} ||
+                       $a cmp $b }
                 grep { exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
@@ -1043,10 +1047,7 @@ sub calc_favourable_angles
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
 
             # Starts calculating potential energy.
-            my $parameter_key_sorted = match_parameter_key(
-                parameter_key( \@parameter_names_sorted ),
-                [ keys %bond_combinations ]
-            );
+            my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
             my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                 ( [], [] );
             foreach( 0..1 ) {  # Currently, there are only two cycles.
