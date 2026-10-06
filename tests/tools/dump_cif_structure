@@ -24,8 +24,32 @@ $Data::Dumper::Deparse = 1;
 
 #
 # Test tool: dump_cif_structure
-# Example: ./dump_cif_structure structure.cif
+# Example:
 #
+
+#*dump_cif_structure structure.cif [options] <cif-file>...
+#*    dumps CIF data structure.
+#*
+#*Usage:
+#*    dump_cif_structure input.cif > output.dump
+#*
+#*Options:
+#*    -c
+#*                        connects atoms.
+#*    -h
+#*                        hybridises atoms.
+#*    -H
+#*                        includes heteroatoms.
+#*    -S
+#*                        includes "_struct_conn" data.
+#*    -r
+#*                        generates dihedral angle conformations.
+#*    -l
+#*                        generates bond length conformations.
+#*    -a
+#*                        generates bond angle conformations.
+
+# --------------------------------- Options ----------------------------------- #
 
 my %options;
 
@@ -44,7 +68,20 @@ GetOptions(
     "S" => sub { $include_struct_conn = 1 },
     "r" => sub { $apply_rotation_only = 1 },
     "l" => sub { $apply_length_translation_only = 1 },
-    "a" => sub { $apply_angle_bending_only = 1 }
+    "a" => sub { $apply_angle_bending_only = 1 },
+    'help' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {
+                                $help_message =~ s/^\*$/ /smgx;
+                                $help_message =~ s/^\*//smgx;
+                                print $help_message, "\n";
+                            }
+                        }
+                        close $fh;
+                        exit;
+                    },
 ) or die "Error in command line argument.";
 
 @ARGV = ( "-" ) unless @ARGV;
