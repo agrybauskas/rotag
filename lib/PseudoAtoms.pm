@@ -1416,6 +1416,15 @@ sub calc_full_atom_energy
                                   \%angles );
         }
 
+        if( $verbose && $verbosity_level > 2 ) {
+            for my $bond_parameter_name ( sort keys %angles ) {
+                print info(
+                    { message => 'bond parameter values: ' . $bond_parameter_name .
+                          ' = ' . $angles{$bond_parameter_name} . "\n",
+                      program => $options->{'program_called_by'} } );
+            }
+        }
+
         my @rotamer_atom_ids =
             sort keys %{ filter_new( \%rotamer_site,
                                  { 'exclude' =>
