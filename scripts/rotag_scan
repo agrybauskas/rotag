@@ -133,7 +133,7 @@ our $VERSION = $VERSION;
 #*    --verbosity-level <int>
 #*                        changes verbosity level and together with '--verbose'
 #*                        option will produce more descriptive logs (default:
-#*                        1 | 0 | 2).
+#*                        1 | 0 | 2 | 3 | 4).
 #*    -n, --threads <int>
 #*                        number of threads.
 #*    -v, --version
