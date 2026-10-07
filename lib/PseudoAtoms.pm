@@ -1255,11 +1255,15 @@ sub calc_favourable_angle
 
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
+    my ( $verbose, $verbosity_level ) =
+        ( $options{'verbose'}, $options{'verbosity_level'} );
 
     $energy_threshold //= {
         'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
         'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
     };
+    $verbose //= 0;
+    $verbosity_level //= 0;
 
     # TODO: a good place to make an parameter name sorting function.
     my @bond_parameter_names =
