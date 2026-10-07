@@ -1322,16 +1322,33 @@ sub calc_favourable_angle
                 ( ! is_second_neighbour( $atom_site,
                                          $pseudo_origin_id,
                                          $interaction_id ) ) ) {
-                $potential_energy = $non_bonded_potential->(
+                my $non_bonded_potential_energy = $non_bonded_potential->(
                     $parameters,
                     $pseudo_atom_site->{$pseudo_atom_id},
                     $atom_site->{$interaction_id},
                     \%options
                 );
+                $potential_energy = $non_bonded_potential_energy;
                 $potential_sum += $potential_energy;
+
+                print info(
+                    { message => 'DDE non-bonded energy between ' .
+                          unique_residue_key( $pseudo_atom_site->{$pseudo_atom_id} ) . ' ' .
+                          $pseudo_atom_site->{$pseudo_atom_id}{'label_atom_id'} . ' and ' .
+                          unique_residue_key( $atom_site->{$interaction_id} ) . ' ' .
+                          $atom_site->{$interaction_id}{'label_atom_id'} . ': ' .
+                          $non_bonded_potential_energy . "\n",
+                      program => $options->{'program_called_by'} }
+                ) if $verbose && $verbosity_level > 3;
+
                 last if $potential_energy > $energy_cutoff;
             }
         }
+
+        print info(
+            { message => $i + 1 . ' DDE rotamer energy sum: ' . $potential_sum . "\n",
+              program => $options->{'program_called_by'} }
+        ) if $verbose && $verbosity_level > 3;
 
         # Writes allowed bond parameters to @next_allowed_bond_parameters that
         # will be passed to more global @allowed_bond_parameters. Checks the
