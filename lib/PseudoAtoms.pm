@@ -1350,6 +1350,10 @@ sub calc_favourable_angle
               program => $options->{'program_called_by'} }
         ) if $verbose && $verbosity_level > 3;
 
+        if( $verbose && $verbosity_level > 3 ) {
+            atom_site_to_pdbx( { %{ $pseudo_atom_site }, %{ $interaction_site } } );
+        }
+
         # Writes allowed bond parameters to @next_allowed_bond_parameters that
         # will be passed to more global @allowed_bond_parameters. Checks the
         # last calculated potential. If potential was greater
