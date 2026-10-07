@@ -1064,7 +1064,8 @@ sub calc_favourable_angles
                              'interaction_site' => $interaction_site,
                              'energy_threshold' => \%energy_threshold,
                              'non_bonded_potential' => $non_bonded_potential,
-                             'bonded_potential' => $bonded_potential },
+                             'bonded_potential' => $bonded_potential,
+                             'options' => $args->{'options'} },
                            [ $bond_combinations{$parameter_key_sorted},
                              $energy_combinations{$parameter_key_sorted} ],
                            $threads ) };
@@ -1256,7 +1257,7 @@ sub calc_favourable_angle
     my %options = defined $options ? %{ $options } : ();
     $options{'atom_site'} = $atom_site;
     my ( $verbose, $verbosity_level ) =
-        ( $options{'verbose'}, $options{'verbosity_level'} );
+        ( $options->{'verbose'}, $options->{'verbosity_level'} );
 
     $energy_threshold //= {
         'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
@@ -1283,6 +1284,17 @@ sub calc_favourable_angle
         my %bond_parameters =
             map { $bond_parameter_names[$_] => [ $bond_parameter_values->[$_] ] }
                 ( 0..$#bond_parameter_names );
+
+        # TODO: verbosity level should be moved as the logic starts to get
+        # larger.
+        if( $verbose && $verbosity_level > 3 ) {
+            for my $bond_parameter_name ( sort keys %bond_parameters ) {
+                print info(
+                    { message => 'DEE bond parameter values: ' . $bond_parameter_name .
+                          ' = ' . $bond_parameters{$bond_parameter_name}->[0] . "\n",
+                      program => $options->{'program_called_by'} } );
+            }
+        }
 
         my $pseudo_atom_site =
             generate_pseudo( { 'parameters' => $parameters,
