@@ -102,15 +102,22 @@ sub generate_pseudo
 {
     my ( $args ) = @_;
     my ( $parameters, $atom_site, $atom_specifier, $bond_parameter_values,
-         $last_atom_id, $alt_group_id, $auth_alt_group_id, $selection_state ) =
+         $last_atom_id, $alt_group_id, $auth_alt_group_id, $selection_state,
+         $options ) =
         ( $args->{'parameters'}, $args->{'atom_site'}, $args->{'atom_specifier'},
           $args->{'bond_parameter_values'}, $args->{'last_atom_id'},
           $args->{'alt_group_id'}, $args->{'auth_alt_group_id'},
-          $args->{'selection_state'} );
+          $args->{'selection_state'}, $args->{'options'} );
 
     $last_atom_id //= max( keys %{ $atom_site } );
     $alt_group_id //= 1;
     $auth_alt_group_id //= '?';
+    $options //= {};
+
+    my ( $verbose, $verbosity_level ) =
+        ( $options->{'verbose'}, $options->{'verbosity_level'} );
+    $verbose //= 0;
+    $verbosity_level //= 0;
 
     my $sig_figs_max = $parameters->{'_[local]_constants'}{'sig_figs_max'};
 
@@ -166,6 +173,19 @@ sub generate_pseudo
             my %bond_parameter_values =
                 map {( $bond_parameter_names[$_] => $bond_parameter_comb->[$_] )}
                     0..$#bond_parameter_names;
+
+            # TODO: make the dump similar to existing logs.
+            {
+                if( $verbose && $verbosity_level > 4 ) {
+                    use Data::Dumper;
+                    $Data::Dumper::Indent = 1;
+                    $Data::Dumper::Sortkeys = 1;
+                    $Data::Dumper::Deepcopy = 1;
+                    $Data::Dumper::Deparse = 1;
+                    print STDERR Dumper \%bond_parameter_values;
+                    print STDERR Dumper $conformation;
+                }
+            }
 
             # Evaluates matrices.
             my ( $transf_atom_coord ) = @{
@@ -1300,7 +1320,8 @@ sub calc_favourable_angle
             generate_pseudo( { 'parameters' => $parameters,
                                'atom_site' => $atom_site,
                                'atom_specifier' => { 'id' => [ "$atom_id" ] },
-                               'bond_parameter_values' => \%bond_parameters } );
+                               'bond_parameter_values' => \%bond_parameters,
+                               'options' => $options } );
         my $pseudo_atom_id = ( keys %{ $pseudo_atom_site } )[0];
         my $pseudo_origin_id =
             $pseudo_atom_site->{$pseudo_atom_id}{'origin_atom_id'};
