@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use Getopt::Long qw( :config no_ignore_case );
+
 use ForceField::Parameters;
 use LinearAlgebra qw( create_ref_frame
                       find_euler_angles
@@ -14,13 +16,38 @@ use PDBxParser qw( extract
                    filter_new
                    obtain_atom_site );
 
-#
-# Bring molecule's local frame of reference to global.
-#
-# Example: ./check_ref_frame "label_atom_id CA,N,CB,OG" example.cif
-#
+#*check_ref_frame structure.cif -t <atom_selection> <cif-file>...
+#*    Brings molecule's local frame of reference to global and creates Jmol
+#*    script file.
+#*
+#*Usage:
+#*    check_ref_rame -t 'label_atom_id CA,N,CB,OG' input.cif > output.jmol
+#*
+#*Options:
+#*    -t, --target
+#*                        target atoms in the form of atom site data name and
+#*                        values.
 
-my ( $atom_specifier_cmd, $pdbx_file ) = @ARGV;
+my $atom_specifier_cmd = '';
+
+GetOptions(
+    "target|t=s" => \$atom_specifier_cmd,
+    'help' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {
+                                $help_message =~ s/^\*$/ /smgx;
+                                $help_message =~ s/^\*//smgx;
+                                print $help_message, "\n";
+                            }
+                        }
+                        close $fh;
+                        exit;
+                    },
+) or die "Error in command line argument.";
+
+my ( $pdbx_file ) = @ARGV;
 my ( $data_item, $data_values_str ) = split / /, $atom_specifier_cmd;
 my @data_values = split /,/, $data_values_str;
 
