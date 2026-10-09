@@ -3,18 +3,36 @@
 use strict;
 use warnings;
 
+use Getopt::Long qw( :config no_ignore_case );
+
 use Grid qw( create_box );
 use ForceField::Parameters;
 use PDBxParser qw( filter
                    obtain_atom_site );
 
-#
-# Unit test: Grid::create_box.
-#
-# Creates smallest possible box that surrounds all selected atoms.
-#
-# Example: ./create_box example.cif
-#
+#*create_box structure.cif <cif-file>
+#*    Creates smallest possible box that surrounds all selected atoms in the
+#*    Jmol script format.
+#*
+#*Usage:
+#*    create_box input.cif > output.jmol
+#*
+
+GetOptions(
+    'help' => sub {
+                        open my $fh, '<', $0;
+                        while( <$fh> ) {
+                            my ( $help_message ) = $_ =~ m/^#(\*.*)/;
+                            if( $help_message ) {
+                                $help_message =~ s/^\*$/ /smgx;
+                                $help_message =~ s/^\*//smgx;
+                                print $help_message, "\n";
+                            }
+                        }
+                        close $fh;
+                        exit;
+                    },
+) or die "Error in command line argument.";
 
 my ( $pdbx_file ) = @ARGV;
 
@@ -79,4 +97,4 @@ print( "draw line1",
        "{$boundary_box->[1], $boundary_box->[2], $boundary_box->[4]};",
        "draw line12",
        "{$boundary_box->[1], $boundary_box->[3], $boundary_box->[4]}",
-       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[4]};" );
+       "{$boundary_box->[0], $boundary_box->[3], $boundary_box->[4]};\n" );

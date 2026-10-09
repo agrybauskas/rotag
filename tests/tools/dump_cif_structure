@@ -22,11 +22,6 @@ $Data::Dumper::Sortkeys = 1;
 $Data::Dumper::Deepcopy = 1;
 $Data::Dumper::Deparse = 1;
 
-#
-# Test tool: dump_cif_structure
-# Example:
-#
-
 #*dump_cif_structure structure.cif [options] <cif-file>...
 #*    dumps CIF data structure.
 #*
