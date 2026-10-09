@@ -118,19 +118,6 @@ my $matrices = [
         use warnings;
         use strict;
         my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
         return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
@@ -163,19 +150,6 @@ my $matrices = [
       1
     ]
   ],
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
   bless( {
     'is_evaluated' => undef,
     'matrix' => sub {
@@ -222,19 +196,6 @@ my $matrices = [
         use warnings;
         use strict;
         my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
         return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
@@ -263,8 +224,7 @@ my $matrix_product =
                            'CB-CG-OD1' => '0',
                            'N-CA-CB' => '0',
                            'chi1' => '0',
-                           'chi2' => '0.433632771010695',
-                           'eta' => 0 } );
+                           'chi2' => '0.433632771010695' } );
 
 for my $matrix_id ( 0..$#{ $matrix_product } ) {
     for my $row ( @{ $matrix_product->[$matrix_id] } ) {
