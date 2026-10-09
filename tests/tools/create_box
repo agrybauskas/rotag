@@ -16,7 +16,6 @@ use PDBxParser qw( filter
 #*
 #*Usage:
 #*    create_box input.cif > output.jmol
-#*
 
 GetOptions(
     'help' => sub {
