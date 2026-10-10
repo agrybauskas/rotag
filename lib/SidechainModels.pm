@@ -400,9 +400,9 @@ sub conformation_matrices
         if( ! defined $side_atom_id ) {
             my @mid_connections =
                 grep { $_ ne $up_atom_id }
-                    @{ $atom_site->{$mid_atom_id}{'connections'} };
+                    @{ $ref_atom_site->{$mid_atom_id}{'connections'} };
             ( $side_atom_id ) =
-                @{ sort_atom_ids_by_name( \@mid_connections, $atom_site ) };
+                @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
         }
 
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
