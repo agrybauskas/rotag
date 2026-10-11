@@ -43,7 +43,7 @@ use PDBxParser qw( change_unique_residue_key
                    to_pdbx
                    unique_residue_key );
 use PseudoAtoms qw( generate_pseudo );
-use SidechainModels qw( rotation_translation  );
+use SidechainModels qw( rotation_translation );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
