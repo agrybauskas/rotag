@@ -392,7 +392,7 @@ sub conformation_matrices
         my $atom_ids = $parameter_data->{'atom_ids'};
 
         my @ref_frame_atom_idxs =
-            scalar @{ $atom_ids } > 2 ? ( 2, 1, 0 ) :( 1, 0 );
+            scalar @{ $atom_ids } > 2 ? ( 2, 1, 0 ) : ( 1, 0 );
         my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
             map { $atom_ids->[$_] }
                 @ref_frame_atom_idxs;
