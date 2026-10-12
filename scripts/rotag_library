@@ -221,14 +221,21 @@ for my $pdbx_file ( @ARGV ) {
     my %pdbx_data;
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
     $pdbx_data{'_struct_conn'} = $pdbx->{'_struct_conn'};
-    $pdbx_data{'_[local]_rotamer_energy'} = $pdbx->{'_[local]_rotamer_energy'};
-    $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'attributes'}=\@attributes;
+    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'is_loop'} = 1;
+    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'attributes'} =
+        $pdbx->{'_[local]_rotamer_energy'}{'metadata'}{'attributes'};
+    $pdbx_data{'_[local]_rotamer_energy'}{'metadata'}{'type'} = 'indexed';
+    $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'attributes'} =
+        \@attributes;
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'type'} = 'record';
 
     for my $angle_id ( sort { $a <=> $b } keys %{ $rotamer_angles } ) {
         my $rotamer_id = $rotamer_angles->{$angle_id}{'rotamer_id'};
         if( any { $rotamer_id eq $_ } @rotamers ) {
+            $pdbx_data{'_[local]_rotamer_energy'}{'data'}{$rotamer_id} =
+                $rotamer_energy->{$rotamer_id};
+
             my %rotamer_data = ();
             for my $attribute ( @attributes ) {
                 if( exists $rotamer_angles->{$angle_id}{$attribute} ) {
