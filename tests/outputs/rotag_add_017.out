@@ -20,7 +20,7 @@ Options:
                         clusters ligands using DBScan algorithm, reduces
                         possible positions and checks the ligand coordination.
     --dbscan-distance
-                        maximum dinstance between atoms that includes
+                        maximum distance between atoms that includes
                         them to the cluster. Works only when
                         "--optimise-ligands" option is on.
     --dbscan-min
