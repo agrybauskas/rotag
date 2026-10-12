@@ -56,7 +56,7 @@ my $top_rank;
 my $top_ratio;
 my $min_max_ratio;
 my $only_unique_angles = 0;
-my $tags = '_atom_site,_[local]_rotamer_bond_parameter';
+my $tags = '_atom_site,_[local]_rotamer_bond_parameter,_[local]_rotamer_energy';
 my $output_format = 'pdbx';
 my @category_list = ( '_atom_site', '_[local]_rotamer_bond_parameter',
                       '_[local]_rotamer_energy', '_struct_conn' );
@@ -221,6 +221,7 @@ for my $pdbx_file ( @ARGV ) {
     my %pdbx_data;
     $pdbx_data{'_atom_site'} = $pdbx->{'_atom_site'};
     $pdbx_data{'_struct_conn'} = $pdbx->{'_struct_conn'};
+    $pdbx_data{'_[local]_rotamer_energy'} = $pdbx->{'_[local]_rotamer_energy'};
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'attributes'}=\@attributes;
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'is_loop'} = 1;
     $pdbx_data{'_[local]_rotamer_bond_parameter'}{'metadata'}{'type'} = 'record';
