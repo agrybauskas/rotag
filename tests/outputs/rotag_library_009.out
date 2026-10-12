@@ -29,6 +29,16 @@ ATOM 8648 C CE . LYS B 1 572 10.073 24.904 61.264 ? ? . 1 T
 ATOM 8649 N NZ . LYS B 1 572 10.746 25.690 62.333 ? ? . 1 T
 #
 loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 23.365689
+2 2 composite 114.592592
+3 3 composite 37.537217
+4 4 composite 129.280770
+#
+loop_
 _[local]_rotamer_bond_parameter.id
 _[local]_rotamer_bond_parameter.rotamer_id
 _[local]_rotamer_bond_parameter.label_seq_id

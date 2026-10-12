@@ -28,6 +28,14 @@ ATOM 1414 O OD1 . ASP A 1 219 35.358 4.940 42.808 A 264 . 1 T
 ATOM 1415 O OD2 . ASP A 1 219 34.073 4.971 44.584 A 264 . 1 T
 #
 loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+12 12 composite 3.286745
+17 17 composite 3.121068
+#
+loop_
 _[local]_rotamer_bond_parameter.id
 _[local]_rotamer_bond_parameter.rotamer_id
 _[local]_rotamer_bond_parameter.label_seq_id

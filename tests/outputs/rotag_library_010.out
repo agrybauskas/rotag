@@ -26,6 +26,17 @@ ATOM 151 C CB . SER A 1 18 -54.506 -111.705 -5.149 ? ? . 1 T
 ATOM 152 O OG . SER A 1 18 -54.962 -111.220 -3.896 ? ? . 1 T
 #
 loop_
+_[local]_rotamer_energy.id
+_[local]_rotamer_energy.rotamer_id
+_[local]_rotamer_energy.calculation_method
+_[local]_rotamer_energy.value
+1 1 composite 8.091828
+2 2 composite 0.708357
+3 3 composite -0.107139
+4 4 composite 1.206041
+5 5 composite 8.176096
+#
+loop_
 _[local]_rotamer_bond_parameter.id
 _[local]_rotamer_bond_parameter.rotamer_id
 _[local]_rotamer_bond_parameter.label_seq_id
