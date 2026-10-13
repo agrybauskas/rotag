@@ -29,7 +29,7 @@ use PseudoAtoms qw( pairwise_rotamer_energy
                     replace_with_rotamer );
 use Grid qw( grid_box
              identify_neighbour_cells );
-use SidechainModels qw( rotation_translation );
+use SidechainModels qw( rotation_translation_new );
 
 use Version qw( $VERSION );
 
@@ -126,7 +126,7 @@ sub new
                              { 'include_hetatoms' =>
                                    ( @{ $assigned_hetatom_ids } ? 1 : 0 ) } );
 
-            rotation_translation( $parameters, $residue_site );
+            rotation_translation_new( $parameters, $residue_site );
 
             $self->{'residue_atom_site'}{$unique_residue_key} =
                 clone $residue_site;
@@ -186,8 +186,8 @@ sub new
                                      { 'include_hetatoms' =>
                                            ( @{ $neighbour_hetatom_ids } ? 1 : 0 ) } );
 
-                    rotation_translation( $parameters, $neighbour_residue_site,
-                                          { 'ref_atom_site' => $atom_site } );
+                    rotation_translation_new( $parameters, $neighbour_residue_site,
+                                              { 'ref_atom_site' => $atom_site } );
 
                     $self->{'residue_atom_site'}{$neighbour_unique_residue_key}=
                         clone $neighbour_residue_site;
