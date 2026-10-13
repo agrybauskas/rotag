@@ -390,7 +390,8 @@ sub conformation_matrices
                 uniq
                 grep { $_ ne $up_atom_id }
                      ( @{ $ref_atom_site->{$mid_atom_id}{'connections'} },
-                       @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatm'} } );
+                       # @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatom'} }
+                     );
             ( $side_atom_id ) =
                 @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
         }
