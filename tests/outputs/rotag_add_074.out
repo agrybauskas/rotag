@@ -1,1 +1,29 @@
-# A placeholder for the future data.
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+_atom_site.[local]_selection_state
+ATOM 1408 N N . ASP A 1 219 33.629 1.247 41.706 A 264 . 1 T
+ATOM 1409 C CA . ASP A 1 219 34.297 2.104 42.669 A 264 . 1 T
+ATOM 1410 C C . ASP A 1 219 34.468 1.397 44.005 A 264 . 1 T
+ATOM 1411 O O . ASP A 1 219 35.468 1.582 44.696 A 264 . 1 T
+ATOM 1412 C CB . ASP A 1 219 33.528 3.419 42.840 A 264 . 1 T
+ATOM 1416 C CG 1 ASP A 1 219 34.219941 4.631908 43.444346 A 264 . 1 T
+ATOM 1417 O OD1 1 ASP A 1 219 34.807626 5.418435 42.672124 A 264 . 1 T
+ATOM 1418 O OD2 1 ASP A 1 219 34.173159 4.812225 44.681184 A 264 . 1 T
+#
