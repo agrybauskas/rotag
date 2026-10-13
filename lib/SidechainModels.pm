@@ -16,8 +16,7 @@ use AlterMolecule qw( angle_bending
 use AtomProperties qw( sort_atom_ids_by_name );
 use BondParameters qw( collect_bond_angles
                        collect_bond_lengths
-                       collect_dihedral_angles
-                       restructure_by_atom_ids );
+                       collect_dihedral_angles );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys
@@ -366,18 +365,6 @@ sub conformation_matrices
     my ( $ref_atom_site ) = ( $options->{'ref_atom_site'} );
     $ref_atom_site //= $atom_site;
 
-    my $bond_lengths =
-        collect_bond_lengths( { $atom_id => $atom_site->{$atom_id} } );
-    my $bond_angles =
-        collect_bond_angles( { $atom_id => $atom_site->{$atom_id} } );
-    my $dihedral_angles =
-        collect_dihedral_angles( { $atom_id => $atom_site->{$atom_id} } );
-
-    # Restructuring data structure for easier search by atom ids.
-    my $bond_lengths_by_atom_ids = restructure_by_atom_ids( $bond_lengths );
-    my $bond_angles_by_atom_ids = restructure_by_atom_ids( $bond_angles );
-    my $dihedral_angles_by_atom_ids = restructure_by_atom_ids( $dihedral_angles);
-
     # Sorting by the priority: bond length > bond angle > dihedral angle, because
     # the other parameters can be derived from the previous parameter.
     my ( $bond_parameters ) =
@@ -396,8 +383,7 @@ sub conformation_matrices
         my @ref_frame_atom_idxs =
             scalar @{ $atom_ids } > 2 ? ( 2, 1, 0 ) : ( 1, 0 );
         my ( $up_atom_id, $mid_atom_id, $side_atom_id ) =
-            map { $atom_ids->[$_] }
-                @ref_frame_atom_idxs;
+            map { $atom_ids->[$_] } @ref_frame_atom_idxs;
 
         if( ! defined $side_atom_id ) {
             my @mid_connections =
@@ -409,37 +395,40 @@ sub conformation_matrices
                 @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
         }
 
+        my $bond_name;
+        my $bond_angle_name;
+        my $dihedral_angle_name;
+
+        next if ! defined $mid_atom_id ||
+                ! defined $up_atom_id ||
+                ! defined $side_atom_id;
+
+        if( defined $stretchable_bonds && exists $stretchable_bonds->{$atom_id} ) {
+            ( $bond_name  ) =
+                grep { join( ',', @{ $stretchable_bonds->{$atom_id}{$_}{'atom_ids'} } )
+                           =~ m/^${mid_atom_id},${up_atom_id}$/ }
+                keys %{ $stretchable_bonds->{$atom_id} };
+        }
+
+        if( defined $bendable_angles && exists $bendable_angles->{$atom_id} ) {
+            ( $bond_angle_name ) =
+                grep { join( ',', @{ $bendable_angles->{$atom_id}{$_}{'atom_ids'} } )
+                           =~ m/^${side_atom_id},${mid_atom_id},${up_atom_id}$/ }
+                keys %{ $bendable_angles->{$atom_id} };
+        }
+
+        if( defined $rotatable_bonds && exists $rotatable_bonds->{$atom_id} ) {
+            ( $dihedral_angle_name ) =
+                grep { join( ',', @{ $rotatable_bonds->{$atom_id}{$_}{'atom_ids'} } )
+                           =~ m/^\d+,${mid_atom_id},${up_atom_id},\d+$/ }
+                keys %{ $rotatable_bonds->{$atom_id} };
+        }
+
         my ( $mid_atom_coord, $up_atom_coord, $side_atom_coord ) =
             map { [ $ref_atom_site->{$_}{'Cartn_x'},
                     $ref_atom_site->{$_}{'Cartn_y'},
                     $ref_atom_site->{$_}{'Cartn_z'} ] }
                 ( $mid_atom_id, $up_atom_id, $side_atom_id );
-
-        my $bond_name = undef;
-        if( exists $bond_lengths_by_atom_ids->{$mid_atom_id} &&
-            exists $bond_lengths_by_atom_ids->{$mid_atom_id}{$up_atom_id} ) {
-            $bond_name = $bond_lengths_by_atom_ids->{$mid_atom_id}{$up_atom_id}{'name'};
-        }
-
-        my $bond_angle_name = undef;
-        if( exists $bond_angles_by_atom_ids->{$side_atom_id} &&
-            exists $bond_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id} &&
-            exists $bond_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id} ) {
-            $bond_angle_name =
-                $bond_angles_by_atom_ids
-                    ->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{'name'};
-        }
-
-        my $dihedral_angle_name = undef;
-        if( exists $dihedral_angles_by_atom_ids->{$side_atom_id} &&
-            exists $dihedral_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id} &&
-            exists $dihedral_angles_by_atom_ids->{$side_atom_id}{$mid_atom_id}{$up_atom_id} ) {
-            ( $dihedral_angle_name ) =
-                map { $dihedral_angles_by_atom_ids
-                          ->{$side_atom_id}{$mid_atom_id}{$up_atom_id}{$_}{'name'} }
-                keys %{ $dihedral_angles_by_atom_ids
-                            ->{$side_atom_id}{$mid_atom_id}{$up_atom_id} };
-        }
 
         push @conformation_matrices,
              @{ bond_altering( $parameters,
