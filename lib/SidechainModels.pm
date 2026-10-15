@@ -386,14 +386,26 @@ sub conformation_matrices
             map { $atom_ids->[$_] } @ref_frame_atom_idxs;
 
         if( ! defined $side_atom_id ) {
-            my @mid_connections =
-                uniq
-                grep { $_ ne $up_atom_id }
-                     ( @{ $ref_atom_site->{$mid_atom_id}{'connections'} } );
-            my @mid_heteroatom_connections =
-                uniq
-                grep { $_ ne $up_atom_id }
-                     ( @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatom'} } );
+            my @mid_connections = ();
+            if( exists $ref_atom_site->{$mid_atom_id} &&
+                exists $ref_atom_site->{$mid_atom_id}{'connections'} ) {
+                @mid_connections =
+                    uniq
+                    grep { exists $ref_atom_site->{$_} }
+                    grep { $_ ne $up_atom_id }
+                         ( @{ $ref_atom_site->{$mid_atom_id}{'connections'} } );
+            }
+
+            my @mid_heteroatom_connections = ();
+            if( exists $ref_atom_site->{$mid_atom_id} &&
+                exists $ref_atom_site->{$mid_atom_id}{'connections_hetatom'}) {
+                @mid_heteroatom_connections =
+                    uniq
+                    grep { exists $ref_atom_site->{$_} }
+                    grep { $_ ne $up_atom_id }
+                         ( @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatom'} } );
+            }
+
             if( @mid_connections ) {
                 ( $side_atom_id ) =
                     @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };

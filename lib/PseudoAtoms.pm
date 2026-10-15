@@ -68,7 +68,7 @@ use PDBxParser qw( atom_site_to_pdbx
                    unique_residue_key );
 use Sampling qw( random_sequence
                  sample_bond_parameters );
-use SidechainModels qw( rotation_translation );
+use SidechainModels qw( rotation_translation_new );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -611,7 +611,7 @@ sub generate_library
                 # Generates conformational models before checking for
                 # clashes/interactions for given residues.
                 if( $conf_model eq 'rotation_only' ) {
-                    rotation_translation( $parameters, $residue_site,
+                    rotation_translation_new( $parameters, $residue_site,
                                           { 'ref_atom_site' =>
                                                 $current_atom_site } );
                 } else {
