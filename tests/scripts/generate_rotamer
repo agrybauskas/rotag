@@ -9,8 +9,7 @@ use BondParameters qw( bendable_angles
 use ForceField::Parameters;
 use PDBxParser qw( to_pdbx );
 use PseudoAtoms qw( generate_rotamer );
-use SidechainModels qw( rotation_translation
-                        rotation_translation_new );
+use SidechainModels qw( rotation_translation );
 
 #
 # Unit test: PseudoAtoms::generate_rotamer
@@ -39,7 +38,7 @@ bendable_angles( $parameters, $atom_site ) if $do_angle_bending;
 rotatable_bonds( $parameters, $atom_site ) if $do_bond_torsion;
 stretchable_bonds( $parameters, $atom_site ) if $do_bond_stretching;
 
-rotation_translation_new( $parameters, $atom_site );
+rotation_translation( $parameters, $atom_site );
 
 # Parses angles for pseudo-rotamers.
 my %bond_parameter_values = ( map { $_->[0] => $_->[1] }

@@ -25,7 +25,7 @@ use LinearAlgebra qw( mult_matrix_product
                       switch_ref_frame );
 use Measure qw( bond_angle );
 use PseudoAtoms qw( replace_with_rotamer );
-use SidechainModels qw( rotation_translation_new );
+use SidechainModels qw( rotation_translation );
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;
@@ -217,7 +217,7 @@ sub replace_with_moiety
         hybridization( $parameters, $residue_site );
         rotatable_bonds( $parameters, $residue_site );
 
-        rotation_translation_new( $parameters, $residue_site );
+        rotation_translation( $parameters, $residue_site );
 
         replace_with_rotamer( $parameters, $residue_site, $unique_residue_key,
                               $angles );
@@ -394,7 +394,7 @@ sub replace_hetatoms_with_moiety
         hybridization( $parameters, $residue_site );
         rotatable_bonds( $parameters, $residue_site );
 
-        rotation_translation_new( $parameters, $residue_site );
+        rotation_translation( $parameters, $residue_site );
 
         replace_with_rotamer( $parameters, $residue_site, $unique_residue_key,
                               $angles );
