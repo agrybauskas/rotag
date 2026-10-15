@@ -32,19 +32,6 @@ $VAR1 = [
         use warnings;
         use strict;
         my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
         return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
@@ -77,19 +64,6 @@ $VAR1 = [
       1
     ]
   ],
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
   bless( {
     'is_evaluated' => undef,
     'matrix' => sub {

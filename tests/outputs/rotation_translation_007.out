@@ -32,101 +32,23 @@ $VAR1 = [
         use warnings;
         use strict;
         my($svar) = @_;
-        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'chi1'
-    ]
-  }, 'Symbolic' ),
-  [
-    [
-      '0.430006082941569',
-      '0.771675863938311',
-      '-0.468626855449312',
-      '-1.34849702458263'
-    ],
-    [
-      '0.499450987300035',
-      '0.229078112717542',
-      '0.835506989533175',
-      '0.288983847899051'
-    ],
-    [
-      '0.752092733589595',
-      '-0.593329233468933',
-      '-0.286909290182279',
-      '2.10704060481644'
-    ],
-    [
-      0,
-      0,
-      0,
-      1
-    ]
-  ],
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
-        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'CB-CG-OD1.MG'
-    ]
-  }, 'Symbolic' ),
-  [
-    [
-      '0.430006082941569',
-      '0.499450987300035',
-      '0.752092733589595',
-      '-1.14916127300848'
-    ],
-    [
-      '0.771675863938311',
-      '0.229078112717542',
-      '-0.593329233468933',
-      '2.22457151892413'
-    ],
-    [
-      '-0.468626855449313',
-      '0.835506989533175',
-      '-0.286909290182279',
-      '-0.268860420681639'
-    ],
-    [
-      0,
-      0,
-      0,
-      1
-    ]
-    ],
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
         return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
       'N-CA-CB'
+    ]
+  }, 'Symbolic' ),
+  bless( {
+    'is_evaluated' => undef,
+    'matrix' => sub {
+        package AlterMolecule;
+        use warnings;
+        use strict;
+        my($svar) = @_;
+        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+    },
+    'symbols' => [
+      'chi1'
     ]
   }, 'Symbolic' ),
   [
@@ -155,19 +77,6 @@ $VAR1 = [
       1
     ]
   ],
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
   bless( {
     'is_evaluated' => undef,
     'matrix' => sub {
@@ -214,10 +123,10 @@ $VAR1 = [
         use warnings;
         use strict;
         my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
+        return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
-      'eta'
+      'CB-CG-OD1'
     ]
   }, 'Symbolic' ),
   bless( {
@@ -227,10 +136,10 @@ $VAR1 = [
         use warnings;
         use strict;
         my($svar) = @_;
-        return [[1, 0, 0, 0], [0, cos $svar, -sin($svar), 0], [0, sin $svar, cos $svar, 0], [0, 0, 0, 1]];
+        return [[cos $svar, -sin($svar), 0, 0], [sin $svar, cos $svar, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
     },
     'symbols' => [
-      'CB-CG-OD1'
+      'CB-CG-OD1.MG'
     ]
   }, 'Symbolic' ),
   [
@@ -259,19 +168,6 @@ $VAR1 = [
       1
     ]
   ],
-  bless( {
-    'is_evaluated' => undef,
-    'matrix' => sub {
-        package AlterMolecule;
-        use warnings;
-        use strict;
-        my($svar) = @_;
-        return [[cos $svar, 0, sin $svar, 0], [0, 1, 0, 0], [-sin($svar), 0, cos $svar, 0], [0, 0, 0, 1]];
-    },
-    'symbols' => [
-      'eta'
-    ]
-  }, 'Symbolic' ),
   bless( {
     'is_evaluated' => undef,
     'matrix' => sub {
