@@ -403,13 +403,17 @@ sub conformation_matrices
             }
         }
 
-        my $bond_name;
-        my $bond_angle_name;
-        my $dihedral_angle_name;
-
         next if ! defined $mid_atom_id ||
                 ! defined $up_atom_id ||
                 ! defined $side_atom_id;
+
+        next if ! exists $ref_atom_site->{$mid_atom_id} ||
+                ! exists $ref_atom_site->{$up_atom_id} ||
+                ! exists $ref_atom_site->{$side_atom_id};
+
+        my $bond_name;
+        my $bond_angle_name;
+        my $dihedral_angle_name;
 
         if( defined $stretchable_bonds && exists $stretchable_bonds->{$atom_id} ) {
             ( $bond_name  ) =
