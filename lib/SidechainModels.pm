@@ -389,11 +389,18 @@ sub conformation_matrices
             my @mid_connections =
                 uniq
                 grep { $_ ne $up_atom_id }
-                     ( @{ $ref_atom_site->{$mid_atom_id}{'connections'} },
-                       # @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatom'} }
-                     );
-            ( $side_atom_id ) =
-                @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
+                     ( @{ $ref_atom_site->{$mid_atom_id}{'connections'} } );
+            my @mid_heteroatom_connections =
+                uniq
+                grep { $_ ne $up_atom_id }
+                     ( @{ $ref_atom_site->{$mid_atom_id}{'connections_hetatom'} } );
+            if( @mid_connections ) {
+                ( $side_atom_id ) =
+                    @{ sort_atom_ids_by_name( \@mid_connections, $ref_atom_site ) };
+            } else {
+                ( $side_atom_id ) =
+                    @{ sort_atom_ids_by_name( \@mid_heteroatom_connections, $ref_atom_site ) };
+            }
         }
 
         my $bond_name;
