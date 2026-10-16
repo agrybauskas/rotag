@@ -936,6 +936,11 @@ sub calc_favourable_angles
                        $a cmp $b }
                 keys %bond_parameters;
             my @parameter_names_visited =
+                sort { $bond_parameters{$a}{'order'} <=>
+                       $bond_parameters{$b}{'order'} ||
+                       $bond_parameters{$a}{'rank'} <=>
+                       $bond_parameters{$b}{'rank'} ||
+                       $a cmp $b }
                 grep { exists $visited_bond_parameters{$_} }
                 @parameter_names_sorted;
 
