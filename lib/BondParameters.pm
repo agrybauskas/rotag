@@ -1043,4 +1043,10 @@ sub combine_bond_and_energy
     return \%combined_parameters;
 }
 
+sub bond_parameter_key_diff
+{
+    my ( $target_key, $reference_key ) = @_;
+    return;
+}
+
 1;
