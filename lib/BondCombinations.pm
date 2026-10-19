@@ -5,7 +5,8 @@ use warnings;
 
 use Exporter qw( import );
 BEGIN {
-our @EXPORT_OK = qw( combine_permuted_values
+our @EXPORT_OK = qw( bond_parameter_key_diff
+                     combine_permuted_values
                      match_parameter_key
                      parameter_key )
 }
@@ -40,6 +41,12 @@ sub match_parameter_key
         }
     }
     return $matched_parameter_key;
+}
+
+sub bond_parameter_key_diff
+{
+    my ( $target_key, $reference_key ) = @_;
+    return;
 }
 
 sub combine_permuted_values
