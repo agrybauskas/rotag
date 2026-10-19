@@ -1045,10 +1045,6 @@ sub calc_favourable_angles
                     $energy_combinations{$parameter_key} =
                         clone \@default_allowed_energies;
                 } else {
-                    my $bond_parameter_key_diff =
-                        bond_parameter_key_diff( $parameter_key,
-                                                 $parameter_key_prev );
-
                     $bond_combinations{$parameter_key} =
                         permutation( 2, [],
                                      [ $bond_combinations{$parameter_key_prev},
@@ -1065,6 +1061,13 @@ sub calc_favourable_angles
                     $energy_combinations{$parameter_key} =
                         [ map { [ $_->[0][0] ] }
                              @{ $energy_combinations{$parameter_key} } ];
+
+                    # Reorders bond parameter and energy combination lists if
+                    # the bond paramter names are sorted differently with
+                    # reference to previously calculated angles.
+                    my $bond_parameter_key_diff =
+                        bond_parameter_key_diff( $parameter_key,
+                                                 $parameter_key_prev );
                 }
             }
 
