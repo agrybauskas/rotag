@@ -1065,9 +1065,17 @@ sub calc_favourable_angles
                     # Reorders bond parameter and energy combination lists if
                     # the bond paramter names are sorted differently with
                     # reference to previously calculated angles.
-                    my $bond_parameter_key_diff =
+                    my $parameter_key_diff =
                         bond_parameter_key_diff( $parameter_key,
                                                  $parameter_key_prev );
+                    my @swapable_parameter_names =
+                        map { $_ }
+                        sort { $parameter_key_diff->{$a}{'match'} <=>
+                               $parameter_key_diff->{$b}{'match'} }
+                        grep { $parameter_key_diff->{$_}{'match'} eq 0 }
+                        keys %$parameter_key_diff;
+                    for my $swapable_parameter_name ( @swapable_parameter_names ) {
+                    }
                 }
             }
 
