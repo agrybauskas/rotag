@@ -27,7 +27,8 @@ use Logging qw( info
                 warning );
 use threads;
 
-use BondCombinations qw( combine_permuted_values
+use BondCombinations qw( bond_parameter_key_diff
+                         combine_permuted_values
                          parameter_key );
 use BondParameters qw( alt_bond_parameter_names
                        collect_bond_parameters
@@ -1044,6 +1045,10 @@ sub calc_favourable_angles
                     $energy_combinations{$parameter_key} =
                         clone \@default_allowed_energies;
                 } else {
+                    my $bond_parameter_key_diff =
+                        bond_parameter_key_diff( $parameter_key,
+                                                 $parameter_key_prev );
+
                     $bond_combinations{$parameter_key} =
                         permutation( 2, [],
                                      [ $bond_combinations{$parameter_key_prev},

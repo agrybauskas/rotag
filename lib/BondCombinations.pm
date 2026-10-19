@@ -46,7 +46,24 @@ sub match_parameter_key
 sub bond_parameter_key_diff
 {
     my ( $target_key, $reference_key ) = @_;
-    return;
+    my %diff_parameter_key = ();
+    my %reference_key = map { $_ => 1 } split /,/, $reference_key;
+    my $pos = 0;
+    for my $name ( split /,/, $target_key ) {
+        if( exists $reference_key{$name} ) {
+            $diff_parameter_key{$name} = {
+                'pos' => $pos,
+                'match' => 1
+            };
+        } else {
+            $diff_parameter_key{$name} = {
+                'pos' => $pos,
+                'match' => 0
+            };
+        }
+        $pos++;
+    }
+    return \%diff_parameter_key;
 }
 
 sub combine_permuted_values
