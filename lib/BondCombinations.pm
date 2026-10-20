@@ -47,21 +47,24 @@ sub bond_parameter_key_diff
 {
     my ( $target_key, $reference_key ) = @_;
     my %diff_parameter_key = ();
-    my %reference_key = map { $_ => 1 } split /,/, $reference_key;
-    my $pos = 0;
+    my @reference_keys = split /,/, $reference_key;
+    my %reference_keys = map { $reference_keys[$_] => $_ } ( 0..$#reference_keys );
+    my $target_pos = 0;
     for my $name ( split /,/, $target_key ) {
-        if( exists $reference_key{$name} ) {
+        if( exists $reference_keys{$name} ) {
             $diff_parameter_key{$name} = {
-                'pos' => $pos,
+                'target_pos' => $target_pos,
+                'reference_pos' => $reference_keys{$name},
                 'match' => 1
             };
         } else {
             $diff_parameter_key{$name} = {
-                'pos' => $pos,
+                'target_pos' => $target_pos,
+                'reference_pos' => -1,
                 'match' => 0
             };
         }
-        $pos++;
+        $target_pos++;
     }
     return \%diff_parameter_key;
 }

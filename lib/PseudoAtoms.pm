@@ -1065,34 +1065,15 @@ sub calc_favourable_angles
                     # Reorders bond parameter and energy combination lists if
                     # the bond paramter names are sorted differently with
                     # reference to previously calculated angles.
-                    # TODO: should be refactored.
+                    my $parameter_key_comb = join( ',',
+                        ( split( /,/, $parameter_key_prev ) ),
+                        ( @bond_parameter_names ?
+                          @bond_parameter_names : ( $parameter_name ) )
+                    );
+
                     my $parameter_key_diff =
                         bond_parameter_key_diff( $parameter_key,
-                                                 $parameter_key_prev );
-
-                    # my @swap_parameter_names =
-                    #     map { $_ }
-                    #     sort { $parameter_key_diff->{$a}{'pos'} <=>
-                    #            $parameter_key_diff->{$b}{'pos'} }
-                    #     sort { $parameter_key_diff->{$a}{'match'} <=>
-                    #            $parameter_key_diff->{$b}{'match'} }
-                    #     grep { $parameter_key_diff->{$_}{'match'} eq 0 }
-                    #     keys %$parameter_key_diff;
-                    # my %swap_from =
-                    #     map { $bond_parameter_names[$_] =>
-                    #               $#{ split( /,/, $parameter_key_prev ) } + 1 }
-                    #         0..$#bond_parameter_names;
-                    # %swap_from =
-                    #     %swap_from ?
-                    #     %swap_from :
-                    #     ( $parameter_name => split( /,/, $parameter_key_prev ) + 1 );
-
-                    # for my $swap_parameter_name ( @swap_parameter_names ) {
-                    #     my $swap_to =
-                    #         $parameter_key_diff->{$swap_parameter_name}{'pos'};
-                    #     my $swap_from =
-                    #         $swap_from{$swap_parameter_name};
-                    # }
+                                                 $parameter_key_comb );
                 }
             }
 
