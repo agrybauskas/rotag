@@ -54,13 +54,13 @@ sub bond_parameter_key_diff
         if( exists $reference_keys{$name} ) {
             $diff_parameter_key{$name} = {
                 'target_pos' => $target_pos,
-                'reference_pos' => $reference_keys{$name},
+                'ref_pos' => $reference_keys{$name},
                 'match' => 1
             };
         } else {
             $diff_parameter_key{$name} = {
                 'target_pos' => $target_pos,
-                'reference_pos' => -1,
+                'ref_pos' => -1,
                 'match' => 0
             };
         }

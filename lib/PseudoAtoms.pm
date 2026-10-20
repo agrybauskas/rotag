@@ -1074,6 +1074,20 @@ sub calc_favourable_angles
                     my $parameter_key_diff =
                         bond_parameter_key_diff( $parameter_key,
                                                  $parameter_key_comb );
+
+                    for my $i ( 0..$#{ $bond_combinations{$parameter_key} } ) {
+                        my @reordered_bond_comb = ();
+                        for my $name (
+                            sort { $parameter_key_diff->{$a}{'target_pos'} <=>
+                                   $parameter_key_diff->{$b}{'target_pos'} }
+                            keys %{ $parameter_key_diff } ) {
+                            my $ref_pos = $parameter_key_diff->{$name}{'ref_pos'};
+                            push @reordered_bond_comb,
+                                $bond_combinations{$parameter_key}[$i][$ref_pos];
+                        }
+                        $bond_combinations{$parameter_key}[$i] =
+                            \@reordered_bond_comb;
+                    }
                 }
             }
 
