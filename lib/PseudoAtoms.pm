@@ -1070,6 +1070,8 @@ sub calc_favourable_angles
                                                  $parameter_key_prev );
                     my @swapable_parameter_names =
                         map { $_ }
+                        sort { $parameter_key_diff->{$a}{'pos'} <=>
+                               $parameter_key_diff->{$b}{'pos'} }
                         sort { $parameter_key_diff->{$a}{'match'} <=>
                                $parameter_key_diff->{$b}{'match'} }
                         grep { $parameter_key_diff->{$_}{'match'} eq 0 }
