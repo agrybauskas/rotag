@@ -69,6 +69,11 @@ sub is_connected
     $no_connection_list //= 0;
     $no_covalent_radii //= 0;
 
+    return 0 if ( $target_atom->{'group_PDB'} eq 'HETATM' ||
+                  $neighbour_atom->{'group_PDB'} eq 'HETATM' ) &&
+        unique_residue_key( $target_atom ) ne
+        unique_residue_key( $neighbour_atom );
+
     my $covalent_bond_comb = $parameters->{'_[local]_covalent_bond_combinations'};
     my $connectivity = $parameters->{'_[local]_connectivity'};
 
