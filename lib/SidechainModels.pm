@@ -284,8 +284,9 @@ sub conformation_matrices
     my @conformation_matrices = ();
     for my $parameter_name ( sort { $bond_parameters->{$atom_id}{$a}{'order'} <=>
                                     $bond_parameters->{$atom_id}{$b}{'order'} ||
-                                    $bond_parameters->{$atom_id}{$b}{'rank'} <=>
-                                    $bond_parameters->{$atom_id}{$a}{'rank'} }
+                                    $bond_parameters->{$atom_id}{$a}{'rank'} <=>
+                                    $bond_parameters->{$atom_id}{$b}{'rank'} ||
+                                    $a cmp $b }
                              keys %{ $bond_parameters->{$atom_id} } ) {
         my $parameter_data = $bond_parameters->{$atom_id}{$parameter_name};
         my $atom_ids = $parameter_data->{'atom_ids'};
