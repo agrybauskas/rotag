@@ -474,6 +474,14 @@ sub assign_hetatoms
 
                     $atom_site->{$connection_related_atom_id} =
                         clone $ref_atom_site->{$connection_related_atom_id};
+                # }
+
+                # for my $connection_related_atom_id (
+                #     sort @{ $all_unique_residue_keys->{$connection_unique_key} } ) {
+                #     my $connection_related_atom_type =
+                #         $ref_atom_site->{$connection_related_atom_id}{'group_PDB'};
+
+                #     next if $connection_related_atom_type eq 'ATOM';
 
                     replace_atom_site_ids( $atom_site,
                                            [ { 'from' => $connection_related_atom_id,
