@@ -929,13 +929,6 @@ sub calc_favourable_angles
                 $all_bond_parameters{$_} = clone $bond_parameters{$_};
             }
 
-            my @parameter_names_sorted =
-                sort { $bond_parameters{$a}{'order'} <=>
-                       $bond_parameters{$b}{'order'} ||
-                       $bond_parameters{$a}{'rank'} <=>
-                       $bond_parameters{$b}{'rank'} ||
-                       $a cmp $b }
-                keys %bond_parameters;
             my @parameter_names_visited =
                 sort { $bond_parameters{$a}{'order'} <=>
                        $bond_parameters{$b}{'order'} ||
@@ -943,7 +936,37 @@ sub calc_favourable_angles
                        $bond_parameters{$b}{'rank'} ||
                        $a cmp $b }
                 grep { exists $visited_bond_parameters{$_} }
-                @parameter_names_sorted;
+                keys %bond_parameters;
+            # my %parameter_names_visited =
+            #     map { $_ => 1 } @parameter_names_visited;
+            my @parameter_names_sorted =
+                sort { $bond_parameters{$a}{'order'} <=>
+                       $bond_parameters{$b}{'order'} ||
+                       $bond_parameters{$a}{'rank'} <=>
+                       $bond_parameters{$b}{'rank'} ||
+                       $a cmp $b }
+                keys %bond_parameters;
+
+            # # Prioritising order of bond parameter names that were already
+            # # visited.
+            # my %parameter_names_sorted = ();
+            # for my $parameter_name ( @parameter_names_sorted ) {
+            #     if( exists $parameter_names_visited{$parameter_name} ) {
+            #         $parameter_names_sorted{$parameter_name} = 1;
+            #     } else {
+            #         $parameter_names_sorted{$parameter_name} = 0;
+            #     }
+            # }
+
+            # @parameter_names_sorted =
+            #     sort { $parameter_names_sorted{$b} <=>
+            #            $parameter_names_sorted{$a} ||
+            #            $bond_parameters{$a}{'order'} <=>
+            #            $bond_parameters{$b}{'order'} ||
+            #            $bond_parameters{$a}{'rank'} <=>
+            #            $bond_parameters{$b}{'rank'} ||
+            #            $a cmp $b }
+            #     keys %bond_parameters;
 
             my $unique_residue_key =
                 unique_residue_key( $residue_site->{$atom_id} );
@@ -961,12 +984,15 @@ sub calc_favourable_angles
                 push @parameter_names_visited, $parameter_name;
 
                 @parameter_names_visited =
-                    sort { $bond_parameters{$a}{'order'} <=>
+                    sort { # $parameter_names_sorted{$b} <=>
+                           # $parameter_names_sorted{$a} ||
+                           $bond_parameters{$a}{'order'} <=>
                            $bond_parameters{$b}{'order'} ||
                            $bond_parameters{$a}{'rank'} <=>
                            $bond_parameters{$b}{'rank'} ||
                            $a cmp $b }
                     @parameter_names_visited;
+                # $parameter_names_visited{$parameter_name} = 1;
 
                 # TODO: can be optimised by analysing previous bond parameter
                 # combinations.
