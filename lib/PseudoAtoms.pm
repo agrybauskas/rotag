@@ -29,6 +29,7 @@ use threads;
 
 use BondCombinations qw( bond_parameter_key_diff
                          combine_permuted_values
+                         match_parameter_key
                          parameter_key );
 use BondParameters qw( alt_bond_parameter_names
                        collect_bond_parameters
@@ -937,8 +938,8 @@ sub calc_favourable_angles
                        $a cmp $b }
                 grep { exists $visited_bond_parameters{$_} }
                 keys %bond_parameters;
-            # my %parameter_names_visited =
-            #     map { $_ => 1 } @parameter_names_visited;
+            my %parameter_names_visited =
+                map { $_ => 1 } @parameter_names_visited;
             my @parameter_names_sorted =
                 sort { $bond_parameters{$a}{'order'} <=>
                        $bond_parameters{$b}{'order'} ||
@@ -947,26 +948,26 @@ sub calc_favourable_angles
                        $a cmp $b }
                 keys %bond_parameters;
 
-            # # Prioritising order of bond parameter names that were already
-            # # visited.
-            # my %parameter_names_sorted = ();
-            # for my $parameter_name ( @parameter_names_sorted ) {
-            #     if( exists $parameter_names_visited{$parameter_name} ) {
-            #         $parameter_names_sorted{$parameter_name} = 1;
-            #     } else {
-            #         $parameter_names_sorted{$parameter_name} = 0;
-            #     }
-            # }
+            # Prioritising order of bond parameter names that were already
+            # visited.
+            my %parameter_names_sorted = ();
+            for my $parameter_name ( @parameter_names_sorted ) {
+                if( exists $parameter_names_visited{$parameter_name} ) {
+                    $parameter_names_sorted{$parameter_name} = 1;
+                } else {
+                    $parameter_names_sorted{$parameter_name} = 0;
+                }
+            }
 
-            # @parameter_names_sorted =
-            #     sort { $parameter_names_sorted{$b} <=>
-            #            $parameter_names_sorted{$a} ||
-            #            $bond_parameters{$a}{'order'} <=>
-            #            $bond_parameters{$b}{'order'} ||
-            #            $bond_parameters{$a}{'rank'} <=>
-            #            $bond_parameters{$b}{'rank'} ||
-            #            $a cmp $b }
-            #     keys %bond_parameters;
+            @parameter_names_sorted =
+                sort { $parameter_names_sorted{$b} <=>
+                       $parameter_names_sorted{$a} ||
+                       $bond_parameters{$a}{'order'} <=>
+                       $bond_parameters{$b}{'order'} ||
+                       $bond_parameters{$a}{'rank'} <=>
+                       $bond_parameters{$b}{'rank'} ||
+                       $a cmp $b }
+                keys %bond_parameters;
 
             my $unique_residue_key =
                 unique_residue_key( $residue_site->{$atom_id} );
@@ -984,15 +985,15 @@ sub calc_favourable_angles
                 push @parameter_names_visited, $parameter_name;
 
                 @parameter_names_visited =
-                    sort { # $parameter_names_sorted{$b} <=>
-                           # $parameter_names_sorted{$a} ||
+                    sort { $parameter_names_sorted{$b} <=>
+                           $parameter_names_sorted{$a} ||
                            $bond_parameters{$a}{'order'} <=>
                            $bond_parameters{$b}{'order'} ||
                            $bond_parameters{$a}{'rank'} <=>
                            $bond_parameters{$b}{'rank'} ||
                            $a cmp $b }
                     @parameter_names_visited;
-                # $parameter_names_visited{$parameter_name} = 1;
+                $parameter_names_visited{$parameter_name} = 1;
 
                 # TODO: can be optimised by analysing previous bond parameter
                 # combinations.
@@ -1052,6 +1053,9 @@ sub calc_favourable_angles
                             @bond_parameter_names[0..$#bond_parameter_names-1] :
                             $bond_parameter_names[0];
                         $parameter_key_prev =~ s/,\Q${parameter_subkey}\E//pg;
+                        $parameter_key_prev =
+                            match_parameter_key( $parameter_key_prev,
+                                                 [ sort keys %bond_combinations ] );
                     }
                     @default_allowed_bond_parameters =
                         @{ random_sequence( \@ranges, $rand_step ) };
@@ -1129,7 +1133,9 @@ sub calc_favourable_angles
                 defined $atom_site->{$atom_id}{'connections_hetatom'};
 
             # Starts calculating potential energy.
-            my $parameter_key_sorted = parameter_key( \@parameter_names_sorted );
+            my $parameter_key_sorted =
+                match_parameter_key( parameter_key( \@parameter_names_sorted ),
+                                     [ sort keys %bond_combinations ] );
             my ( $next_allowed_bond_parameters, $next_allowed_energies ) =
                 ( [], [] );
             foreach( 0..1 ) {  # Currently, there are only two cycles.
@@ -1140,6 +1146,7 @@ sub calc_favourable_angles
                              'atom_site' => $atom_site,
                              'atom_id' => $atom_id,
                              'bond_parameters' => \%bond_parameters,
+                             'bond_parameter_names' => \@parameter_names_sorted,
                              'interaction_site' => $interaction_site,
                              'energy_threshold' => \%energy_threshold,
                              'non_bonded_potential' => $non_bonded_potential,
@@ -1319,13 +1326,14 @@ sub calc_favourable_angle
 {
     my ( $args, $array_blocks ) = @_;
 
-    my ( $parameters, $atom_site, $atom_id, $bond_parameters, $interaction_site,
-         $non_bonded_potential, $bonded_potential, $energy_threshold,
-         $options ) = (
+    my ( $parameters, $atom_site, $atom_id, $bond_parameters,
+         $bond_parameter_names, $interaction_site, $non_bonded_potential,
+         $bonded_potential, $energy_threshold, $options ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'atom_id'},
         $args->{'bond_parameters'},
+        $args->{'bond_parameter_names'},
         $args->{'interaction_site'},
         $args->{'non_bonded_potential'},
         $args->{'bonded_potential'},
@@ -1346,13 +1354,18 @@ sub calc_favourable_angle
     $verbosity_level //= 0;
 
     # TODO: a good place to make an parameter name sorting function.
-    my @bond_parameter_names =
-        sort { $bond_parameters->{$a}{'order'} <=>
-               $bond_parameters->{$b}{'order'} ||
-               $bond_parameters->{$a}{'rank'} <=>
-               $bond_parameters->{$b}{'rank'} ||
-               $a cmp $b }
-        keys %{ $bond_parameters };
+    my @bond_parameter_names = ();
+    if( defined $bond_parameter_names ) {
+        @bond_parameter_names = @{ $bond_parameter_names };
+    } else {
+        @bond_parameter_names =
+            sort { $bond_parameters->{$a}{'order'} <=>
+                   $bond_parameters->{$b}{'order'} ||
+                   $bond_parameters->{$a}{'rank'} <=>
+                   $bond_parameters->{$b}{'rank'} ||
+                   $a cmp $b }
+            keys %{ $bond_parameters };
+    }
 
     my @allowed_bond_parameters;
     my @allowed_energies;
