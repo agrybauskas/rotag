@@ -351,6 +351,24 @@ $VAR1 = bless( {
         'to' => '2.3',
         'type' => 'angstroms'
       },
+      '*.H1' => {
+        'angle' => '*.H1',
+        'description' => '\'Hydrogen bond length range from Legon et al., 1987.\'',
+        'from' => '1.6',
+        'label_comp_id' => '*',
+        'step' => '0.1',
+        'to' => '2.0',
+        'type' => 'angstroms'
+      },
+      '*.H2' => {
+        'angle' => '*.H2',
+        'description' => '\'Hydrogen bond length range from Legon et al., 1987.\'',
+        'from' => '1.6',
+        'label_comp_id' => '*',
+        'step' => '0.1',
+        'to' => '2.0',
+        'type' => 'angstroms'
+      },
       '*.K' => {
         'angle' => '*.K',
         'description' => '\'From COD coordination sphere data.\'',
