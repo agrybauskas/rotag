@@ -423,7 +423,7 @@ sub assign_hetatoms
         while( @next_atom_ids ) {
             my ( $atom_id ) = shift @next_atom_ids;
 
-            next if $visited_atoms{$atom_id};
+            next if exists $visited_atoms{$atom_id};
             $visited_atoms{$atom_id} = 1;
 
             next if exists $heteroatom_depth{$atom_id} &&
@@ -438,8 +438,8 @@ sub assign_hetatoms
 
             my $residue_name = $ref_atom_site->{$atom_id}{'label_comp_id'};
             for my $connection_atom_id ( sort keys %{ $connections->{$atom_id} } ) {
-                next if $visited_bonds{$atom_id}{$connection_atom_id};
-                next if $seed_atom_ids{$connection_atom_id};
+                next if exists $visited_bonds{$atom_id}{$connection_atom_id};
+                next if exists $seed_atom_ids{$connection_atom_id};
 
                 my $connection_atom_type =
                     $ref_atom_site->{$connection_atom_id}{'group_PDB'};
@@ -497,7 +497,7 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    if( grep { ! $visited_atoms{$_} }
+                    if( grep { ! exists $visited_atoms{$_} }
                         grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
                         keys %{ $connections->{$connection_related_atom_id} } ) {
                         push @next_atom_ids, $connection_related_atom_id;
