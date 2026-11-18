@@ -1674,6 +1674,8 @@ _[local]_bond_parameter.description
 *   *.FE    1.9    2.3   0.1  angstroms 'From COD coordination sphere data.'
 *   *.CU    1.6    2.4   0.2  angstroms 'From COD coordination sphere data.'
 *   *.NI    1.9    2.3   0.1  angstroms 'From COD coordination sphere data.'
+*   *.H1    1.6    2.0   0.1  angstroms 'Hydrogen bond length range from Legon et al., 1987.'
+*   *.H2    1.6    2.0   0.1  angstroms 'Hydrogen bond length range from Legon et al., 1987.'
 *   *-*.*   81.1   179.9 24.7 degrees   'From COD coordination sphere data -- combined NA, MG, CA and ZN average values.'
 *   *.*-*   81.1   179.9 24.7 degrees   'From COD coordination sphere data -- combined NA, MG, CA and ZN average values.'
 *   *.*.*   81.1   179.9 24.7 degrees   'From COD coordination sphere data -- combined NA, MG, CA and ZN average values.'
