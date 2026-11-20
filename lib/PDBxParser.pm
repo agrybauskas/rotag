@@ -1166,7 +1166,8 @@ sub unique_residue_keys
         push @unique_residue_keys,
             unique_residue_key( $atom_site->{$atom_id}, $default_values );
     }
-    return sort { $a cmp $b } uniq @unique_residue_keys;
+    @unique_residue_keys = sort { $a cmp $b } uniq @unique_residue_keys;
+    return @unique_residue_keys;
 }
 
 #
