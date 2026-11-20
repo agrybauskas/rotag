@@ -22,6 +22,7 @@ sub set_energy
     $self->{'energy_type'} = $energy_type;
     $self->{'atoms'} = $atoms;
     $self->{'value'} = $value;
+    return;
 }
 
 sub energy_type
