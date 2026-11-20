@@ -46,6 +46,7 @@ sub set_cost_function
     my ( $self, $cost_function, $parameters ) = @_;
     $self->{'cost_function'} = $cost_function;
     $self->{'function_parameters'} = $parameters;
+    return;
 }
 
 sub global_optimal_value
@@ -155,6 +156,8 @@ sub optimize
             $particle->speed( \%updated_speed );
         }
     }
+
+    return;
 }
 
 1;
