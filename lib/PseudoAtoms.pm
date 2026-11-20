@@ -56,8 +56,6 @@ use Grid qw( grid_box
 use LinearAlgebra qw( mult_matrix_product );
 use Measure qw( around_distance
                 rmsd_sidechains );
-use BondProperties qw( hybridization
-                       rotatable_bonds );
 use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
 use PDBxParser qw( atom_site_to_pdbx
