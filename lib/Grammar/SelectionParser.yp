@@ -522,6 +522,8 @@ sub lexer
             return ( '!', $1 );
         }
     }
+
+    return;
 }
 
 sub debugger
@@ -534,6 +536,8 @@ sub debugger
     };
 
     print "Syntax error\n";
+
+    return;
 }
 
 sub parser

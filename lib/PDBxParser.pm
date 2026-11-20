@@ -1892,6 +1892,7 @@ sub atom_site_to_pdbx
         'pdbx_PDB_model_num',
     ];
     to_pdbx( \%pdbx_data );
+    return;
 }
 
 #
