@@ -1,5 +1,7 @@
 #!perl
+
 %{
+    use strict;
     use warnings;
 
     use Clone qw( clone );
