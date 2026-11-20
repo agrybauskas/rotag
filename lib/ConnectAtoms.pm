@@ -519,9 +519,6 @@ sub assign_hetatoms
                         [ $tracked_atom_ids{$connection_atom_id} ],
                         ( { 'connection_type' => 'connections_hetatom' } ),
                     );
-
-                    $visited_bonds{$atom_id}{$connection_atom_id} = 1;
-                    $visited_bonds{$connection_atom_id}{$atom_id} = 1;
                 }
 
                 # Connects atoms inside the ligand.
