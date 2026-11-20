@@ -1116,7 +1116,7 @@ sub match_unique_residue_key
     my ( $unique_residue_keys, $target_unique_residue_key ) = @_;
 
     my @unique_residue_key_parts = split /,/, $target_unique_residue_key;
-    my $pdbx_auth_alt_id = $unique_residue_key_parts[$#unique_residue_key_parts];
+    my $pdbx_auth_alt_id = $unique_residue_key_parts[-1];
 
     my @matched_residue_keys = ();
 
@@ -1133,7 +1133,7 @@ sub match_unique_residue_key
 
     if( $pdbx_auth_alt_id eq '?' ) {
         my @regex_residue_key_parts = @unique_residue_key_parts;
-        $regex_residue_key_parts[$#regex_residue_key_parts] = '(\.|\d+)';
+        $regex_residue_key_parts[-1] = '(\.|\d+)';
         my $regex_residue_key = join ',', @unique_residue_key_parts;
         foreach( @{ $unique_residue_keys } ) {
             if( $_ =~ m/^${regex_residue_key}$/ ) {
@@ -1623,7 +1623,7 @@ sub group_unique_residue_keys
                 push @alt_residue_key_groups_ids,
                     [ $alt_residue_key_group_ids[$i] ];
             } else {
-                push @{ $alt_residue_key_groups_ids[$#alt_residue_key_groups_ids] },
+                push @{ $alt_residue_key_groups_ids[-1] },
                     $alt_residue_key_group_ids[$i];
             }
         }
