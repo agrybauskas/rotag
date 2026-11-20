@@ -417,14 +417,10 @@ sub assign_hetatoms
     for my $unique_residue_key ( sort keys %{ $unique_residue_keys } ) {
         my @next_atom_ids = @{ $unique_residue_keys->{$unique_residue_key} };
 
-        my %visited_atoms = ();
         my %visited_bonds = ();
         my %heteroatom_depth = ();
         while( @next_atom_ids ) {
             my ( $atom_id ) = shift @next_atom_ids;
-
-            next if exists $visited_atoms{$atom_id};
-            $visited_atoms{$atom_id} = 1;
 
             next if exists $heteroatom_depth{$atom_id} &&
                 $heteroatom_depth{$atom_id} >= $heteroatom_depth_limit;
@@ -497,8 +493,7 @@ sub assign_hetatoms
 
                     push @assigned_atom_ids, $last_atom_id;
 
-                    if( grep { ! exists $visited_atoms{$_} }
-                        grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
+                    if( grep { $connections->{$connection_related_atom_id}{$_} ne 'covale' }
                         keys %{ $connections->{$connection_related_atom_id} } ) {
                         push @next_atom_ids, $connection_related_atom_id;
                     }
