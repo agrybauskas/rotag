@@ -343,7 +343,7 @@ sub rmsd
 
 sub rmsd_sidechains
 {
-    my ( $parameters, $first_atom_site, $second_atom_site, #$unique_residue_key,
+    my ( $parameters, $first_atom_site, $second_atom_site,
          $options ) = @_;
     my ( $average, $best_case, $include_atoms, $exclude_atoms, $strict,
          $include_heteroatoms ) = (

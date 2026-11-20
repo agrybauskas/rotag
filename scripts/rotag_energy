@@ -11,13 +11,9 @@ use List::MoreUtils qw( any
                         uniq );
 use Try::Tiny;
 
-use ConnectAtoms qw( connect_atoms
-                     is_neighbour
-                     is_second_neighbour );
+use ConnectAtoms qw( connect_atoms );
 use Measure qw( energy );
 use ForceField::Parameters;
-use Grid qw( grid_box
-             identify_neighbour_cells );
 use BondProperties qw( hybridization );
 use Logging qw( error
                 warning );

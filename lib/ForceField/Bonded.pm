@@ -10,7 +10,6 @@ our @EXPORT_OK = qw( general
 
 use Readonly;
 
-use AtomProperties qw( sort_atom_names );
 use Energy;
 use ForceField::Parameters;
 use Measure qw( dihedral_angle );

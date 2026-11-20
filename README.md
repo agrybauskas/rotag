@@ -9,7 +9,7 @@ Dependencies have to be met before starting the installation. Some of the
 installation scripts for specific Linux distributions are provided.
 
 ```bash
-bash dependencies/Ubuntu-20.04/install.sh
+bash dependencies/Ubuntu-22.04/install.sh
 ```
 
 ## Installation
