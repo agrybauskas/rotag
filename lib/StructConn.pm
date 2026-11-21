@@ -54,19 +54,23 @@ sub counter_struct_conn
     );
     my ( $covale_last_id ) =
         sort { $b <=> $a }
-        grep { my $id = $_; $id =~ s/^covale//g; $id }
+        map { my $id = $_; $id =~ s/^covale//g; $id }
+        grep { m/^covale/ }
         keys %{ $struct_conn };
     my ( $disulf_last_id ) =
         sort { $b <=> $a }
-        grep { my $id = $_; $id =~ s/^disulf//g; $id }
+        map { my $id = $_; $id =~ s/^disulf//g; $id }
+        grep { m/^disulf/ }
         keys %{ $struct_conn };
     my ( $hydrog_last_id ) =
         sort { $b <=> $a }
-        grep { my $id = $_; $id =~ s/^hydrog//g; $id }
+        map { my $id = $_; $id =~ s/^hydrog//g; $id }
+        grep { m/^hydrog/ }
         keys %{ $struct_conn };
     my ( $metalc_last_id ) =
         sort { $b <=> $a }
-        grep { my $id = $_; $id =~ s/^metalc//g; $id }
+        map { my $id = $_; $id =~ s/^metalc//g; $id }
+        grep { m/^metalc/ }
         keys %{ $struct_conn };
     if( defined $covale_last_id ) {
         $counter{'covale'} = $covale_last_id + 1;
