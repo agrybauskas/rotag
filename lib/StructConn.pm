@@ -53,13 +53,21 @@ sub counter_struct_conn
         'metalc' => 1,
     );
     my ( $covale_last_id ) =
-        sort { $b <=> $a } grep { s/^covale//g } keys %{ $struct_conn };
+        sort { $b <=> $a }
+        grep { my $id = $_; $id =~ s/^covale//g; $id }
+        keys %{ $struct_conn };
     my ( $disulf_last_id ) =
-        sort { $b <=> $a } grep { s/^disulf//g } keys %{ $struct_conn };
+        sort { $b <=> $a }
+        grep { my $id = $_; $id =~ s/^disulf//g; $id }
+        keys %{ $struct_conn };
     my ( $hydrog_last_id ) =
-        sort { $b <=> $a } grep { s/^hydrog//g } keys %{ $struct_conn };
+        sort { $b <=> $a }
+        grep { my $id = $_; $id =~ s/^hydrog//g; $id }
+        keys %{ $struct_conn };
     my ( $metalc_last_id ) =
-        sort { $b <=> $a } grep { s/^metalc//g } keys %{ $struct_conn };
+        sort { $b <=> $a }
+        grep { my $id = $_; $id =~ s/^metalc//g; $id }
+        keys %{ $struct_conn };
     if( defined $covale_last_id ) {
         $counter{'covale'} = $covale_last_id + 1;
     }
