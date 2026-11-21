@@ -1972,7 +1972,7 @@ sub increase_chain_id
 {
     my ( $chain_ids, $increase_by ) = @_;
     $increase_by //= 0;
-    my $calc26 = new Math::BaseCalc( digits => [ 'A'..'Z' ] );
+    my $calc26 = Math::BaseCalc->new( digits => [ 'A'..'Z' ] );
     my ( $last_chain_id ) =
         sort { $b <=> $a }
         map { $calc26->from_base( $_ ) }
