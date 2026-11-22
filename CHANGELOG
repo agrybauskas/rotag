@@ -8,6 +8,18 @@ rotag (unreleased)
   * Added 'rotag_mutate' script that can add or replace molecular moieties.
   * Added 'rotag_connect' script that can be used to connect atoms by creating
     or modifying '_struct_conn' mmCIF loop.
+  * Added a capability to include heteroatoms in rotamer scanning and related
+    calculations.
+  * Added a pairwise option to the 'rotag_scan' script in order to remove
+    rotamers that have no compatible conformations with surrounding rotamers.
+  * Added an option to randomly select rotamer angles in 'rotag_scan' script.
+  * Added an option to cluster heteroatoms using DBSCAN algorithm in 'rotag_add'
+    script.
+  * Updated force field parameters by including MG, CA, NA, ZN, K, CD ions and
+    water molecule.
+  * Improved unique residue key description by adding '_atom_site.auth_seq_id',
+    '_atom_site.auth_asym_id' and 'pdbx_auth_alt_id' for accommodating
+    unique selection of heteroatoms.
 
 rotag (0.1.2)
 
