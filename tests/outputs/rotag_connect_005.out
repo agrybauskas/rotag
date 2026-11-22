@@ -1,0 +1,26 @@
+rotag_connect [options] (--covale|--disulf|--hydrog|--metalc) \
+    <groups-to-connect> [--] <cif-file>...
+    connects and/or marks interactions between atoms of two or more atom
+    groups by adding '_struct_conn' loop entries.
+ 
+Usage:
+    rotag_connect --metalc '1,2' input.cif > output.cif
+    rotag_connect --covale '1,2;3,4' input.cif > output.cif
+    rotag_connect --metalc '1,2,3,4' --hydrog '4,5' input.cif > output.cif
+ 
+Options:
+    --covale <group>,<group>[;<group>,<group>;...]
+                        connects atoms by covalent bond.
+    --disulf <group>,<group>[;<group>,<group>;...]
+                        connects atoms by disulfide bond.
+    --hydrog <group>,<group>[;<group>,<group>;...]
+                        marks atoms participating in hydrogen bond.
+    --metalc <group>,<group>[;<group>,<group>;...]
+                        marks atoms participating in metal coordination.
+    --tags <tag>[,<tag>...]
+                        select PDBx categories that will be in the output
+                        (default: '_atom_site,_struct_conn').
+    -F, --format <format>
+                        output format (default: pdbx | csv).
+    -v, --version
+                        print version.

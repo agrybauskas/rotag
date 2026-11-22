@@ -1,0 +1,49 @@
+data_rotag
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.auth_asym_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_auth_alt_id
+_atom_site.pdbx_PDB_model_num
+ATOM 2014 N N . CYS A 1 260 -64.033 -132.545 -37.196 A 260 . 1
+ATOM 2015 C CA . CYS A 1 260 -63.011 -132.067 -36.275 A 260 . 1
+ATOM 2016 C C . CYS A 1 260 -62.567 -133.137 -35.280 A 260 . 1
+ATOM 2017 O O . CYS A 1 260 -61.373 -133.321 -35.058 A 260 . 1
+ATOM 2018 C CB . CYS A 1 260 -63.515 -130.840 -35.515 A 260 . 1
+ATOM 2019 S SG . CYS A 1 260 -62.230 -130.030 -34.546 A 260 . 1
+ATOM 2589 N N . CYS A 1 333 -65.765 -126.969 -33.134 A 333 . 1
+ATOM 2590 C CA . CYS A 1 333 -66.829 -127.141 -34.118 A 333 . 1
+ATOM 2591 C C . CYS A 1 333 -66.964 -128.565 -34.646 A 333 . 1
+ATOM 2592 O O . CYS A 1 333 -66.198 -129.458 -34.283 A 333 . 1
+ATOM 2593 C CB . CYS A 1 333 -66.587 -126.193 -35.287 A 333 . 1
+ATOM 2594 S SG . CYS A 1 333 -64.938 -126.376 -35.986 A 333 . 1
+#
+loop_
+_struct_conn.id
+_struct_conn.conn_type_id
+_struct_conn.ptnr1_label_seq_id
+_struct_conn.ptnr1_label_asym_id
+_struct_conn.pdbx_ptnr1_label_alt_id
+_struct_conn.ptnr1_auth_seq_id
+_struct_conn.ptnr1_auth_asym_id
+_struct_conn.ptnr1_label_atom_id
+_struct_conn.ptnr2_label_seq_id
+_struct_conn.ptnr2_label_asym_id
+_struct_conn.ptnr2_auth_seq_id
+_struct_conn.pdbx_ptnr2_label_alt_id
+_struct_conn.ptnr2_auth_asym_id
+_struct_conn.ptnr2_label_atom_id
+disulf1 disulf 260 A . 260 A SG 333 A 333 . A SG
+#
