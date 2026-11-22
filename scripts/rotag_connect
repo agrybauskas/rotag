@@ -223,7 +223,7 @@ for my $pdbx_file ( @ARGV ) {
                                                           $residue_unique_key1, 1 );
                         for my $residue_atom_id1 ( sort keys %{ $residue_atom_site1 } ) {
                             $atom_site->{$residue_atom_id1}{'auth_asym_id'} =
-                                $atom_site->{$atom_id2}{'auth_asym_id'};
+                                clone $atom_site->{$atom_id2}{'auth_asym_id'};
                         }
                     }
                     if( $atom_site->{$atom_id2}{'group_PDB'} eq 'HETATM' &&
@@ -238,7 +238,7 @@ for my $pdbx_file ( @ARGV ) {
                                                           $residue_unique_key2, 1 );
                         for my $residue_atom_id2 ( sort keys %{ $residue_atom_site2 } ) {
                             $atom_site->{$residue_atom_id2}{'auth_asym_id'} =
-                                $atom_site->{$atom_id1}{'auth_asym_id'};
+                                clone $atom_site->{$atom_id1}{'auth_asym_id'};
                         }
                     }
 
