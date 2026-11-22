@@ -1,0 +1,88 @@
+data_rotag
+#
+loop_
+_[local]_angle.id
+_[local]_angle.label_atom_1_id
+_[local]_angle.atom_1_id
+_[local]_angle.label_comp_1_id
+_[local]_angle.label_seq_1_id
+_[local]_angle.label_asym_1_id
+_[local]_angle.pdbx_PDB_model_num_1
+_[local]_angle.label_alt_1_id
+_[local]_angle.label_atom_2_id
+_[local]_angle.atom_2_id
+_[local]_angle.label_comp_2_id
+_[local]_angle.label_seq_2_id
+_[local]_angle.label_asym_2_id
+_[local]_angle.pdbx_PDB_model_num_2
+_[local]_angle.label_alt_2_id
+_[local]_angle.label_atom_3_id
+_[local]_angle.atom_3_id
+_[local]_angle.label_comp_3_id
+_[local]_angle.label_seq_3_id
+_[local]_angle.label_asym_3_id
+_[local]_angle.pdbx_PDB_model_num_3
+_[local]_angle.label_alt_3_id
+_[local]_angle.value
+_[local]_angle.units
+1 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 110.098 degrees
+2 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 135.040 degrees
+3 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 110.180 degrees
+4 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 95.532 degrees
+5 147 N SER 18 A 1 . 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 34.037 degrees
+6 147 N SER 18 A 1 . 149 C SER 18 A 1 . 150 O SER 18 A 1 . 152.894 degrees
+7 147 N SER 18 A 1 . 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 59.273 degrees
+8 147 N SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 51.642 degrees
+9 147 N SER 18 A 1 . 150 O SER 18 A 1 . 148 CA SER 18 A 1 . 16.690 degrees
+10 147 N SER 18 A 1 . 150 O SER 18 A 1 . 149 C SER 18 A 1 . 18.102 degrees
+11 147 N SER 18 A 1 . 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 42.266 degrees
+12 147 N SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 42.533 degrees
+13 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 148 CA SER 18 A 1 . 33.936 degrees
+14 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 149 C SER 18 A 1 . 59.072 degrees
+15 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 79.803 degrees
+16 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 95.529 degrees
+17 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 148 CA SER 18 A 1 . 29.486 degrees
+18 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 149 C SER 18 A 1 . 40.587 degrees
+19 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 150 O SER 18 A 1 . 55.335 degrees
+20 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 55.849 degrees
+21 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 149 C SER 18 A 1 . 35.865 degrees
+22 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 150 O SER 18 A 1 . 28.269 degrees
+23 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 35.884 degrees
+24 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 54.982 degrees
+25 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 150 O SER 18 A 1 . 120.948 degrees
+26 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 34.876 degrees
+27 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 22.952 degrees
+28 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 149 C SER 18 A 1 . 32.981 degrees
+29 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 29.104 degrees
+30 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 26.695 degrees
+31 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 149 C SER 18 A 1 . 34.753 degrees
+32 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 49.814 degrees
+33 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 110.597 degrees
+34 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 149 C SER 18 A 1 . 14.201 degrees
+35 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 150 O SER 18 A 1 . 26.439 degrees
+36 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 36.206 degrees
+37 149 C SER 18 A 1 . 147 N SER 18 A 1 . 150 O SER 18 A 1 . 9.004 degrees
+38 149 C SER 18 A 1 . 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 61.655 degrees
+39 149 C SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 87.771 degrees
+40 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 26.071 degrees
+41 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 110.371 degrees
+42 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 142.847 degrees
+43 149 C SER 18 A 1 . 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 51.301 degrees
+44 149 C SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 55.255 degrees
+45 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 22.528 degrees
+46 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 144.568 degrees
+47 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 150 O SER 18 A 1 . 15.633 degrees
+48 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 22.785 degrees
+49 150 O SER 18 A 1 . 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 57.931 degrees
+50 150 O SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 82.132 degrees
+51 150 O SER 18 A 1 . 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 101.082 degrees
+52 150 O SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 126.866 degrees
+53 150 O SER 18 A 1 . 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 106.170 degrees
+54 150 O SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 109.112 degrees
+55 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 144.236 degrees
+56 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 24.697 degrees
+57 151 CB SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 28.622 degrees
+58 151 CB SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 33.197 degrees
+59 151 CB SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 12.647 degrees
+60 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 11.067 degrees
+#

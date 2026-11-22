@@ -1,0 +1,88 @@
+data_rotag
+#
+loop_
+_[local]_angle.id
+_[local]_angle.label_atom_1_id
+_[local]_angle.atom_1_id
+_[local]_angle.label_comp_1_id
+_[local]_angle.label_seq_1_id
+_[local]_angle.label_asym_1_id
+_[local]_angle.pdbx_PDB_model_num_1
+_[local]_angle.label_alt_1_id
+_[local]_angle.label_atom_2_id
+_[local]_angle.atom_2_id
+_[local]_angle.label_comp_2_id
+_[local]_angle.label_seq_2_id
+_[local]_angle.label_asym_2_id
+_[local]_angle.pdbx_PDB_model_num_2
+_[local]_angle.label_alt_2_id
+_[local]_angle.label_atom_3_id
+_[local]_angle.atom_3_id
+_[local]_angle.label_comp_3_id
+_[local]_angle.label_seq_3_id
+_[local]_angle.label_asym_3_id
+_[local]_angle.pdbx_PDB_model_num_3
+_[local]_angle.label_alt_3_id
+_[local]_angle.value
+_[local]_angle.units
+1 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 1.921571 radians
+2 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 2.356898 radians
+3 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 1.923006 radians
+4 147 N SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 1.667350 radians
+5 147 N SER 18 A 1 . 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 0.594057 radians
+6 147 N SER 18 A 1 . 149 C SER 18 A 1 . 150 O SER 18 A 1 . 2.668500 radians
+7 147 N SER 18 A 1 . 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 1.034515 radians
+8 147 N SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 0.901328 radians
+9 147 N SER 18 A 1 . 150 O SER 18 A 1 . 148 CA SER 18 A 1 . 0.291300 radians
+10 147 N SER 18 A 1 . 150 O SER 18 A 1 . 149 C SER 18 A 1 . 0.315946 radians
+11 147 N SER 18 A 1 . 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 0.737675 radians
+12 147 N SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 0.742344 radians
+13 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 148 CA SER 18 A 1 . 0.592287 radians
+14 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 149 C SER 18 A 1 . 1.030999 radians
+15 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 1.392832 radians
+16 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 1.667303 radians
+17 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 148 CA SER 18 A 1 . 0.514624 radians
+18 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 149 C SER 18 A 1 . 0.708375 radians
+19 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 150 O SER 18 A 1 . 0.965779 radians
+20 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 0.974748 radians
+21 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 149 C SER 18 A 1 . 0.625965 radians
+22 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 150 O SER 18 A 1 . 0.493395 radians
+23 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 0.626299 radians
+24 148 CA SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 0.959619 radians
+25 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 150 O SER 18 A 1 . 2.110936 radians
+26 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 0.608698 radians
+27 148 CA SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 0.400593 radians
+28 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 149 C SER 18 A 1 . 0.575627 radians
+29 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 0.507963 radians
+30 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 0.465907 radians
+31 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 149 C SER 18 A 1 . 0.606552 radians
+32 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 0.869422 radians
+33 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 1.930279 radians
+34 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 149 C SER 18 A 1 . 0.247851 radians
+35 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 150 O SER 18 A 1 . 0.461448 radians
+36 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 0.631920 radians
+37 149 C SER 18 A 1 . 147 N SER 18 A 1 . 150 O SER 18 A 1 . 0.157147 radians
+38 149 C SER 18 A 1 . 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 1.076079 radians
+39 149 C SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 1.531890 radians
+40 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 150 O SER 18 A 1 . 0.455029 radians
+41 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 1.926342 radians
+42 149 C SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 2.493148 radians
+43 149 C SER 18 A 1 . 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 0.895379 radians
+44 149 C SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 0.964390 radians
+45 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 0.393192 radians
+46 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 2.523181 radians
+47 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 150 O SER 18 A 1 . 0.272843 radians
+48 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 0.397673 radians
+49 150 O SER 18 A 1 . 147 N SER 18 A 1 . 151 CB SER 18 A 1 . 1.011086 radians
+50 150 O SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 1.433470 radians
+51 150 O SER 18 A 1 . 148 CA SER 18 A 1 . 151 CB SER 18 A 1 . 1.764208 radians
+52 150 O SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 2.214237 radians
+53 150 O SER 18 A 1 . 149 C SER 18 A 1 . 151 CB SER 18 A 1 . 1.853022 radians
+54 150 O SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 1.904359 radians
+55 150 O SER 18 A 1 . 151 CB SER 18 A 1 . 152 OG SER 18 A 1 . 2.517393 radians
+56 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 151 CB SER 18 A 1 . 0.431048 radians
+57 151 CB SER 18 A 1 . 147 N SER 18 A 1 . 152 OG SER 18 A 1 . 0.499542 radians
+58 151 CB SER 18 A 1 . 148 CA SER 18 A 1 . 152 OG SER 18 A 1 . 0.579394 radians
+59 151 CB SER 18 A 1 . 149 C SER 18 A 1 . 152 OG SER 18 A 1 . 0.220739 radians
+60 151 CB SER 18 A 1 . 150 O SER 18 A 1 . 152 OG SER 18 A 1 . 0.193151 radians
+#
