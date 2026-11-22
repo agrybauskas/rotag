@@ -1,0 +1,17 @@
+rotag_length [options] [--] <cif-file>...
+    calculate distance between selected atoms or bonds in residues.
+ 
+Usage:
+    rotag_length -S input.cif > output.cif
+ 
+Options:
+    -S, --side-chains
+                        calculates bond lengths between the side-chain atoms.
+    -M, --main-chains
+                        calculates bond lengths between the main-chain atom
+    -H, --hetero-atoms
+                        calculates pseudo bond lengths for heteroatoms.
+    -F, --format <format>
+                        output format (default: pdbx | csv).
+    -v, --version
+                        print version.

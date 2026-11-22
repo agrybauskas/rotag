@@ -1,0 +1,16 @@
+id,label_atom_1_id,atom_1_id,label_comp_1_id,label_seq_1_id,label_asym_1_id,pdbx_PDB_model_num_1,label_alt_1_id,site_1_id,label_atom_2_id,atom_2_id,label_comp_2_id,label_seq_2_id,label_asym_2_id,pdbx_PDB_model_num_2,label_alt_2_id,site_2_id,value
+1,147,N,SER,18,A,1,.,.,148,CA,SER,18,A,1,.,.,1.457919
+2,147,N,SER,18,A,1,.,.,149,C,SER,18,A,1,.,.,2.446088
+3,147,N,SER,18,A,1,.,.,150,O,SER,18,A,1,.,.,3.587007
+4,147,N,SER,18,A,1,.,.,151,CB,SER,18,A,1,.,.,2.451225
+5,147,N,SER,18,A,1,.,.,152,OG,SER,18,A,1,.,.,2.948207
+6,148,CA,SER,18,A,1,.,.,149,C,SER,18,A,1,.,.,1.526039
+7,148,CA,SER,18,A,1,.,.,150,O,SER,18,A,1,.,.,2.404262
+8,148,CA,SER,18,A,1,.,.,151,CB,SER,18,A,1,.,.,1.530755
+9,148,CA,SER,18,A,1,.,.,152,OG,SER,18,A,1,.,.,2.425801
+10,149,C,SER,18,A,1,.,.,150,O,SER,18,A,1,.,.,1.232043
+11,149,C,SER,18,A,1,.,.,151,CB,SER,18,A,1,.,.,2.509648
+12,149,C,SER,18,A,1,.,.,152,OG,SER,18,A,1,.,.,3.756895
+13,150,O,SER,18,A,1,.,.,151,CB,SER,18,A,1,.,.,3.088441
+14,150,O,SER,18,A,1,.,.,152,OG,SER,18,A,1,.,.,4.320086
+15,151,CB,SER,18,A,1,.,.,152,OG,SER,18,A,1,.,.,1.418862
