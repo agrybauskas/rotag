@@ -1,0 +1,30 @@
+rotag_angle [options] [--] <cif-file>...
+    calculates angles between selected atoms or bonds in residues.
+ 
+Usage:
+    rotag_angle input.cif > output.cif
+ 
+Options:
+    -S, --side-chains
+                        calculates angles between bonds in the side-chain atoms.
+    -M, --main-chains
+                        calculates angles between bonds in the main-chain atoms.
+    -H, --hetero-atoms
+                        calculates pseudo bond angles for heteroatoms.
+    -c, --compare <group>,<group>[;<group>,<group>;...]
+                        calculates angles between selected groups of atoms.
+                        It should be noted that there can be two or three
+                        groups. If two are present, at least two atoms have to
+                        be connected. Use carefully with three groups, because
+                        it compares combinatorically. If active, -S and -M
+                        options are ignored.
+ 
+                        Example: --compare '1, 2' or --compare '3, 4; 5, 7, 8'
+    --cutoff
+                        RMSD cutoff for --compare option.
+    -r, --radians
+                        angles are in radians.
+    -F, --format <format>
+                        output format (default: pdbx | csv).
+    -v, --version
+                        print version.
