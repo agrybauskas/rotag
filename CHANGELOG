@@ -3,6 +3,11 @@ rotag (unreleased)
   * Fixed the absence of cutoff function when calculating with 'rotag_energy'
     script.
   * Added the option to calculate pairwise interactions between side-chains.
+  * Added 'rotag_angle' script that calculates angle between two bonds.
+  * Added 'rotag_length' script that calculates length between two atoms.
+  * Added 'rotag_mutate' script that can add or replace molecular moieties.
+  * Added 'rotag_connect' script that can be used to connect atoms by creating
+    or modifying '_struct_conn' mmCIF loop.
 
 rotag (0.1.2)
 
