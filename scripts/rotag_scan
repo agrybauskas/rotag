@@ -361,6 +361,7 @@ for my $pdbx_file ( @ARGV ) {
                   'threads' => $threads,
                   'options' => { 'rand_seed' => $rand_seed,
                                  'rand_step' => $rand_step,
+                                 'rand_sweep' => $rand_sweep,
                                  'program_called_by' => $0,
                                  'verbose' => $verbose,
                                  'verbosity_level' => $verbosity_level },

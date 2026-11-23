@@ -823,7 +823,7 @@ sub calc_favourable_angles
          $bond_parameters, $existing_bond_parameters, $include_hetatoms,
          $bond_parameter_count, $non_bonded_potential, $bonded_potential,
          $min_max_ratio, $top_rank, $threads, $rand_step, $rand_seed,
-         $program_called_by, $verbose, $verbosity_level ) = (
+         $rand_sweep, $program_called_by, $verbose, $verbosity_level ) = (
         $args->{'parameters'},
         $args->{'atom_site'},
         $args->{'residue_unique_keys'},
@@ -839,6 +839,7 @@ sub calc_favourable_angles
         $args->{'threads'},
         $args->{'options'}{'rand_step'},
         $args->{'options'}{'rand_seed'},
+        $args->{'options'}{'rand_sweep'},
         $args->{'options'}{'program_called_by'},
         $args->{'options'}{'verbose'},
         $args->{'options'}{'verbosity_level'},

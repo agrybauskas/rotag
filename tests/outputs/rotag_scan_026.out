@@ -83,6 +83,9 @@ Options:
                         set a seed for random bond parameter selection.
     -X, --rand-step <int>
                         number of random bond parameter steps.
+    --rand-sweep <int>
+                        number of random bond parameter combinations. Is
+                        negated by '--rand-step'.
     --tags <tag>[,<tag>...]
                         output only specified PDBx categories.
     -F, --format <format>
