@@ -120,6 +120,9 @@ our $VERSION = $VERSION;
 #*                        set a seed for random bond parameter selection.
 #*    -X, --rand-step <int>
 #*                        number of random bond parameter steps.
+#*    --rand-sweep <int>
+#*                        number of random bond parameter combinations. Is
+#*                        negated by '--rand-step'.
 #*    --tags <tag>[,<tag>...]
 #*                        output only specified PDBx categories.
 #*    -F, --format <format>
@@ -154,6 +157,7 @@ my $min_max_ratio;
 my $top_rank;
 my $rand_seed;
 my $rand_step;
+my $rand_sweep;
 my $threads = 1;
 my $verbose = 0;
 my $verbosity_level = 1;
@@ -188,6 +192,7 @@ GetOptions(
     'legacy-grammar' => sub { $legacy_grammar = 1 },
     'rand-seed|x=s' => \$rand_seed,
     'rand-step|X=s' => \$rand_step,
+    'rand-sweep=s' => \$rand_sweep,
     'radians|r' => sub { $in_radians = 1 },
     'min-max-ratio|M=s' => \$min_max_ratio,
     'top-rank|limit|t=s' => \$top_rank,
