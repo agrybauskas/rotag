@@ -14,7 +14,6 @@ our @EXPORT_OK = qw( alt_bond_parameter_names
                      combine_bond_parameters
                      detect_bond_parameter_type
                      filter_bond_parameters
-                     restructure_by_atom_ids
                      rotatable_bonds
                      score_bond_parameter_name
                      stretchable_bonds );
@@ -723,38 +722,6 @@ sub unique_bond_parameters
         }
     }
     return \%unique_bond_parameters;
-}
-
-#
-# Restructures bond parameters by atom ids.
-# Input:
-#     $bond_parameters - bond parameter data structure produced by
-#     rotatable_bonds(), stretchable_bonds() or bendable_angles().
-# Output:
-#     %restructured_bond_parameters - restructure bond parameter values.
-
-sub restructure_by_atom_ids
-{
-    my ( $bond_parameters ) = @_;
-    my ( $unique_residue_key ) = keys %{ $bond_parameters };
-    my $restructured = {};
-    for my $parameter_name ( keys %{ $bond_parameters->{$unique_residue_key} } ){
-        my $parameter_data =
-            { %{ $bond_parameters->{$unique_residue_key}{$parameter_name} },
-              'name' => $parameter_name };
-        my $atom_ids = $parameter_data->{'atom_ids'};
-        my $last_hash_addr = \$restructured;
-        my $last_atom_id;
-        for my $atom_id ( @{ $atom_ids } ) {
-            if( ! defined ${ $last_hash_addr }->{$atom_id} ) {
-                ${ $last_hash_addr }->{$atom_id} = {};
-            }
-            $last_hash_addr = \${ $last_hash_addr }->{$atom_id};
-            $last_atom_id = $atom_id;
-        }
-        ${ $last_hash_addr } = $parameter_data;
-    }
-    return $restructured;
 }
 
 sub combine_bond_parameters
