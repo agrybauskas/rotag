@@ -1,3 +1,6 @@
+#!/bin/bash
+
+perl <<'EOF'
 #!/usr/bin/perl
 
 use strict;
@@ -23,3 +26,4 @@ $particle_swarm->optimize( 10 );
 
 print Dumper $particle_swarm->global_optimal_param;
 print Dumper $particle_swarm->global_optimal_value;
+EOF

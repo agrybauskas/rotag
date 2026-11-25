@@ -1,3 +1,6 @@
+#!/bin/bash
+
+perl <<'EOF'
 #!/usr/bin/perl
 
 use strict;
@@ -13,3 +16,4 @@ $Data::Dumper::Indent = 1;
 my $PARAMETERS = Parameters->new();
 
 print Dumper $PARAMETERS;
+EOF

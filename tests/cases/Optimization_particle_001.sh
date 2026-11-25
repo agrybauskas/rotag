@@ -1,3 +1,6 @@
+#!/bin/bash
+
+perl <<'EOF'
 #!/usr/bin/perl
 
 use strict;
@@ -17,3 +20,4 @@ $particle->speed( [ -4, -5, 6 ] );
 
 print Dumper $particle->position;
 print Dumper $particle->speed;
+EOF

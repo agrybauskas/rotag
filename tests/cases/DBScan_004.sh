@@ -1,3 +1,6 @@
+#!/bin/bash
+
+perl <<'EOF'
 #!/usr/bin/perl
 
 use strict;
@@ -24,3 +27,4 @@ for my $id ( sort { $a <=> $b } @{ $cluster->get_ids() } ) {
     print $id . " " . join( ',', @{ $cluster->get_point( $id )->{'coord'} } ) .
           " " . $cluster->get_point( $id )->{'label'} . "\n";
 }
+EOF

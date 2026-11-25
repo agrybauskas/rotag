@@ -1,3 +1,6 @@
+#!/bin/bash
+
+perl <<'EOF'
 #!/usr/bin/perl
 
 use strict;
@@ -17,3 +20,4 @@ my $param = Parameter->new( { 'key' => 'epsilon',
 print Dumper $param->key;
 print Dumper $param->min;
 print Dumper $param->max;
+EOF

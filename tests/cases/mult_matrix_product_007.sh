@@ -1,3 +1,6 @@
+#!/bin/bash
+
+perl <<'EOF'
 #!/usr/bin/perl
 
 use strict;
@@ -413,3 +416,4 @@ for my $matrix_id ( 0..$#{ $matrix_product } ) {
     }
     print( "\n" ) if $matrix_id != $#{ $matrix_product };
 }
+EOF

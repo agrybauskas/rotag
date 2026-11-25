@@ -1,3 +1,6 @@
+#!/bin/bash
+
+perl <<'EOF'
 #!/usr/bin/perl
 
 use strict;
@@ -13,3 +16,4 @@ my $permuted_list = permutation( 2,
 $permuted_list = [ map { [ @{ $_->[0] }, @{ $_->[1] } ] } @{ $permuted_list } ];
 
 print( join( " ", @{ $_ } ), "\n" ) for @{ $permuted_list };
+EOF
