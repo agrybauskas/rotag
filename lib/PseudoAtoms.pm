@@ -907,7 +907,7 @@ sub calc_favourable_angles
     );
 
     # TODO: should be moved to separate function.
-    if( $rand_sweep ) {
+    if( $rand_sweep && ! $rand_step ) {
 
     }
 
