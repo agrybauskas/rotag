@@ -13,7 +13,6 @@ our @EXPORT_OK = qw( atom_site_to_pdbx
                      extract
                      filter
                      filter_by_unique_residue_key
-                     filter_connected
                      filter_new
                      follow_hetatoms
                      group_unique_residue_keys
@@ -1059,21 +1058,6 @@ sub filter_by_unique_residue_key
     );
 
     return $filtered_atoms;
-}
-
-sub filter_connected
-{
-    my ( $atom_site, $atom_id, $atom_specifier ) = @_;
-    if( ! defined $atom_id || ! defined $atom_site->{$atom_id} ||
-        ! defined $atom_site->{$atom_id}{'connections'} ||
-        ! @{ $atom_site->{$atom_id}{'connections'} } ) {
-        return [];
-    }
-    return filter_new( $atom_site,
-                       { 'include' =>
-                             { 'id' => $atom_site->{$atom_id}{'connections'},
-                               %{ $atom_specifier } },
-                         'return_data' => 'id' } );
 }
 
 sub search_unique_residue_key
