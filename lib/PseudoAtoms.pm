@@ -852,6 +852,7 @@ sub calc_favourable_angles
     $verbose //= 0;
     $verbosity_level //= 0;
 
+    my %existing_bond_parameters = %{ clone $existing_bond_parameters };
     my $heteroatom_names = $parameters->{'_[local]_heteroatom_names'};
     my $pi = $parameters->{'_[local]_constants'}{'pi'};
 
@@ -904,6 +905,11 @@ sub calc_favourable_angles
         'atom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'},
         'hetatom' => $parameters->{'_[local]_force_field'}{'cutoff_atom'}
     );
+
+    # TODO: should be moved to separate function.
+    if( $rand_sweep ) {
+
+    }
 
     my %all_bond_parameters = ();
     my %bond_combinations = ();
@@ -999,16 +1005,16 @@ sub calc_favourable_angles
                 # TODO: can be optimised by analysing previous bond parameter
                 # combinations.
                 my $parameter_key = parameter_key( \@parameter_names_visited );
-                if( exists $existing_bond_parameters->{$unique_residue_key}
-                                                      {$parameter_key} ) {
+                if( exists $existing_bond_parameters{$unique_residue_key}
+                                                    {$parameter_key} ) {
                     $bond_combinations{$parameter_key} =
-                        clone $existing_bond_parameters->{$unique_residue_key}
-                                                         {$parameter_key}
-                                                         {'bond_combinations'};
+                        clone $existing_bond_parameters{$unique_residue_key}
+                                                       {$parameter_key}
+                                                       {'bond_combinations'};
                     $energy_combinations{$parameter_key} =
-                        clone $existing_bond_parameters->{$unique_residue_key}
-                                                         {$parameter_key}
-                                                         {'energy_combinations'};
+                        clone $existing_bond_parameters{$unique_residue_key}
+                                                       {$parameter_key}
+                                                       {'energy_combinations'};
                     next;
                 }
 
@@ -1185,8 +1191,8 @@ sub calc_favourable_angles
             # re-checked.
             if( defined $min_max_ratio &&
                 @{ $next_allowed_bond_parameters } &&
-                ! exists $existing_bond_parameters->{$unique_residue_key}
-                                                    {$parameter_key_sorted} ) {
+                ! exists $existing_bond_parameters{$unique_residue_key}
+                                                  {$parameter_key_sorted} ) {
                 my @energy_values_sorted =
                     sort { $a->[0] <=> $b->[0] } @{ $next_allowed_energies };
 
@@ -1218,8 +1224,8 @@ sub calc_favourable_angles
 
             if( defined $top_rank &&
                 @{ $next_allowed_bond_parameters } &&
-                ! exists $existing_bond_parameters->{$unique_residue_key}
-                                                    {$parameter_key_sorted} ) {
+                ! exists $existing_bond_parameters{$unique_residue_key}
+                                                  {$parameter_key_sorted} ) {
                 if( scalar @{ $next_allowed_bond_parameters } > $top_rank ) {
                     my @updated_next_allowed_bond_parameters = ();
                     my @updated_next_allowed_energies = ();
