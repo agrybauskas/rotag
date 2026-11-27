@@ -18,11 +18,9 @@ our @EXPORT_OK = qw( calc_favourable_angle
 
 use Carp;
 use Clone qw( clone );
-use List::Util qw( any
-                   max
+use List::Util qw( max
                    shuffle );
-use List::MoreUtils qw( all
-                        uniq );
+use List::MoreUtils qw( uniq );
 use Logging qw( info );
 use threads;
 
@@ -54,12 +52,10 @@ use ForceField::NonBonded qw( general
 use Grid qw( grid_box
              identify_neighbour_cells );
 use LinearAlgebra qw( mult_matrix_product );
-use Measure qw( around_distance
-                rmsd_sidechains );
+use Measure qw( rmsd_sidechains );
 use Moieties qw( missing_atom_names );
 use Multiprocessing qw( threading );
 use PDBxParser qw( atom_site_to_pdbx
-                   change_unique_residue_key
                    create_pdbx_entry
                    determine_residue_keys
                    filter_new

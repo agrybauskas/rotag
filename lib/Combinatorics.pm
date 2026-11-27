@@ -6,8 +6,6 @@ use warnings;
 use Exporter qw( import );
 our @EXPORT_OK = qw( permutation );
 
-use List::Util qw( max );
-
 use Version qw( $VERSION );
 
 our $VERSION = $VERSION;

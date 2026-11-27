@@ -30,7 +30,6 @@ use Energy;
 use ForceField::Bonded;
 use ForceField::NonBonded;
 use PDBxParser qw( filter
-                   split_by
                    unique_residue_keys );
 use LinearAlgebra qw( matrix_sub
                       vector_cross );

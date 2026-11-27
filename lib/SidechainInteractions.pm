@@ -11,9 +11,7 @@ use BondParameters qw( bendable_angles
                        collect_bond_parameters
                        stretchable_bonds
                        rotatable_bonds );
-use BondProperties qw( hybridization );
 use ConnectAtoms qw( assign_hetatoms
-                     connect_atoms
                      struct_conn_residue_keys );
 use Logging qw( info );
 use ForceField::Parameters;
@@ -23,8 +21,7 @@ use Measure qw( bond_length );
 use PDBxParser qw( extract
                    filter_new
                    filter_by_unique_residue_key
-                   unique_residue_key
-                   to_pdbx );
+                   unique_residue_key );
 use PseudoAtoms qw( pairwise_rotamer_energy
                     replace_with_rotamer );
 use Grid qw( grid_box

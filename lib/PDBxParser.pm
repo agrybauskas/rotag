@@ -43,7 +43,6 @@ our @EXPORT_OK = qw( atom_site_to_pdbx
                      unique_residue_keys );
 
 use Carp;
-use Combinatorics qw( permutation );
 use Clone qw( clone );
 use List::MoreUtils qw( any
                         uniq );

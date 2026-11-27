@@ -11,9 +11,7 @@ our @EXPORT_OK = qw( bond_parameter_key_diff
                      parameter_key )
 }
 
-use Clone qw( clone );
 use Combinatorics qw( permutation );
-use List::Util qw( uniq );
 
 sub parameter_key
 {

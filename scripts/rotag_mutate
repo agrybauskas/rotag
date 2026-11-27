@@ -15,7 +15,6 @@ use Logging qw( error
 use Moieties qw( replace_with_moiety
                  replace_hetatoms_with_moiety );
 use PDBxParser qw( filter
-                   obtain_atom_site
                    obtain_pdbx_data
                    raw2indexed
                    to_pdbx

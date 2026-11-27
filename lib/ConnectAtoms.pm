@@ -22,7 +22,6 @@ our @EXPORT_OK = qw( assign_hetatoms
 
 use Carp qw( confess );
 use Clone qw( clone );
-use Digest::MD5 qw( md5_hex );
 use List::Util qw( any
                    max
                    uniq );
@@ -33,10 +32,8 @@ use Grid qw( identify_neighbour_cells
 use Measure qw( around_distance
                 distance_squared );
 use PDBxParser qw( change_unique_residue_key
-                   filter
                    filter_by_unique_residue_key
                    filter_new
-                   follow_hetatoms
                    replace_atom_site_ids
                    unique_residue_key );
 use StructConn qw( counter_struct_conn

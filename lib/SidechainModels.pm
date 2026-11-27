@@ -8,14 +8,8 @@ our @EXPORT_OK = qw( rotation_translation );
 
 use List::Util qw( uniq );
 
-use AlterMolecule qw( angle_bending
-                      bond_altering
-                      bond_stretching
-                      bond_torsion );
+use AlterMolecule qw( bond_altering );
 use AtomProperties qw( sort_atom_ids_by_name );
-use BondParameters qw( collect_bond_angles
-                       collect_bond_lengths
-                       collect_dihedral_angles );
 use LinearAlgebra qw( mult_matrix_product
                       reshape );
 use PDBxParser qw( determine_residue_keys

@@ -21,16 +21,13 @@ use ConnectAtoms qw( assign_hetatoms
                      connect_atoms
                      connections_from_struct_conn
                      struct_conn_atom_ids
-                     struct_conn_from_connections
-                     struct_conn_residue_keys );
+                     struct_conn_from_connections );
 use DBScan;
 use ForceField::Parameters();
 use Hydrogens qw( add_hydrogens );
 use Logging qw( error
                 warning );
-use PDBxParser qw( change_unique_residue_key
-                   determine_ligand_sites
-                   extract
+use PDBxParser qw( determine_ligand_sites
                    filter
                    filter_new
                    filter_by_unique_residue_key

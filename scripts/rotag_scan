@@ -24,8 +24,7 @@ use PDBxParser qw( determine_ligand_sites
                    raw2indexed
                    split_by
                    to_csv
-                   to_pdbx
-                   unique_residue_key );
+                   to_pdbx );
 use PseudoAtoms qw( generate_library );
 use Sampling qw( sample_bond_parameters_qs_parsing );
 use SidechainInteractions;

@@ -21,14 +21,11 @@ use Logging qw( error
 use Measure qw( dihedral_angle );
 use PDBxParser qw( determine_ligand_sites
                    filter
-                   filter_new
-                   filter_by_unique_residue_key
                    mark_selection
                    obtain_pdbx_data
                    raw2indexed
                    to_csv
-                   to_pdbx
-                   unique_residue_key );
+                   to_pdbx );
 use Version qw( $VERSION );
 
 Getopt::Long::Configure qw( gnu_getopt );
