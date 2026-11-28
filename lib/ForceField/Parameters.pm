@@ -46,12 +46,12 @@ sub _obtain_force_field_data
 
     local @ARGV = ( $pdbx_file );
     while( <> ) {
-        if( m/^loop_/ ) {
+        if( m/^loop_/x ) {
             $is_looped = 1;
-        } elsif( $is_looped && m/^(_\S+)\./ ) {
+        } elsif( $is_looped && m/^(_\S+)\./x ) {
             my $category = $1;
             push @looped_categories, $category;
-        } elsif( m/(^_\S+\.\S+)/ ) {
+        } elsif( m/(^_\S+\.\S+)/x ) {
             my $item = $1;
             push @unlooped_items, $item;
         } else {
